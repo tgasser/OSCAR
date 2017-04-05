@@ -1,0 +1,115 @@
+Code,Country,GTAP,SRES4,SRES11,RECCAP*,Raupach*,Houghton,IMACLIM,Kyoto,RCP5,RCP10*
+AUS,Australia,1,1,3,3,4,9,4,1,4,9
+NZL,New Zealand,2,1,3,3,4,9,4,1,4,9
+XOC,Rest of Oceania,3,3,8,3,8,9,11,2,4,9
+CHN,China,4,3,6,4,6,7,6,2,1,1
+HKG,Hong Kong,5,3,6,4,6,7,11,2,1,1
+JPN,Japan,6,1,3,4,3,9,4,1,4,9
+KOR,Korea,7,3,8,4,4,9,4,2,1,3
+TWN,Taiwan,8,3,6,4,4,9,11,2,1,1
+XEA,Rest of East Asia,9,3,6,4,8,7,11,2,1,1
+KHM,Cambodia,10,3,6,5,9,8,11,2,1,3
+IDN,Indonesia,11,3,8,5,8,8,11,2,1,3
+LAO,Lao People's Democratic Republic,12,3,6,5,9,8,11,2,1,3
+MMR,Myanmar,13,3,8,5,9,8,11,2,1,3
+MYS,Malaysia,14,3,8,5,8,8,11,2,1,3
+PHL,Philippines,15,3,8,5,8,8,11,2,1,3
+SGP,Singapore,16,3,8,5,4,8,11,2,1,3
+THA,Thailand,17,3,8,5,8,8,11,2,1,3
+VNM,Vietnam,18,3,8,5,8,8,11,2,1,3
+XSE,Rest of Southeast Asia,19,3,8,5,9,8,11,2,1,3
+BGD,Bangladesh,20,3,7,6,9,8,11,2,1,2
+IND,India,21,3,7,6,7,8,7,2,1,2
+PAK,Pakistan,22,3,7,6,8,8,11,2,1,2
+LKA,Sri Lanka,23,3,7,6,8,8,11,2,1,2
+XSA,Rest of South Asia,24,3,7,6,9,8,11,2,1,2
+CAN,Canada,25,1,1,8,4,1,2,1,4,8
+USA,United States of America,26,1,1,8,1,1,1,1,4,8
+MEX,Mexico,27,4,10,8,8,2,12,2,2,4
+XNA,Rest of North America,28,1,2,8,4,3,12,2,4,7
+ARG,Argentina,29,4,10,10,8,2,12,2,2,4
+BOL,Bolivia,30,4,10,10,8,2,12,2,2,4
+BRA,Brazil,31,4,10,10,8,2,8,2,2,4
+CHL,Chile,32,4,10,10,8,2,12,2,2,4
+COL,Colombia,33,4,10,10,8,2,12,2,2,4
+ECU,Ecuador,34,4,10,10,8,2,12,2,2,4
+PRY,Paraguay,35,4,10,10,8,2,12,2,2,4
+PER,Peru,36,4,10,10,8,2,12,2,2,4
+URY,Uruguay,37,4,10,10,8,2,12,2,2,4
+VEN,Venezuela,38,4,10,10,8,2,12,2,2,4
+XSM,Rest of South America,39,4,10,10,8,2,12,2,2,4
+CRI,Costa Rica,40,4,10,11,8,2,12,2,2,4
+GTM,Guatemala,41,4,10,11,8,2,12,2,2,4
+NIC,Nicaragua,42,4,10,11,8,2,12,2,2,4
+PAN,Panama,43,4,10,11,8,2,12,2,2,4
+XCA,Rest of Central America,44,4,10,11,8,2,12,2,2,4
+XCB,Caribbean,45,4,10,11,8,2,12,2,2,4
+AUT,Austria,46,1,2,7,2,3,3,1,4,7
+BEL,Belgium,47,1,2,7,2,3,3,1,4,7
+CYP,Cyprus,48,1,2,7,2,4,3,1,5,10
+CZE,Czech Republic,49,2,4,7,2,3,3,1,5,10
+DNK,Denmark,50,1,2,7,2,3,3,1,4,7
+EST,Estonia,51,2,5,7,5,6,3,1,5,10
+FIN,Finland,52,1,2,7,2,3,3,1,4,7
+FRA,France,53,1,2,7,2,3,3,1,4,7
+DEU,Germany,54,1,2,7,2,3,3,1,4,7
+GRC,Greece,55,1,2,7,2,3,3,1,4,7
+HUN,Hungary,56,2,4,7,2,3,3,1,5,10
+IRL,Ireland,57,1,2,7,2,3,3,1,4,7
+ITA,Italy,58,1,2,7,2,3,3,1,4,7
+LVA,Latvia,59,2,5,7,5,6,3,1,5,10
+LTU,Lithuania,60,2,5,7,5,6,3,1,5,10
+LUX,Luxembourg,61,1,2,7,2,3,3,1,4,7
+MLT,Malta,62,1,2,7,2,3,3,1,5,10
+NLD,Netherlands,63,1,2,7,2,3,3,1,4,7
+POL,Poland,64,2,4,7,2,3,3,1,5,10
+PRT,Portugal,65,1,2,7,2,3,3,1,4,7
+SVK,Slovakia,66,2,4,7,2,3,3,1,5,10
+SVN,Slovenia,67,2,4,7,2,3,3,1,5,10
+ESP,Spain,68,1,2,7,2,3,3,1,4,7
+SWE,Sweden,69,1,2,7,2,3,3,1,4,7
+GBR,United Kingdom,70,1,2,7,2,3,3,1,4,7
+CHE,Switzerland,71,1,2,7,4,3,3,1,4,7
+NOR,Norway,72,1,2,7,4,3,3,1,4,7
+XEF,Rest of EFTA,73,1,2,7,4,3,3,1,4,7
+ALB,Albania,74,2,4,11,8,3,3,2,5,10
+BGR,Bulgaria,75,2,4,11,8,3,3,2,5,10
+BLR,Belarus,76,2,5,9,5,6,5,2,5,10
+HRV,Croatia,77,2,4,11,8,3,3,1,5,10
+ROU,Romania,78,2,4,11,8,3,3,1,5,10
+RUS,Russian Federation,79,2,5,9,5,6,5,1,5,10
+UKR,Ukraine,80,2,5,9,5,6,5,1,5,10
+XEE,Rest of Eastern Europe,81,2,5,11,5,6,3,2,5,10
+XER,Rest of Europe,82,2,4,11,8,3,3,2,5,10
+KAZ,Kazakhstan,83,2,5,11,5,6,5,2,5,10
+KGZ,Kyrgyzstan,84,2,5,11,5,6,5,2,5,10
+XSU,Rest of Former Soviet Union,85,2,5,11,5,6,5,2,5,10
+ARM,Armenia,86,2,5,11,5,6,5,2,5,10
+AZE,Azerbaijan,87,2,5,11,5,6,5,2,5,10
+GEO,Georgia,88,2,5,11,5,6,5,2,5,10
+IRN,"Iran, Islamic Republic of",89,4,9,11,8,4,9,2,3,5
+TUR,Turkey,90,1,2,11,8,4,3,2,4,7
+XWS,Rest of Western Asia,91,4,9,11,8,4,9,2,3,5
+EGY,Egypt,92,4,9,1,8,4,10,2,3,6
+MAR,Morocco,93,4,9,1,8,4,10,2,3,6
+TUN,Tunisia,94,4,9,1,8,4,10,2,3,6
+XNF,Rest of North Africa,95,4,9,1,8,4,10,2,3,6
+NGA,Nigeria,96,4,11,1,8,5,10,2,3,6
+SEN,Senegal,97,4,11,1,9,5,10,2,3,6
+XWF,Rest of Western Africa,98,4,11,1,9,5,10,2,3,6
+XCF,Rest of Central Africa,99,4,11,1,9,5,10,2,3,6
+XAC,Rest of South Central Africa,100,4,11,1,9,5,10,2,3,6
+ETH,Ethiopia,101,4,11,1,9,5,10,2,3,6
+MDG,Madagascar,102,4,11,1,9,5,10,2,3,6
+MWI,Malawi,103,4,11,1,9,5,10,2,3,6
+MUS,Mauritius,104,4,11,1,9,5,10,2,3,6
+MOZ,Mozambique,105,4,11,1,9,5,10,2,3,6
+TZA,Tanzania,106,4,11,1,9,5,10,2,3,6
+UGA,Uganda,107,4,11,1,9,5,10,2,3,6
+ZMB,Zambia,108,4,11,1,9,5,10,2,3,6
+ZWE,Zimbabwe,109,4,11,1,8,5,10,2,3,6
+XEC,Rest of Eastern Africa,110,4,11,1,8,5,10,2,3,6
+BWA,Botswana,111,4,11,1,8,5,10,2,3,6
+ZAF,South Africa,112,4,11,1,8,5,10,2,3,6
+XSC,Rest of South African Customs Union ,113,4,11,1,8,5,10,2,3,6
+XXA,Antartica,114,0,0,11,0,0,0,2,0,0
