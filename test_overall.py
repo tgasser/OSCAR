@@ -88,7 +88,7 @@ for nrun in range(nb_run):
     mod_EHWPfct = param[np.random.random_integers(len(param))-1]
 
     # hydroxyl
-    param = ['Prather2012','CESM-CAM-superfast','CICERO-OsloCTM2','CMAM','EMAC','GEOSCCM','GDFL-AM3','GISS-E2-R','GISS-E2-R-TOMAS','HadGEM2','LMDzORINCA','MIROC-CHEM |MOCAGE','NCAR-CAM-35','STOC-HadAM3','TM5','UM-CAM']
+    param = ['Prather2012','CESM-CAM-superfast','CICERO-OsloCTM2','CMAM','EMAC','GEOSCCM','GDFL-AM3','GISS-E2-R','GISS-E2-R-TOMAS','HadGEM2','LMDzORINCA','MIROC-CHEM','MOCAGE','NCAR-CAM-35','STOC-HadAM3','TM5','UM-CAM']
     mod_OHSNKtau = param[np.random.random_integers(len(param))-1]
     param = ['lin','log']
     mod_OHSNKfct = param[np.random.random_integers(len(param))-1]

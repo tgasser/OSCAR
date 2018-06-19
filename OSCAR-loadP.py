@@ -1,15 +1,18 @@
-## Copyright CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), (2016)
-## Contributor(s): Thomas Gasser (tgasser@lsce.ipsl.fr)
+"""
+Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2018; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2016
+Contributor(s): Thomas Gasser (gasser@iiasa.ac.at)
 
-## This software is a computer program whose purpose is to simulate the behavior of the Earth system, with a specific but not exclusive focus on anthropogenic climate change.
+This software is a computer program whose purpose is to simulate the behavior of the Earth system, with a specific but not exclusive focus on anthropogenic climate change.
 
-## This software is governed by the CeCILL license under French law and abiding by the rules of distribution of free software.  You can use, modify and/ or redistribute the software under the terms of the CeCILL license as circulated by CEA, CNRS and INRIA at the following URL "http://www.cecill.info". 
+This software is governed by the CeCILL license under French law and abiding by the rules of distribution of free software.  You can use, modify and/ or redistribute the software under the terms of the CeCILL license as circulated by CEA, CNRS and INRIA at the following URL "http://www.cecill.info". 
 
-## As a counterpart to the access to the source code and rights to copy, modify and redistribute granted by the license, users are provided only with a limited warranty and the software's author, the holder of the economic rights, and the successive licensors have only limited liability. 
+As a counterpart to the access to the source code and rights to copy, modify and redistribute granted by the license, users are provided only with a limited warranty and the software's author, the holder of the economic rights, and the successive licensors have only limited liability. 
 
-## In this respect, the user's attention is drawn to the risks associated with loading, using, modifying and/or developing or reproducing the software by the user in light of its specific status of free software, that may mean that it is complicated to manipulate, and that also therefore means that it is reserved for developers and experienced professionals having in-depth computer knowledge. Users are therefore encouraged to load and test the software's suitability as regards their requirements in conditions enabling the security of their systems and/or data to be ensured and,  more generally, to use and operate it in the same conditions as regards security. 
+In this respect, the user's attention is drawn to the risks associated with loading, using, modifying and/or developing or reproducing the software by the user in light of its specific status of free software, that may mean that it is complicated to manipulate, and that also therefore means that it is reserved for developers and experienced professionals having in-depth computer knowledge. Users are therefore encouraged to load and test the software's suitability as regards their requirements in conditions enabling the security of their systems and/or data to be ensured and,  more generally, to use and operate it in the same conditions as regards security. 
 
-## The fact that you are presently reading this means that you have had knowledge of the CeCILL license and that you accept its terms.
+The fact that you are presently reading this means that you have had knowledge of the CeCILL license and that you accept its terms.
+"""
+
 
 ##################################################
 ##################################################
@@ -168,10 +171,13 @@ if (mod_OSNKchem == 'CO2SysPade'):
     CSURF_0 = p_circ * dic_0/alpha_dic
 
     def f_pCO2(D_dic,D_sst):
+        a0_0 = 30015.6 * (1 - 0.0226536*(sst_0-15) + 0.000167105*(sst_0-15)**2)
+        a1_0 = 13.4574 * (1 - 0.019829*(sst_0-15) + 0.000113872*(sst_0-15)**2)
+        a2_0 = -0.243121 * (1 + 0.000443511*(sst_0-15) - 0.000473227*(sst_0-15)**2)
         a0 = 30015.6 * (1 - 0.0226536*(sst_0+D_sst-15) + 0.000167105*(sst_0+D_sst-15)**2)
         a1 = 13.4574 * (1 - 0.019829*(sst_0+D_sst-15) + 0.000113872*(sst_0+D_sst-15)**2)
         a2 = -0.243121 * (1 + 0.000443511*(sst_0+D_sst-15) - 0.000473227*(sst_0+D_sst-15)**2)
-        D_pCO2 = 380 * (a0 - a1*(dic_0+D_dic) - np.sqrt((a0-a1*(dic_0+D_dic))**2 - 4*a2*(dic_0+D_dic)**2)) / (2*a2*(dic_0+D_dic)) - 380 * (a0 - a1*dic_0 - np.sqrt((a0-a1*dic_0)**2 - 4*a2*dic_0**2)) / (2*a2*dic_0)
+        D_pCO2 = 380 * (a0 - a1*(dic_0+D_dic) - np.sqrt((a0-a1*(dic_0+D_dic))**2 - 4*a2*(dic_0+D_dic)**2)) / (2*a2*(dic_0+D_dic)) - 380 * (a0_0 - a1_0*dic_0 - np.sqrt((a0_0-a1_0*dic_0)**2 - 4*a2_0*dic_0**2)) / (2*a2_0*dic_0)
         return np.array(D_pCO2, dtype=dty)
 
     def df_pCO2_ddic(D_dic,D_sst):
@@ -206,10 +212,13 @@ elif (mod_OSNKchem == 'CO2SysPower'):
     CSURF_0 = p_circ * dic_0/alpha_dic
 
     def f_pCO2(D_dic,D_sst):
+        p0_0 = 2160.156 * (1 - 0.00345063*(sst_0-15) - 0.0000250016*(sst_0-15)**2)
+        p1_0 = 0.0595961 * (1 + 0.0200328*(sst_0-15) + 0.000192084*(sst_0-15)**2)
+        p2_0 = 0.318665 * (1 - 0.00151292*(sst_0-15) - 0.000198978*(sst_0-15)**2)
         p0 = 2160.156 * (1 - 0.00345063*(sst_0+D_sst-15) - 0.0000250016*(sst_0+D_sst-15)**2)
         p1 = 0.0595961 * (1 + 0.0200328*(sst_0+D_sst-15) + 0.000192084*(sst_0+D_sst-15)**2)
         p2 = 0.318665 * (1 - 0.00151292*(sst_0+D_sst-15) - 0.000198978*(sst_0+D_sst-15)**2)
-        D_pCO2 = 380 * (p2+((dic_0+D_dic)/p0)**(1/p1)) - 380 * (p2+(dic_0/p0)**(1/p1))
+        D_pCO2 = 380 * (p2+((dic_0+D_dic)/p0)**(1/p1)) - 380 * (p2_0+(dic_0/p0_0)**(1/p1_0))
         return np.array(D_pCO2, dtype=dty)
 
     def df_pCO2_ddic(D_dic,D_sst):
@@ -769,7 +778,8 @@ for i in range(1,nb_regionI):
 
 # arbitrary values of parameters
 # avoid diverging value of sigma
-beta_npp0[beta_npp0 == 1] = 1.000001
+if (mod_LSNKnpp == 'hyp'):
+    beta_npp0[beta_npp0 == 1] = 1.000001
 # urban: no change to preindustrial
 if (nb_biome > 1)&(mod_biomeURB == 'URB'):
     if (mod_LSNKnpp == 'log'):
@@ -982,8 +992,8 @@ for n in range(4):
 p_HWP0 = 1 - p_HWP1 - p_HWP2 - p_HWP3
 
 # wood-use decay constants {yr}
-# based roughly on [mld_0ughton et Hackler, 2001]
-if (mod_EHWPtau == 'mld_0ughton2001'):
+# based roughly on [Houghton et Hackler, 2001]
+if (mod_EHWPtau == 'Houghton2001'):
     tau_HWP1 = np.array([1], dtype=dty)
     tau_HWP2 = np.array([10], dtype=dty)
     tau_HWP3 = np.array([100], dtype=dty)
@@ -2009,9 +2019,9 @@ alpha_SO4 = np.array([96/32.], dtype=dty)
 # conversion of POM from {Tg(OC)} to {Tg(OM)}
 if (mod_POAconv == 'default'):
     alpha_POM = np.array([1.4], dtype=dty)
-elif (mod_POAconv == 'GFDL-AM3'):
+elif (mod_POAconv == 'GFDL'):
     alpha_POM = np.array([1.6], dtype=dty)
-elif (mod_POAconv == 'CSIRO-Mk360'):
+elif (mod_POAconv == 'CSIRO'):
     alpha_POM = np.array([1.3], dtype=dty)  
 # conversion of NO3 from {TgN} to {Tg(NO3)}
 alpha_NO3 = np.array([62/14.], dtype=dty)
@@ -3084,7 +3094,7 @@ if (mod_ACIDsurf == 'Tans2009'):
 elif (mod_ACIDsurf == 'Bernie2010'):
 
     def f_pH(D_CO2):
-        D_pH = -(0.00173*D_CO2 + 1.3264E-6*(2*CO2_0*D_CO2 + D_CO2**2) - 4.4943E-10*(3*D_CO2*CO2_0**2 + 3*CO2_0*D_CO2**2 + D_CO2**3))
+        D_pH = D_pH = -0.00173*D_CO2 + 1.3264E-6*(2*CO2_0*D_CO2 + D_CO2**2) - 4.4943E-10*(3*D_CO2*CO2_0**2 + 3*CO2_0*D_CO2**2 + D_CO2**3)
         return np.array(D_pH, dtype=dty)
 
 # ----------------

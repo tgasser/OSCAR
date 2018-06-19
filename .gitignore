@@ -1,3 +1,9 @@
+#====================
+# MY STUFF TO IGNORE:
+[IPython].lnk
+manual.docx
+#====================
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
