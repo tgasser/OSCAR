@@ -2,6 +2,7 @@
 # MY STUFF TO IGNORE:
 [IPython].lnk
 manual.docx
+.vscode/
 #====================
 
 # Byte-compiled / optimized / DLL files
