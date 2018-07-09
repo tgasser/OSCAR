@@ -904,6 +904,171 @@ if (nb_biome > 1)&(mod_biomeURB == 'URB'):
     gamma_igniT[:,biome_index["urb"]] = 0.
     gamma_igniP[:,biome_index["urb"]] = 0.
 
+# -----------------
+# 1.3.5. Permafrost
+# -----------------
+
+# permafrost regions
+regionPF = ['EUAS','NAM']
+regionPF_name = ['Eurasia','North America']
+nb_regionPF = len(regionPF)
+
+# function for speed of thawing/freezing
+def f_v_PF(pthaw_bar,pthaw) :
+    v = v_thaw*(pthaw_bar-pthaw>0) + v_froz*(pthaw_bar-pthaw<0)
+    return np.array(v,dtype=dty)
+
+# load other calibrated parameters
+if (mod_EPFmain == 'JSBACH'):
+
+    # regional weighting for local temperature {.}
+    w_reg_lstPF = np.array([1.8568359, 1.9470703], dtype=dty)
+    
+    # sensitivities of local heterotrophic respiration {/K}&{/K2}&{.}
+    gamma_rhoPF1 = np.array([0.09690543, 0.10076028], dtype=dty)
+    gamma_rhoPF2 = -np.array([0.00206356, 0.00214174], dtype=dty)
+    w_rhoPF = np.array([0.93812785, 0.73454044], dtype=dty)
+    
+    # parameters for thawing function {.}&{/K}&{.}
+    pthaw_min = np.array([0.25319850, 0.19503177], dtype=dty)
+    k_pthaw = np.array([2.3012887, 1.4174312], dtype=dty)
+    gamma_pthaw = np.array([0.17582392, 0.28638024], dtype=dty)
+    
+    # speed of thawing/freezing {/yr}
+    v_thaw = np.array([4.8940873, 0.49978620], dtype=dty)
+    v_froz = np.array([0., 0.], dtype=dty)
+    
+    # weights and turnover times for the three emitting pools {.}&{yr}
+    p_PF1 = np.array([0.06976970, 0.09987357], dtype=dty)
+    p_PF2 = np.array([0.26396975, 0.23425585], dtype=dty)
+    p_PF3 = np.array([0.66626055, 0.66587058], dtype=dty)
+    tau_PF1 = np.array([7.9616249, 11.632080], dtype=dty)
+    tau_PF2 = np.array([88.489543, 103.06668], dtype=dty)
+    tau_PF3 = np.array([1355.6291, 1240.6807], dtype=dty)
+    
+    # initial pool of frozen carbon {GtC}
+    CFROZ_0 = np.array([413.553, 277.483], dtype=dty)
+
+elif (mod_EPFmain == 'ORCHIDEE-MICT'):
+
+    # regional weighting for local temperature {.}
+    w_reg_lstPF = np.array([1.8678710, 1.7828125], dtype=dty)
+    
+    # sensitivities of local heterotrophic respiration {/K}&{/K2}&{.}
+    gamma_rhoPF1 = np.array([0.11400756, 0.10956953], dtype=dty)
+    gamma_rhoPF2 = -np.array([0.00366366, 0.00345403], dtype=dty)
+    w_rhoPF = np.array([3.3805183, 3.7076802], dtype=dty)
+    
+    # parameters for thawing function {.}&{/K}&{.}
+    pthaw_min = np.array([0.08065349, 0.87546773], dtype=dty)
+    k_pthaw = np.array([0.35689219, 8.4422619], dtype=dty)
+    gamma_pthaw = np.array([1.6183032, 0.09725753], dtype=dty)
+    
+    # speed of thawing/freezing {/yr}
+    v_thaw = np.array([0.28696367, 0.49953314], dtype=dty)
+    v_froz = np.array([0.05289277, 0.04902789], dtype=dty)
+    
+    # weights and turnover times for the three emitting pools {.}&{yr}
+    p_PF1 = np.array([0.24389266, 0.28834940], dtype=dty)
+    p_PF2 = np.array([0.75610734, 0.71165060], dtype=dty)
+    p_PF3 = np.array([0., 0.], dtype=dty)
+    tau_PF1 = np.array([1332.6992, 2950.1099], dtype=dty)
+    tau_PF2 = np.array([14953.331, 23437.897], dtype=dty)
+    tau_PF3 = np.array([np.inf, np.inf], dtype=dty)
+    
+    # initial pool of frozen carbon {GtC}
+    CFROZ_0 = np.array([270.56425, 118.19786], dtype=dty)
+    
+elif (mod_EPFmain == 'JULES-DeepResp'):
+
+    # regional weighting for local temperature {.}
+    w_reg_lstPF = np.array([1.9603515, 2.0255859], dtype=dty)
+    
+    # sensitivities of local heterotrophic respiration {/K}&{/K2}&{.}
+    gamma_rhoPF1 = np.array([0.16817739, 0.14376888], dtype=dty)
+    gamma_rhoPF2 = -np.array([0.00531266, 0.00379630], dtype=dty)
+    w_rhoPF = np.array([1.3748762, 1.5823555], dtype=dty)
+    
+    # parameters for thawing function {.}&{/K}&{.}
+    pthaw_min = np.array([0.77246763, 0.95893920], dtype=dty)
+    k_pthaw = np.array([2.0529016, 1.9143394], dtype=dty)
+    gamma_pthaw = np.array([0.1530148, 0.14457936], dtype=dty)
+    
+    # speed of thawing/freezing {/yr}
+    v_thaw = np.array([0.26619401, 0.59899092], dtype=dty)
+    v_froz = np.array([0.04102776, 0.03296677], dtype=dty)
+    
+    # weights and turnover times for the three emitting pools {.}&{yr}
+    p_PF1 = np.array([0.03366769, 0.65114842], dtype=dty)
+    p_PF2 = np.array([0.96633231, 0.34885158], dtype=dty)
+    p_PF3 = np.array([0., 0.], dtype=dty)
+    tau_PF1 = np.array([156.38595, 1969.9072], dtype=dty)
+    tau_PF2 = np.array([3157.9293, 5370.1557], dtype=dty)
+    tau_PF3 = np.array([np.inf, np.inf], dtype=dty)
+    
+    # initial pool of frozen carbon {GtC}
+    CFROZ_0 = np.array([480.92224, 175.53549], dtype=dty)
+    
+elif (mod_EPFmain == 'JULES-SuppressResp'):
+
+    # regional weighting for local temperature {.}
+    w_reg_lstPF = np.array([1.9590820, 2.0242187], dtype=dty)
+    
+    # sensitivities of local heterotrophic respiration {/K}&{/K2}&{.}
+    gamma_rhoPF1 = np.array([0.13472092, 0.11193608], dtype=dty)
+    gamma_rhoPF2 = -np.array([0.00498800, 0.00339437], dtype=dty)
+    w_rhoPF = np.array([0.66180279, 2.1853523], dtype=dty)
+    
+    # parameters for thawing function {.}&{/K}&{.}
+    pthaw_min = np.array([0.87020023, 1.1649739], dtype=dty)
+    k_pthaw = np.array([1.6305246, 1.6836054], dtype=dty)
+    gamma_pthaw = np.array([0.17978647, 0.19005963], dtype=dty)
+    
+    # speed of thawing/freezing {/yr}
+    v_thaw = np.array([0.37339128, 0.49223681], dtype=dty)
+    v_froz = np.array([0.06128438, 0.04292502], dtype=dty)
+    
+    # weights and turnover times for the three emitting pools {.}&{yr}
+    p_PF1 = np.array([1., 1.], dtype=dty)
+    p_PF2 = np.array([0., 0.], dtype=dty)
+    p_PF3 = np.array([0., 0.], dtype=dty)
+    tau_PF1 = np.array([9433.4705, 4322.9007], dtype=dty)
+    tau_PF2 = np.array([np.inf, np.inf], dtype=dty)
+    tau_PF3 = np.array([np.inf, np.inf], dtype=dty)
+    
+    # initial pool of frozen carbon {GtC}
+    CFROZ_0 = np.array([372.75814, 121.20251], dtype=dty)
+    
+elif (mod_EPFmain == ''):
+
+    # regional weighting for local temperature {.}
+    w_reg_lstPF = np.array([1., 1.], dtype=dty)
+    
+    # sensitivities of local heterotrophic respiration {/K}&{/K2}&{.}
+    gamma_rhoPF1 = np.array([0., 0.], dtype=dty)
+    gamma_rhoPF2 = -np.array([0., 0.], dtype=dty)
+    w_rhoPF = np.array([ 1., 1.], dtype=dty)
+    
+    # parameters for thawing function {.}&{/K}&{.}
+    pthaw_min = np.array([0., 0.], dtype=dty)
+    k_pthaw = np.array([1., 1.], dtype=dty)
+    gamma_pthaw = np.array([0., 0.], dtype=dty)
+    
+    # speed of thawing/freezing {/yr}
+    v_thaw = np.array([1., 1.], dtype=dty)
+    v_froz = np.array([0.,0.], dtype=dty)
+    
+    # weights and turnover times for the three emitting pools {.}&{yr}
+    p_PF1 = np.array([0., 0.], dtype=dty)
+    p_PF2 = np.array([0., 0.], dtype=dty)
+    p_PF3 = np.array([0., 0.], dtype=dty)
+    tau_PF1 = np.array([np.inf, np.inf], dtype=dty)
+    tau_PF2 = np.array([np.inf, np.inf], dtype=dty)
+    tau_PF3 = np.array([np.inf, np.inf], dtype=dty)
+    
+    # initial pool of frozen carbon {GtC}
+    CFROZ_0 = np.array([0., 0.], dtype=dty)
+
 # =============
 # 1.4. LAND-USE
 # =============
@@ -1408,6 +1573,22 @@ gamma_wetP = (AREA_expP/AREA_exp0-1) / P_expP
 # [NaN]
 for var in ['wetT','wetP','wetC']:
     exec('gamma_'+var+'[np.isnan(gamma_'+var+')|np.isinf(gamma_'+var+')] = 0')
+
+# -----------------
+# 2.3.2. Permafrost
+# -----------------
+
+# fraction of methane in for PF emissions {.}
+# best guess from [Schuur et al., 2015]
+if (mod_EPFmethane == 'zero'):
+    p_PF_CH4 = np.array([0.000], dtype=dty)
+elif (mod_EPFmethane == 'best'):
+    p_PF_CH4 = np.array([0.023], dtype=dty)
+elif (mod_EPFmethane == 'twice'):
+    p_PF_CH4 = np.array([0.046], dtype=dty) 
+
+# fraction of instantaneous PF emission {.}
+p_PF_inst = np.array([0.0], dtype=dty)
 
 
 ##################################################

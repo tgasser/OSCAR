@@ -1,5 +1,6 @@
-# OSCAR _v2.2_
+# OSCAR _v2.3_
 _Manual_ 
+
 
 ## Basic simulation
 
@@ -75,6 +76,8 @@ Any simulation with OSCAR should start with executing the main file `OSCAR.py` i
 | `mod_LSNKcover` | Preindustrial natural land-cover. |
 | `mod_EFIREpreind` | Preindustrial wildfire fluxes. |
 | `mod_EFIREtrans` | Transient response of wildfires. |
+| `mod_EPFmain` | Permafrost carbon model. |
+| `mod_EPFmethane` | Fraction of permafrost carbon emitted as methane. |
 | `mod_ELUCagb` | Above-ground biomass fractions. |
 | `mod_EHWPbb` | Biomass burning of non-commercial harvested wood products. |
 | `mod_EHWPtau` | Time constants for the oxidation of HWPs. |
@@ -197,6 +200,7 @@ The two following sections give details of the structure of the two load files.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.3.2. TRENDY\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.3.3. Land-Cover\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.3.4. CMIP5\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.3.5. Permafrost\
 &nbsp;&nbsp;&nbsp;&nbsp;1.4. LAND-USE\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.4.1. TRENDY\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.4.2. Wood-Use\
@@ -208,6 +212,7 @@ The two following sections give details of the structure of the two load files.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.2.2. Holmes2013\
 &nbsp;&nbsp;&nbsp;&nbsp;2.3. LAND\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.3.1. WETCHIMP\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.3.2. Permafrost\
 &nbsp;3. NITROUS OXIDE\
 &nbsp;&nbsp;&nbsp;&nbsp;3.1. ATMOSPHERE\
 &nbsp;&nbsp;&nbsp;&nbsp;3.2. CHEMISTRY\
@@ -259,11 +264,11 @@ The two following sections give details of the structure of the two load files.
 
 ## Drivers, variables and parameters names and units
 
-Here we provide the correspondence between the notations used in the description paper and the names used in the model’s code, as well as the (implicit) units used in the model. In some cases there is no direct correspondence, because of the way the model is actually coded. Names should remain self-explanatory.
+Here we provide the correspondence between the notations used in the description paper and the names used in the model’s code, as well as the (implicit) units used in the model. In some cases there is no direct correspondence, because of the way the model is actually coded. Names should remain self-explanatory. Colored variables are new, and their notation may change.
 
 ### Drivers
 
-| In paper | In code | Unit |
+| In papers | In code | Unit |
 | --- | --- | --- |
 | <img src="https://latex.codecogs.com/gif.latex?E_\mathrm{FF}" /> | `EFF` | GtC yr<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?E_\mathrm{CH_4}" /> | `ECH4` | MtC yr<sup>-1</sup> |
@@ -289,7 +294,7 @@ Here we provide the correspondence between the notations used in the description
 
 ### Variables
 
-| In paper | In code | Unit |
+| In papers | In code | Unit |
 | --- | --- | --- |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{surf}" /> | `D_CSURF` | GtC |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{dic}" /> | `D_dic` | µmol kg<sup>-1</sup> |
@@ -307,6 +312,20 @@ Here we provide the correspondence between the notations used in the description
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{rh}_\mathrm{litt}" /> | `D_rh1` | GtC Mha<sup>-1</sup> yr<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,f_\mathrm{met}" /> | `D_fmet` | GtC Mha<sup>-1</sup> yr<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{rh}_\mathrm{soil}" /> | `D_rh2` | GtC Mha<sup>-1</sup> yr<sup>-1</sup> |
+||||
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,p_\mathrm{thaw}}" /> | `pthaw` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,\bar{p}_\mathrm{thaw}}" /> | `pthaw_bar` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,C_{\mathrm{thaw},1}}" /> | `CTHAW1` | GtC |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,C_{\mathrm{thaw},2}}" /> | `CTHAW2` | GtC |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,C_{\mathrm{thaw},3}}" /> | `CTHAW3` | GtC |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,C_\mathrm{froz}}" /> | `D_CFROZ` | GtC |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,F_\mathrm{thaw}}" /> | `FTHAW` | GtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,E_{\mathrm{thaw},1}}" /> | `ETHAW1` | GtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,E_{\mathrm{thaw},2}}" /> | `ETHAW2` | GtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,E_{\mathrm{thaw},3}}" /> | `ETHAW3` | GtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,E_\mathrm{pf}^\mathrm{CO_2}}" /> | `EPF_CO2` | GtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,E_\mathrm{pf}^\mathrm{CH_4}}" /> | `EPF_CH4` | MtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,E_\mathrm{pf}}" /> | `EPF` | GtC yr<sup>-1</sup> |
 ||||
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{veg,luc}" /> | `CVEG_luc` | GtC |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{hwp,luc}^{w=1}" /> | `CHWP1_luc` | GtC |
@@ -332,20 +351,31 @@ Here we provide the correspondence between the notations used in the description
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{bb}^\mathrm{OC}" /> | `D_EBB_OC` | MtC yr<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{bb}^\mathrm{BC}" /> | `D_EBB_BC` | MtC yr<sup>-1</sup> |
 ||||
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,\mathrm{CH_4}_\mathrm{bb,lag}}" /> | `D_CH4bb_lag` | ppb |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,\mathrm{CH_4}_\mathrm{ff,lag}}" /> | `D_CH4ff_lag` | ppb |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{CH_4}_\mathrm{lag}" /> | `D_CH4_lag` | ppb |
-| <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{CH_4}_\mathrm{lag}" /> | `D_N2O_lag` | ppb |
+| <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{N_2O}_\mathrm{lag}" /> | `D_N2O_lag` | ppb |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{\{HFC\}}_\mathrm{lag}" /> | `D_HFC_lag` | ppt |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{\{PFC\}}_\mathrm{lag}" /> | `D_PFC_lag` | ppt |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{\{ODS\}}_\mathrm{lag}" /> | `D_ODS_lag` | ppt |
 ||||
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,F_\mathrm{\downarrow\,OH}^\mathrm{CH_4,bb}}" /> | `D_OHSNK_CH4bb` | MtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,F_\mathrm{\downarrow\,OH}^\mathrm{CH_4,ff}}" /> | `D_OHSNK_CH4ff` | MtC yr<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{\downarrow\,OH}^\mathrm{CH_4}" /> | `D_OHSNK_CH4` | MtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,F_\mathrm{\downarrow\,h\nu}^\mathrm{CH_4,bb}}" /> | `D_HVSNK_CH4bb` | MtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,F_\mathrm{\downarrow\,h\nu}^\mathrm{CH_4,ff}}" /> | `D_HVSNK_CH4ff` | MtC yr<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{\downarrow\,h\nu}^\mathrm{CH_4}" /> | `D_HVSNK_CH4` | MtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,F_\mathrm{\downarrow\,othr}^\mathrm{CH_4,bb}}" /> | `D_XSNK_CH4bb` | MtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,F_\mathrm{\downarrow\,othr}^\mathrm{CH_4,ff}}" /> | `D_XSNK_CH4ff` | MtC yr<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{\downarrow\,othr}^\mathrm{CH_4}" /> | `D_XSNK_CH4` | MtC yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,F_\mathrm{oxi,CH_4}}" /> | `D_FOXI_CH4` | GtC yr<sup>-1</sup> |
 ||||
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,A_\mathrm{wet}" /> | `D_AWET` | Mha |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,e_\mathrm{wet}" /> | `D_ewet` | MtC Mha<sup>-1</sup> yr<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{wet}" /> | `D_EWET` | MtC yr<sup>-1</sup> |
 ||||
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,\mathrm{CH_4}_\mathrm{bb}}" /> | `D_CH4bb` | ppb |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\Delta\!\,\mathrm{CH_4}_\mathrm{ff}}" /> | `D_CH4ff` | ppb |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{CH_4}" /> | `D_CH4` | ppb |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{RF}^\mathrm{CH_4}" /> | `RF_CH4` | W m<sup>-2</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{RF}^\mathrm{H_2Os}" /> | `RF_H2Os` | W m<sup>-2</sup> |
@@ -411,7 +441,7 @@ Here we provide the correspondence between the notations used in the description
 
 ### Parameters
 
-| In paper | In code | Unit |
+| In papers | In code | Unit |
 | --- | --- | --- |
 | <img src="https://latex.codecogs.com/gif.latex?\nu_\mathrm{fg}" /> | `v_fg` | yr<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?A_\mathrm{ocean}" /> | `A_ocean` | m<sup>2</sup> |
@@ -441,6 +471,26 @@ Here we provide the correspondence between the notations used in the description
 | <img src="https://latex.codecogs.com/gif.latex?\gamma_{\mathrm{igni},C}" /> | `gamma_igniC` | ppm<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\gamma_{\mathrm{igni},T}" /> | `gamma_igniT` | K<sup>-1</sup> |
 | <img src="https://latex.codecogs.com/gif.latex?\gamma_{\mathrm{igni},P}" /> | `gamma_igniP` | [mm yr<sup>-1</sup>]<sup>-1</sup> |
+||||
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\omega_{T_\mathrm{pf}}}" /> | `w_reg_lstPF` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\gamma_{\mathrm{pf},T_1}}" /> | `gamma_rhoPF1` | K<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\gamma_{\mathrm{pf},T_2}}" /> | `gamma_rhoPF2` | K<sup>-2</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\omega_\mathrm{resp,pf}}" /> | `w_rhoPF` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;p_\mathrm{thaw,min}}" /> | `pthaw_min` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\kappa_{p_\mathrm{thaw}}}" /> | `k_pthaw` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\gamma_{p_\mathrm{thaw}}}" /> | `gamma_pthaw` | K<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\mathcal{F}_{\nu_\mathrm{pf}}}" /> | `f_v_PF` | yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\nu_\mathrm{thaw}}" /> | `v_thaw` | yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\nu_\mathrm{froz}}" /> | `v_froz` | yr<sup>-1</sup> |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\pi_{\mathrm{pf},1}}" /> | `p_PF1` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\pi_{\mathrm{pf},2}}" /> | `p_PF2` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\pi_{\mathrm{pf},3}}" /> | `p_PF3` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\tau_{\mathrm{pf},1}}" /> | `tau_PF1` | yr |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\tau_{\mathrm{pf},2}}" /> | `tau_PF2` | yr |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\tau_{\mathrm{pf},3}}" /> | `tau_PF3` | yr |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;C_{\mathrm{froz},0}}" /> | `CFROZ_0` | GtC |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\pi_\mathrm{pf,CH_4}}" /> | `p_PF_CH4` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?{\color{Purple}&space;\pi_\mathrm{pf,inst}}" /> | `p_PF_inst` | 1 |
 ||||
 | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{shift}" /> | `tau_shift` | yr |
 | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{agb}" /> | `p_AGB` | 1 |

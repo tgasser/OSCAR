@@ -77,6 +77,12 @@ for nrun in range(nb_run):
     param = ['','CESM1-BGC','IPSL-CM5A-LR','MPI-ESM-LR','NorESM1-ME']
     mod_EFIREtrans = param[np.random.random_integers(len(param))-1]
 
+    # permafrost
+    param = ['','JSBACH','ORCHIDEE-MICT','JULES-DeepResp','JULES-SuppressResp']
+    mod_EPFmain = param[np.random.random_integers(len(param))-1]
+    param = ['zero','best','twice']
+    mod_EPFmethane = param[np.random.random_integers(len(param))-1]
+
     # land-use
     param = ['CLM-45','LPJ-GUESS','ORCHIDEE']
     mod_ELUCagb = param[np.random.random_integers(len(param))-1]

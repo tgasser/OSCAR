@@ -1,8 +1,9 @@
 #====================
 # MY STUFF TO IGNORE:
-[IPython].lnk
-manual.docx
 .vscode/
+.IPython.lnk
+manual.docx
+README.pdf
 #====================
 
 # Byte-compiled / optimized / DLL files

@@ -108,6 +108,9 @@ mod_LSNKcover = 'mean-TRENDYv2'         # ESA-CCI | MODIS | Ramankutty1999 | Lev
 mod_EFIREpreind = 'mean-TRENDYv2'       # '' | mean-TRENDYv2 | CLM-45 | JSBACH | LPJ | LPJ-GUESS | ORCHIDEE | VISIT
 mod_EFIREtrans = 'mean-CMIP5'           # '' | mean-CMIP5 | CESM1-BGC | IPSL-CM5A-LR | MPI-ESM-LR | NorESM1-ME
 
+mod_EPFmain = ''                        # '' | JSBACH | ORCHIDEE-MICT | JULES-DeepResp | JULES-SuppressResp
+mod_EPFmethane = 'best'                 # zero | best | twice
+
 mod_ELUCagb = 'mean-TRENDYv2'           # mean-TRENDYv2 | CLM-45 | LPJ-GUESS | ORCHIDEE
 mod_EHWPbb = 'high'                     # high | low
 mod_EHWPtau = 'Earles2012'              # Houghton2001 | Earles2012
