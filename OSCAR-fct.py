@@ -68,7 +68,7 @@ def OSCAR_lite(p=p,fT=fT,\
         or var in ['OSNK','LSNK','D_FOXI_CH4','D_OHSNK_CH4','D_HVSNK_CH4','D_XSNK_CH4','D_HVSNK_N2O']\
         or var in ['D_kOH','D_hv']\
         or var in ['D_O3t','D_EESC','D_O3s','D_SO4','D_POA','D_BC','D_NO3','D_SOA','D_AERh']\
-        or var in ['D_CO2','D_CH4','D_CH4ff','D_CH4bb','D_CH4_lag','D_CH4ff_lag','D_CH4bb_lag','D_N2O','D_N2O_lag']\
+        or var in ['D_CO2','D_CH4','D_CH4_lag','D_N2O','D_N2O_lag']\
         or var in ['RF','RF_warm','RF_atm','RF_CO2','RF_CH4','RF_H2Os','RF_N2O','RF_halo','RF_O3t','RF_O3s','RF_SO4','RF_POA','RF_BC','RF_NO3','RF_SOA','RF_cloud','RF_BCsnow','RF_LCC']\
         or var in ['D_gst','D_sst','D_gyp','D_OHC']:
             exec(var+'_t = np.zeros([ind_final+1],dtype=dty)')
@@ -109,7 +109,7 @@ def OSCAR_lite(p=p,fT=fT,\
     for var in ['CVEG_luc','CSOIL1_luc','CSOIL2_luc','CHWP1_luc','CHWP2_luc','CHWP3_luc']:
         exec(var+' = np.zeros([nb_regionI,nb_biome,nb_biome,ind_final+1],dtype=dty)')
     # atmosphere
-    for var in ['D_CO2','D_CH4','D_CH4ff','D_CH4bb','D_CH4_lag','D_CH4ff_lag','D_CH4bb_lag','D_N2O','D_N2O_lag','D_EESC','D_O3s']:
+    for var in ['D_CO2','D_CH4','D_CH4_lag','D_N2O','D_N2O_lag','D_EESC','D_O3s']:
         exec(var+' = np.array([0],dtype=dty)')
     for var in ['D_HFC','D_HFC_lag','D_PFC','D_PFC_lag','D_ODS','D_ODS_lag']:
         exec(var+' = np.zeros([nb_'+var[2:2+3]+'],dtype=dty)')
@@ -239,9 +239,9 @@ def OSCAR_lite(p=p,fT=fT,\
             #---------------
 
             # factors
-            rD_rhoPF = np.exp(w_rhoPF*gamma_rhoPF1*w_reg_lstPF*D_gst + w_rhoPF*gamma_rhoPF2*(w_reg_lstPF*D_gst)**2)-1
+            rD_rhoPF = np.exp(w_rhoPF*gamma_rhoPF1*w_reg_lstPF * fT*D_gst + w_rhoPF*gamma_rhoPF2*(w_reg_lstPF * fT*D_gst)**2)-1
             # fraction thawed
-            pthaw_bar = -pthaw_min + (1+pthaw_min)/(1 + ((1/pthaw_min+1)**k_pthaw -1)*np.exp(-gamma_pthaw*k_pthaw*w_reg_lstPF*D_gst))**(1/k_pthaw)
+            pthaw_bar = -pthaw_min + (1+pthaw_min)/(1 + ((1/pthaw_min+1)**k_pthaw -1)*np.exp(-gamma_pthaw*k_pthaw*w_reg_lstPF * fT*D_gst))**(1/k_pthaw)
             d_pthaw = f_v_PF(pthaw_bar,pthaw) * (pthaw_bar - pthaw)
             pthaw +=  (p**-1) * d_pthaw
             # fluxes
@@ -266,15 +266,9 @@ def OSCAR_lite(p=p,fT=fT,\
             D_kOH = f_kOH(D_CH4,D_O3s,fT*D_gst,np.sum(ENOX[t]+D_EBB_NOX),np.sum(ECO[t]+D_EBB_CO),np.sum(EVOC[t]+D_EBB_VOC))
             D_hv = f_hv(D_N2O_lag,D_EESC,fT*D_gst)
             # fluxes
-            D_OHSNK_CH4bb = -alpha_CH4/tau_CH4_OH * (CH4_0*D_kOH + D_CH4bb + D_kOH*D_CH4bb)
-            D_OHSNK_CH4ff = -alpha_CH4/tau_CH4_OH * (D_CH4ff + D_kOH*D_CH4ff)
-            D_OHSNK_CH4 = D_OHSNK_CH4ff + D_OHSNK_CH4bb
-            D_HVSNK_CH4bb = -alpha_CH4/tau_CH4_hv * (CH4_0*D_hv + D_CH4bb_lag + D_hv*D_CH4bb_lag)
-            D_HVSNK_CH4ff = -alpha_CH4/tau_CH4_hv * (D_CH4ff_lag + D_hv*D_CH4ff_lag)
-            D_HVSNK_CH4 = D_HVSNK_CH4ff + D_HVSNK_CH4bb
-            D_XSNK_CH4bb = -alpha_CH4*(1/tau_CH4_soil + 1/tau_CH4_ocean) * D_CH4bb
-            D_XSNK_CH4ff = -alpha_CH4*(1/tau_CH4_soil + 1/tau_CH4_ocean) * D_CH4ff
-            D_XSNK_CH4 = D_XSNK_CH4ff + D_XSNK_CH4bb
+            D_OHSNK_CH4 = -alpha_CH4/tau_CH4_OH * (CH4_0*D_kOH + D_CH4 + D_kOH*D_CH4)
+            D_HVSNK_CH4 = -alpha_CH4/tau_CH4_hv * (CH4_0*D_hv + D_CH4_lag + D_hv*D_CH4_lag)
+            D_XSNK_CH4 = -alpha_CH4*(1/tau_CH4_soil + 1/tau_CH4_ocean) * D_CH4
             D_FOXI_CH4 = -0.001 * (1.0*np.sum(ECH4[t]) + np.sum(D_EBB_CH4) + np.sum(D_EWET) + D_OHSNK_CH4 + D_HVSNK_CH4 + D_XSNK_CH4)
             D_HVSNK_N2O = -alpha_N2O/tau_N2O_hv * (N2O_0*D_hv + D_N2O_lag + D_hv*D_N2O_lag)
             for VAR in ['HFC','PFC','ODS']:
@@ -303,16 +297,13 @@ def OSCAR_lite(p=p,fT=fT,\
 
             # stocks
             D_CO2 += (p**-1) * (1/alpha_CO2) * (np.sum(EFF[t]) + np.sum(ELUC) + LSNK + OSNK + D_FOXI_CH4 + np.sum(EPF_CO2))
-            D_CH4bb += (p**-1) * (1/alpha_CH4) * (1.0*np.sum(ECH4[t]) + np.sum(D_EBB_CH4) + np.sum(D_EWET) + D_OHSNK_CH4bb + D_HVSNK_CH4bb + D_XSNK_CH4bb)
-            D_CH4ff += (p**-1) * (1/alpha_CH4) * (0.0*np.sum(ECH4[t]) + D_OHSNK_CH4ff + D_HVSNK_CH4ff + D_XSNK_CH4ff + np.sum(EPF_CH4))
-            D_CH4 = D_CH4bb + D_CH4ff
+            D_CH4 += (p**-1) * (1/alpha_CH4) * (np.sum(ECH4[t]) + np.sum(D_EBB_CH4) + np.sum(D_EWET) + np.sum(EPF_CH4) + D_OHSNK_CH4 + D_HVSNK_CH4 + D_XSNK_CH4)
             D_N2O += (p**-1) * (1/alpha_N2O) * (np.sum(EN2O[t]) + np.sum(D_EBB_N2O) + D_HVSNK_N2O)
             D_HFC += (p**-1) * (1/alpha_HFC) * (np.sum(EHFC[t],0) + D_OHSNK_HFC + D_HVSNK_HFC + D_XSNK_HFC)
             D_PFC += (p**-1) * (1/alpha_PFC) * (np.sum(EPFC[t],0) + D_OHSNK_PFC + D_HVSNK_PFC + D_XSNK_PFC)
             D_ODS += (p**-1) * (1/alpha_ODS) * (np.sum(EODS[t],0) + D_OHSNK_ODS + D_HVSNK_ODS + D_XSNK_ODS)
-            for VAR in ['CH4bb','CH4ff','N2O','HFC','PFC','ODS']:
+            for VAR in ['CH4','N2O','HFC','PFC','ODS']:
                 exec('D_'+VAR+'_lag += (p**-1) * ((1/tau_lag)*D_'+VAR+' - (1/tau_lag)*D_'+VAR+'_lag)')
-            D_CH4_lag = D_CH4bb_lag + D_CH4ff_lag
 
             # FORCE
             if force_CO2:
@@ -320,8 +311,6 @@ def OSCAR_lite(p=p,fT=fT,\
             
             if force_GHG:
                 D_CO2 = D_CO2_force[t]
-                D_CH4bb = np.nan_to_num(D_CH4bb/D_CH4) * D_CH4_force[t]
-                D_CH4ff = np.nan_to_num(D_CH4ff/D_CH4) * D_CH4_force[t]
                 D_CH4 = D_CH4_force[t]
                 D_N2O = D_N2O_force[t]
             
