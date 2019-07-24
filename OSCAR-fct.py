@@ -223,7 +223,7 @@ def OSCAR_lite(p=p,fT=fT,\
             # biomass burning
             for VAR in ['CO2','CH4','N2O','NOX','CO','VOC','SO2','NH3','OC','BC']:
                 exec('D_EBB_'+VAR+' = np.sum( alpha_BB_'+VAR+'*(igni_0*cveg_0*D_AREA + D_efire*AREA_0 + D_efire*D_AREA) ,1)')
-                exec('D_EBB_'+VAR+' += np.sum(np.sum(np.sum( alpha_BB_'+VAR+'[:,:,np.newaxis,np.newaxis]*EHWP1_luc ,3),2),1)')
+                exec('D_EBB_'+VAR+' += p_HWP1_bb * np.sum(np.sum(np.sum( alpha_BB_'+VAR+'[:,:,np.newaxis,np.newaxis]*EHWP1_luc ,3),2),1)')
                 exec('D_EBB_'+VAR+' += np.sum(np.sum(np.sum( alpha_BB_'+VAR+'[:,np.newaxis,:,np.newaxis]*EFIRE_luc ,3),2),1)')
            
             # stocks

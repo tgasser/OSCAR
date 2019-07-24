@@ -122,15 +122,15 @@ for nrun in range(nb_run):
     mod_O3Temis = param[np.random.random_integers(len(param))-1]
     param = ['','CESM-CAM-superfast','GFDL-AM3','GISS-E2-R','MIROC-CHEM','MOCAGE','NCAR-CAM-35','STOC-HadAM3','UM-CAM']
     mod_O3Tclim = param[np.random.random_integers(len(param))-1]
-    param = ['IPCC-AR5','IPCC-AR4','CESM-CAM-superfast','CICERO-OsloCTM2','CMAM','EMAC','GEOSCCM','GFDL-AM3','GISS-E2-R','HadGEM2','LMDzORINCA','MIROC-CHEM','MOCAGE','NCAR-CAM-35','STOC-HadAM3','UM-CAM','TM5']
+    param = ['IPCC-AR5','IPCC-AR4','CESM-CAM-superfast','CICERO-OsloCTM2','CMAM','EMAC','GEOSCCM','GFDL-AM3','GISS-E2-R','GISS-E2-R-TOMAS','HadGEM2','LMDzORINCA','MIROC-CHEM','MOCAGE','NCAR-CAM-35','STOC-HadAM3','UM-CAM','TM5']
     mod_O3Tradeff = param[np.random.random_integers(len(param))-1]
 
     # ozone strato
-    param = ['Newman2006','Laube2013-HL','Laube2013-ML']
+    param = ['Newman2006','Laube2013']
     mod_O3Sfracrel = param[np.random.random_integers(len(param))-1]
     param = ['AMTRAC','CCSR-NIES','CMAM','CNRM-ACM','LMDZrepro','MRI','Niwa-SOCOL','SOCOL','ULAQ','UMSLIMCAT','UMUKCA-UCAM']
     mod_O3Strans = param[np.random.random_integers(len(param))-1]
-    param = ['','Daniel2010-sat','Daniel2010-lin']
+    param = ['','Daniel2010']
     mod_O3Snitrous = param[np.random.random_integers(len(param))-1]
     param = ['IPCC-AR4','ULAQ','DLR-E39C','NCAR-MACCM','CHASER']
     mod_O3Sradeff = param[np.random.random_integers(len(param))-1]

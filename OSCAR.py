@@ -130,11 +130,11 @@ mod_HVSNKcirc = 'mean-CCMVal2'          # mean-CCMVal2 | AMTRAC | CAM-35 | CMAM 
 mod_O3Tregsat = 'mean-HTAP'             # '' | mean-HTAP | CAMCHEM | FRSGCUCI | GISS-modelE | GMI | INCA | LLNL-IMPACT | MOZART-GFDL | MOZECH | STOC-HadAM3 | TM5-JRC | UM-CAM
 mod_O3Temis = 'mean-ACCMIP'             # mean-OxComp | mean-ACCMIP | CICERO-OsloCTM2 | NCAR-CAM-35 | STOC-HadAM3 | UM-CAM
 mod_O3Tclim = 'mean-ACCMIP'             # '' | mean-ACCMIP | CESM-CAM-superfast | GFDL-AM3 | GISS-E2-R | MIROC-CHEM | MOCAGE | NCAR-CAM-35 | STOC-HadAM3 | UM-CAM
-mod_O3Tradeff = 'IPCC-AR5'              # IPCC-AR5 | IPCC-AR4 | mean-ACCMIP | CESM-CAM-superfast | CICERO-OsloCTM2 | CMAM | EMAC | GEOSCCM | GFDL-AM3 | GISS-E2-R | HadGEM2 | LMDzORINCA | MIROC-CHEM | MOCAGE | NCAR-CAM-35 | STOC-HadAM3 | UM-CAM | TM5
+mod_O3Tradeff = 'IPCC-AR5'              # IPCC-AR5 | IPCC-AR4 | mean-ACCMIP | CESM-CAM-superfast | CICERO-OsloCTM2 | CMAM | EMAC | GEOSCCM | GFDL-AM3 | GISS-E2-R | GISS-E2-R-TOMAS | HadGEM2 | LMDzORINCA | MIROC-CHEM | MOCAGE | NCAR-CAM-35 | STOC-HadAM3 | UM-CAM | TM5
 
-mod_O3Sfracrel = 'Newman2006'           # Newman2006 | Laube2013-HL | Laube2013-ML
+mod_O3Sfracrel = 'Newman2006'           # Newman2006 | Laube2013
 mod_O3Strans = 'mean-CCMVal2'           # mean-CCMVal2 | AMTRAC | CCSR-NIES | CMAM | CNRM-ACM | LMDZrepro | MRI | Niwa-SOCOL | SOCOL | ULAQ | UMSLIMCAT | UMUKCA-UCAM
-mod_O3Snitrous = 'Daniel2010-sat'       # '' | Daniel2010-sat | Daniel2010-lin
+mod_O3Snitrous = 'Daniel2010'           # '' | Daniel2010
 mod_O3Sradeff = 'IPCC-AR4'              # IPCC-AR4 | mean-ACCENT | ULAQ | DLR-E39C | NCAR-MACCM | CHASER
 
 mod_SO4regsat = 'mean-HTAP'             # '' | mean-HTAP | CAMCHEM | GISS-PUCCINI | GMI | GOCART | INCA2 | LLNL-IMPACT | SPRINTARS

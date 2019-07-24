@@ -1156,6 +1156,10 @@ for n in range(4):
     exec('p_HWP'+str(n)+'[np.isinf(p_HWP'+str(n)+')|np.isnan(p_HWP'+str(n)+')] = 0')
 p_HWP0 = 1 - p_HWP1 - p_HWP2 - p_HWP3
 
+# fraction of actually burnt HWP1 {}
+# used to adjust non-CO2 anthropogenic BB emissions
+p_HWP1_bb = 0.5
+
 # wood-use decay constants {yr}
 # based roughly on [Houghton et Hackler, 2001]
 if (mod_EHWPtau == 'Houghton2001'):
@@ -1218,6 +1222,7 @@ for VAR in ['CH4','NOX','CO','VOC','N2O','SO2','NH3','BC','OC']+['CO2']:
     exec('alpha_BB_'+VAR+'[np.isnan(alpha_BB_'+VAR+')|np.isinf(alpha_BB_'+VAR+')] = 0')
     for b in range(nb_biome):
         exec('alpha_BB_'+VAR+'[:,b][alpha_BB_'+VAR+'[:,b]==0] = np.sum(alpha_BB_'+VAR+'[:,b])/np.sum(alpha_BB_'+VAR+'[:,b]!=0)')
+    exec('alpha_BB_'+VAR+'[np.isnan(alpha_BB_'+VAR+')|np.isinf(alpha_BB_'+VAR+')] = 0')
 
 
 ##################################################
@@ -2025,7 +2030,7 @@ if mod_O3Sfracrel in ['Newman2006']:
 
 # alternative values (mid-latitudes) from [Laube et al., 2013]
 # missing values still from [Newman et al., 2006]
-elif mod_O3Sfracrel in ['Laube2013-ML']:
+elif mod_O3Sfracrel in ['Laube2013']:
 
     def f_fracrel(tau):
         fracrel = np.zeros([nb_ODS], dtype=dty)
@@ -2062,50 +2067,6 @@ elif mod_O3Sfracrel in ['Laube2013-ML']:
         fracrel[ODS.index('Halon1211')] = 0.204371 + 2*-0.00464644*tau
         fracrel[ODS.index('Halon1202')] = (-1.51872E-02 + 2*1.68718E-01*tau - (-1.51872E-02/3.43897E+00)*tau - (1.68718E-01/3.43897E+00)*tau**2) * np.exp(-tau/3.43897E+00) # not given
         fracrel[ODS.index('Halon1301')] = 0.061608 + 2*0.01051828*tau
-        fracrel[ODS.index('Halon2402')] = 2.25980E-01 + 2*2.23266E-04*tau + 3*-1.13882E-03*tau**2 # not given
-        fracrel[ODS.index('CH3Br')] = (7.60148E-02 + 2*1.12771E-01*tau + (7.60148E-02/4.09494E+00)*tau + (1.12771E-01/4.09494E+00)*tau**2) * np.exp(-tau/4.09494E+00) # not given
-        fracrel[ODS.index('CH3Cl')] = 1.39444E-01 + 2*1.46219E-04*tau + 3*8.40557E-04*tau**2 # not given
-        return fracrel    
-
-# alternative values (high-latitudes) from [Laube et al., 2013]
-# missing values still from [Newman et al., 2006]
-elif mod_O3Sfracrel in ['Laube2013-HL']:
-
-    def f_fracrel(tau):
-        fracrel = np.zeros([nb_ODS], dtype=dty)
-        fracrel[ODS.index('CFC11')] = -0.0203 + 0.120582*tau + 0.00644101*tau**2
-        fracrel[ODS.index('CFC12')] = -0.0111 + 0.052939*tau + 0.00833816*tau**2
-        fracrel[ODS.index('CFC113')] = 0.0035 + 0.052307*tau + 0.01071417*tau**2
-        fracrel[ODS.index('CFC114')] = (2.01017E-02*tau + -4.67409E-08*tau**2) * np.exp(tau/4.28272E+00) # not given
-        fracrel[ODS.index('CFC115')] = (3.55000E-03*tau + 7.67310E-04*tau**2) * np.exp(tau/4.33197E+00) # not given
-        fracrel[ODS.index('CCl4')] = -0.0326 + 0.154912*tau + 0.00135110*tau**2
-        fracrel[ODS.index('CH3CCl3')] = 0.0014 + 0.261897*tau + -0.01631929*tau**2
-        fracrel[ODS.index('HCFC22')] = -0.0193 + 0.022367*tau + 0.00349756*tau**2
-        fracrel[ODS.index('HCFC141b')] = -0.0513 + 0.057713*tau + 0.01108315*tau**2
-        fracrel[ODS.index('HCFC142b')] = (1.22909E-05*tau + 1.06509E-04*tau**2) * np.exp(tau/1.23520E+00) # not given
-        fracrel[ODS.index('Halon1211')] = -0.0482 + 0.218376*tau + -0.00664831*tau**2
-        fracrel[ODS.index('Halon1202')] = (-1.51872E-02*tau + 1.68718E-01*tau**2) * np.exp(-tau/3.43897E+00) # not given
-        fracrel[ODS.index('Halon1301')] = -0.0336 + 0.086124*tau + 0.00949226*tau**2
-        fracrel[ODS.index('Halon2402')] = 2.25980E-01*tau + 2.23266E-04*tau**2 + -1.13882E-03*tau**3 # not given
-        fracrel[ODS.index('CH3Br')] = (7.60148E-02*tau + 1.12771E-01*tau**2) * np.exp(-tau/4.09494E+00) # not given
-        fracrel[ODS.index('CH3Cl')] = 1.39444E-01*tau + 1.46219E-04*tau**2 + 8.40557E-04*tau**3 # not given
-        return fracrel
-
-    def df_fracrel_dtau(tau):
-        fracrel = np.zeros([nb_ODS], dtype=dty)
-        fracrel[ODS.index('CFC11')] = 0.120582 + 2*0.00644101*tau
-        fracrel[ODS.index('CFC12')] = 0.052939 + 2*0.00833816*tau
-        fracrel[ODS.index('CFC113')] = 0.052307 + 2*0.01071417*tau
-        fracrel[ODS.index('CFC114')] = (2.01017E-02 + 2*-4.67409E-08*tau + (2.01017E-02/4.28272E+00)*tau + (-4.67409E-08/4.28272E+00)*tau**2) * np.exp(tau/4.28272E+00) # not given
-        fracrel[ODS.index('CFC115')] = (3.55000E-03 + 2*7.67310E-04*tau + (3.55000E-03/4.33197E+00)*tau + (7.67310E-04/4.33197E+00)*tau**2) * np.exp(tau/4.33197E+00) # not given
-        fracrel[ODS.index('CCl4')] = 0.154912 + 2*0.00135110*tau
-        fracrel[ODS.index('CH3CCl3')] = 0.261897 + 2*-0.01631929*tau
-        fracrel[ODS.index('HCFC22')] = 0.022367 + 2*0.00349756*tau
-        fracrel[ODS.index('HCFC141b')] = 0.057713 + 2*0.01108315*tau
-        fracrel[ODS.index('HCFC142b')] = (1.22909E-05 + 2*1.06509E-04*tau + (1.22909E-05/1.23520E+00)*tau + (1.06509E-04/1.23520E+00)*tau**2) * np.exp(tau/1.23520E+00) # not given
-        fracrel[ODS.index('Halon1211')] = 0.218376 + 2*-0.00664831*tau
-        fracrel[ODS.index('Halon1202')] = (-1.51872E-02 + 2*1.68718E-01*tau - (-1.51872E-02/3.43897E+00)*tau - (1.68718E-01/3.43897E+00)*tau**2) * np.exp(-tau/3.43897E+00) # not given
-        fracrel[ODS.index('Halon1301')] = 0.086124 + 2*0.00949226*tau
         fracrel[ODS.index('Halon2402')] = 2.25980E-01 + 2*2.23266E-04*tau + 3*-1.13882E-03*tau**2 # not given
         fracrel[ODS.index('CH3Br')] = (7.60148E-02 + 2*1.12771E-01*tau + (7.60148E-02/4.09494E+00)*tau + (1.12771E-01/4.09494E+00)*tau**2) * np.exp(-tau/4.09494E+00) # not given
         fracrel[ODS.index('CH3Cl')] = 1.39444E-01 + 2*1.46219E-04*tau + 3*8.40557E-04*tau**2 # not given
@@ -2176,12 +2137,9 @@ elif (mod_O3Strans == 'UMUKCA-UCAM'):
 
 # sensitivity of stratospheric O3 to N2O {DU/ppb}&{DU/ppb/ppt}
 # formulation and values from [Daniel et al., 2010]
-if (mod_O3Snitrous == 'Daniel2010-sat'):
+if (mod_O3Snitrous == 'Daniel2010'):
     chi_O3s_N2O = chi_O3s_EESC * f_fracrel(3)[0] * 6.4 * (1.53 + 0.53*240/1400.)
     EESC_x = np.array([1400/0.53], dtype=dty)
-if (mod_O3Snitrous == 'Daniel2010-lin'):
-    chi_O3s_N2O = chi_O3s_EESC * f_fracrel(3)[0] * 6.4 * (1.53 + 0.53*240/1400.)
-    EESC_x = np.array([np.inf], dtype=dty)
 else:
     chi_O3s_N2O = 0*chi_O3s_EESC
     EESC_x = np.array([np.inf], dtype=dty)
@@ -2608,7 +2566,7 @@ elif (mod_O3Tradeff == 'IPCC-AR4'):
     radeff_O3t = np.array([0.032], dtype=dty)
 # from ACCMIP [Stevenson et al., 2013] (table 3)
 elif (mod_O3Tradeff == 'mean-ACCMIP'):
-    radeff_O3t = np.array([0.380/8.9], dtype=dty)
+    radeff_O3t = np.array([0.377/8.9], dtype=dty)
 elif (mod_O3Tradeff == 'CESM-CAM-superfast'):
     radeff_O3t = np.array([0.446/10.0], dtype=dty)
 elif (mod_O3Tradeff == 'CICERO-OsloCTM2'):
@@ -2623,6 +2581,8 @@ elif (mod_O3Tradeff == 'GFDL-AM3'):
     radeff_O3t = np.array([0.423/10.3], dtype=dty)
 elif (mod_O3Tradeff == 'GISS-E2-R'):
     radeff_O3t = np.array([0.314/8.3], dtype=dty)
+elif (mod_O3Tradeff == 'GISS-E2-R-TOMAS'):
+    radeff_O3t = np.array([0.333/8.7], dtype=dty) 
 elif (mod_O3Tradeff == 'HadGEM2'):
     radeff_O3t = np.array([0.303/7.3], dtype=dty)
 elif (mod_O3Tradeff == 'LMDzORINCA'):
@@ -2820,7 +2780,7 @@ if (mod_BCadjust == 'Boucher2013'):
     k_BC_adjust = np.array([-0.1/0.6], dtype=dty)
 # variations from [Lohmann et al., 2010] (figure 2; data provided by author)
 elif (mod_BCadjust == 'CSIRO'):
-    k_BC_adjust = np.array([-0.35], dtype=dty) * (-0.1/0.6)/-0.111
+    k_BC_adjust = np.array([-0.37], dtype=dty) * (-0.1/0.6)/-0.111
 elif (mod_BCadjust == 'GISS'):
     k_BC_adjust = np.array([-0.225], dtype=dty) * (-0.1/0.6)/-0.111
 elif (mod_BCadjust == 'HadGEM2'):
