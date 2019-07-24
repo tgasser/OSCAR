@@ -1,12 +1,13 @@
-# OSCAR
+# OSCAR v2
 A compact Earth system model.
 
+_OSCAR v2 is now discontinued. The last version is v2.4. See OSCAR v3 for the newest iteration._
 
 ## How-to
 
 Download a release. *Read The Fine Manual.*
 
-OSCAR has been developed and run mostly with Python 2.7.x. It relies on very common libraries: `os`, `csv`, `numpy`, `matplotlib`, and a few `scipy` functions.
+OSCAR v2 has been developed and run mostly with Python 2.7.x. It relies on very common libraries: `numpy`, `matplotlib`, and a few `scipy` functions.
 
 The source code is provided firstly for transparency, and only secondly for dissemination. This means that it is provided as is, and no support of any kind is guaranteed. Hopefully, this will change in the future.
 
@@ -14,8 +15,9 @@ The source code is provided firstly for transparency, and only secondly for diss
 ## Changelog
 
 ##### v2.4
-To version is the last update of OSCAR v2. It is meant to be as close to OSCAR v3 as possible.
-* Added: The `mod_biomeV3` option to force biome aggregation to that of v3.
+This version is the last update of OSCAR v2. It is meant to be as close to OSCAR v3.0 as possible.
+* Added: the `mod_biomeV3` option to force biome aggregation to that of v3.0.
+* Removed: the dependency of `p_wet` on the `mod_LSNKcover` option. It is now the average of all possible configurations, which has very little effect on the simulated wetlands CH<sub>4</sub> emissions.
 
 ###### v2.3.1
 * Added: a new parameter `p_HWP1_BB` quantifying how much of the harvested wood products in pool 1 are actually burnt in the open, and thus accounted for in non-CO<sub>2</sub> anthropogenic biomass burning emissions. It is set to `0.5` to roughly match present-day estimates.
@@ -29,7 +31,7 @@ To version is the last update of OSCAR v2. It is meant to be as close to OSCAR v
 * Fixed: `NaN` values no longer appear in the `alpha_BB` parameters when isolating the urban biome.
 
 ##### v2.3
-* Added: Permafrost carbon thaw and release, exactly as described by Gasser et al. (2018). This comes with a new CO<sub>2</sub> atmospheric flux accounting for the oxidation of geologic CH<sub>4</sub> released in the atmosphere.
+* Added: permafrost carbon thaw and release, exactly as described by Gasser et al. (2018). This comes with a new CO<sub>2</sub> atmospheric flux accounting for the oxidation of geologic CH<sub>4</sub> released in the atmosphere.
 
 ###### v2.2.2
 * Fixed: an error in the pre-processing of the `AeroChem_ACCMIP` input data for the `CSIRO-Mk360` configuration. This was causing biased atmospheric lifetimes for POA and BC aerosols under this configuration (and slightly biased ones under the average `mean-ACCMIP` configuration).

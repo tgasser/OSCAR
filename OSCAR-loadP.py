@@ -1515,13 +1515,17 @@ bio = ['des','for','shr','gra','cro','pas']
 
 # load pre-processed WETCHIMP results for specified model
 # preindustrial partition of wetlands
+mod_LSNKcover_save = mod_LSNKcover
 for VAR in ['AREA']:
     exec(VAR+'_wet = np.zeros([nb_regionI,nb_biome], dtype=dty)')
     if (mod_EWETpreind != ''):
-        TMP = np.array([line for line in csv.reader(open('data/Wetlands_WETCHIMP/#DATA.Wetlands_'+mod_EWETpreind+'_'+mod_LSNKcover+'.1910s_114reg1_4bio.'+VAR+'.csv','r'))], dtype=dty)
-        for i in range(1,114+1):
-            for b in range(len(bio)-2):
-                exec(VAR+'_wet[regionI_index[i],biome_index[bio[b]]] += TMP[i-1,b]')
+        for mod_LSNKcover in ['ESA-CCI', 'MODIS', 'Ramankutty1999', 'Levavasseur2012', 'mean-TRENDYv2', 'CLM-45', 'JSBACH', 'JULES', 'LPJ', 'LPJ-GUESS', 'LPX-Bern', 'OCN', 'ORCHIDEE', 'VISIT']:
+            TMP = np.array([line for line in csv.reader(open('data/Wetlands_WETCHIMP/#DATA.Wetlands_'+mod_EWETpreind+'_'+mod_LSNKcover+'.1910s_114reg1_4bio.'+VAR+'.csv','r'))], dtype=dty)
+            for i in range(1,114+1):
+                for b in range(len(bio)-2):
+                    exec(VAR+'_wet[regionI_index[i],biome_index[bio[b]]] += TMP[i-1,b]')
+mod_LSNKcover = mod_LSNKcover_save
+del mod_LSNKcover_save
 
 # preindustrial area and emissions
 for VAR in ['AREA','ECH4']:
@@ -1540,7 +1544,7 @@ p_wet = AREA_wet/np.sum(AREA_wet,1)[:,np.newaxis]
 # ensure NaN and zeros removed
 for var in ['ewet_0','p_wet']:
     exec(var+'[np.isnan('+var+')|np.isinf('+var+')] = 0')
-p_wet[p_wet==0] = 1E-12
+p_wet[p_wet==0] = 1E-18
 p_wet /= np.sum(p_wet,1)[:,np.newaxis]
 
 # load pre-processed WETCHIMP results for specified model

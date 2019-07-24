@@ -1,4 +1,4 @@
-# OSCAR _v2.4_
+# OSCAR v2.4
 _Manual_ 
 
 
