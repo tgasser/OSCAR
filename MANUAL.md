@@ -1,4 +1,4 @@
-# OSCAR _v2.3.1_
+# OSCAR _v2.4_
 _Manual_ 
 
 
@@ -36,6 +36,7 @@ Any simulation with OSCAR should start with executing the main file `OSCAR.py` i
 | `mod_kindGE` | (USELESS) |
 | `mod_biomeSHR` | How the “shrubland” biome is accounted for. |
 | `mod_biomeURB` | How the “urban” biome is accounted for. |
+| `mod_biomeV3` | Boolean. Forces biome aggregation to be the same as with OSCAR v3. Supersedes `mod_biomeSHR` and `mod_biomeURB` when `True` (default value). |
 | `data_EFF` | Dataset for fossil-fuel emissions. |
 | `data_LULCC` | Dataset of land-use and land-cover change drivers. |
 | `data_ECH4` | Dataset for methane emissions. |

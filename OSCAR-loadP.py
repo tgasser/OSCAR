@@ -495,7 +495,7 @@ if (nb_biome > 1)&(np.sum(AREA_pi[:,bio.index("pas")]) == 0):
         TMP = (AREA_pi[:,bio.index("des")] == 0)
         exec(VAR+'_pi[:,bio.index("pas")][TMP] = '+VAR+'_pi[:,bio.index("gra")][TMP]')
 # if no urban in the model
-if (nb_biome > 1)&(np.sum(AREA_pi[:,bio.index("urb")]) == 0)&(mod_biomeURB == 'URB'):
+if (nb_biome > 1)&(np.sum(AREA_pi[:,bio.index("urb")]) == 0)&((mod_biomeURB == 'URB')|mod_biomeV3):
     for VAR in ['AREA','CSOIL','CLITTER','CVEG','NPP','RH']:
         exec(VAR+'_pi[:,bio.index("urb")] = '+VAR+'_pi[:,bio.index("des")]')
 
@@ -528,7 +528,7 @@ if (nb_biome > 1)&(np.sum(CBURNT_pi[:,bio.index("pas")]) == 0):
         TMP = (CBURNT_pi[:,bio.index("des")] == 0)
         exec(VAR+'_pi[:,bio.index("pas")][TMP] = '+VAR+'_pi[:,bio.index("gra")][TMP]')
 # if no urban in the model
-if (nb_biome > 1)&(np.sum(CBURNT_pi[:,bio.index("urb")]) == 0)&(mod_biomeURB == 'URB'):
+if (nb_biome > 1)&(np.sum(CBURNT_pi[:,bio.index("urb")]) == 0)&((mod_biomeURB == 'URB')|mod_biomeV3):
     for VAR in ['EFIRE','CBURNT']:
         exec(VAR+'_pi[:,bio.index("urb")] = '+VAR+'_pi[:,bio.index("des")]')
 
@@ -571,7 +571,7 @@ if (nb_biome > 1):
     npp_0[:,biome_index["pas"]] *= 1.0
     igni_0[:,biome_index["pas"]] *= 1.0
 # urban: protection against wildfires of 100%
-if (nb_biome > 1)&(mod_biomeURB == 'URB'):
+if (nb_biome > 1)&((mod_biomeURB == 'URB')|mod_biomeV3):
     igni_0[:,biome_index["urb"]] = 0.
 
 # calculate preindustrial stocks {GtC/Mha}
@@ -662,7 +662,7 @@ if (nb_biome > 1)&(np.sum(AREA_ctrl[:,:,bio.index("pas")]) == 0):
             exec('TMP = (AREA_'+sim+'[:,:,bio.index("des")] == 0)')
             exec(VAR+'_'+sim+'[:,:,bio.index("pas")][TMP] = '+VAR+'_'+sim+'[:,:,bio.index("gra")][TMP]')
 # if no urban in the model
-if (nb_biome > 1)&(np.sum(AREA_ctrl[:,:,bio.index("urb")]) == 0)&(mod_biomeURB == 'URB'):
+if (nb_biome > 1)&(np.sum(AREA_ctrl[:,:,bio.index("urb")]) == 0)&((mod_biomeURB == 'URB')|mod_biomeV3):
     for sim in ['ctrl','upct','fxcl','fdbk']:
         for VAR in ['AREA','CSOIL0','NPP','RH','FINPUT']:
             exec(VAR+'_'+sim+'[:,:,bio.index("urb")] = '+VAR+'_'+sim+'[:,:,bio.index("des")]')
@@ -781,7 +781,7 @@ for i in range(1,nb_regionI):
 if (mod_LSNKnpp == 'hyp'):
     beta_npp0[beta_npp0 == 1] = 1.000001
 # urban: no change to preindustrial
-if (nb_biome > 1)&(mod_biomeURB == 'URB'):
+if (nb_biome > 1)&((mod_biomeURB == 'URB')|mod_biomeV3):
     if (mod_LSNKnpp == 'log'):
         beta_npp[:,biome_index["urb"]] = 0
     elif (mod_LSNKnpp == 'hyp'):
@@ -845,7 +845,7 @@ if (nb_biome > 1)&(np.sum(CBURNT_ctrl[:,:,bio.index("pas")]) == 0):
             exec('TMP = (CBURNT_'+sim+'[:,:,bio.index("des")] == 0)')
             exec(VAR+'_'+sim+'[:,:,bio.index("pas")][TMP] = '+VAR+'_'+sim+'[:,:,bio.index("gra")][TMP]')
 # if no urban in the model
-if (nb_biome > 1)&(np.sum(CBURNT_ctrl[:,:,bio.index("urb")]) == 0)&(mod_biomeURB == 'URB'):
+if (nb_biome > 1)&(np.sum(CBURNT_ctrl[:,:,bio.index("urb")]) == 0)&((mod_biomeURB == 'URB')|mod_biomeV3):
     for sim in ['ctrl','upct','fxcl','fdbk']:
         for VAR in ['CBURNT','EFIRE']:
             exec(VAR+'_'+sim+'[:,:,bio.index("urb")] = '+VAR+'_'+sim+'[:,:,bio.index("des")]')
@@ -899,7 +899,7 @@ if (nb_biome > 1):
     gamma_igniT[:,biome_index["cro"]] = 0.
     gamma_igniP[:,biome_index["cro"]] = 0.
 # urban: no wildfire
-if (nb_biome > 1)&(mod_biomeURB == 'URB'):
+if (nb_biome > 1)&((mod_biomeURB == 'URB')|mod_biomeV3):
     gamma_igniC[:,biome_index["urb"]] = 0.
     gamma_igniT[:,biome_index["urb"]] = 0.
     gamma_igniP[:,biome_index["urb"]] = 0.
@@ -1102,7 +1102,7 @@ if (nb_biome > 1)&(np.sum((AGB_pi+BGB_pi)[:,bio.index("pas")]) == 0):
     for VAR in ['AGB','BGB']:
         exec(VAR+'_pi[:,bio.index("pas")] = 0.60*'+VAR+'_pi[:,bio.index("gra")] + 0.40*'+VAR+'_pi[:,bio.index("des")]')
 # if no urban in the model
-if (nb_biome > 1)&(np.sum((AGB_pi+BGB_pi)[:,bio.index("urb")]) == 0)&(mod_biomeURB == 'URB'):
+if (nb_biome > 1)&(np.sum((AGB_pi+BGB_pi)[:,bio.index("urb")]) == 0)&((mod_biomeURB == 'URB')|mod_biomeV3):
     for VAR in ['AGB','BGB']:
         exec(VAR+'_pi[:,bio.index("urb")] = '+VAR+'_pi[:,bio.index("des")]')
 
@@ -1147,7 +1147,7 @@ if (nb_biome > 1):
         p_HWP2[:,biome_index[bio]] = p_HWP3[:,biome_index[bio]] = 0
     for bio in ['cro','pas']:
         p_HWP1[:,biome_index[bio]] = p_HWP2[:,biome_index[bio]] = p_HWP3[:,biome_index[bio]] = 0
-    if (mod_biomeURB == 'URB'):
+    if (mod_biomeURB == 'URB')|mod_biomeV3:
         p_HWP1[:,biome_index["urb"]] = p_HWP2[:,biome_index["urb"]] = p_HWP3[:,biome_index["urb"]] = 0
 # normalize
 TMP = p_HWP0 + p_HWP1 + p_HWP2 + p_HWP3

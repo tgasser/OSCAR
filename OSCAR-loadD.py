@@ -305,6 +305,13 @@ else:
     biome_color = []
     biome_index = {'des':0,'for':0,'shr':0,'gra':0,'cro':0,'pas':0,'urb':0}
 
+## for OSCAR v3 parameters
+if mod_biomeV3:
+    biome = ['FOR','GRA+','CRO','PAS','URB']
+    biome_name = ['Forest','Non-Forest','Cropland','Pasture','Urban']
+    biome_color = ['','','','','']
+    biome_index = {'des':1,'for':0,'shr':1,'gra':1,'cro':2,'pas':3,'urb':4}
+
 nb_biome = len(biome)
 
 # =========

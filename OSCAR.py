@@ -60,6 +60,7 @@ mod_kindRF = 'one'                      # one | two | all
 mod_kindGE = ''                         # '' | PUP
 mod_biomeSHR = 'w/GRA'                  # SHR | w/GRA | w/FOR
 mod_biomeURB = 'w/DES'                  # URB | w/DES
+mod_biomeV3 = True
 
 data_EFF = 'CDIAC'                      # CDIAC | EDGAR
 data_LULCC = 'LUH1'                     # LUH1

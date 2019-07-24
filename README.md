@@ -13,6 +13,10 @@ The source code is provided firstly for transparency, and only secondly for diss
 
 ## Changelog
 
+##### v2.4
+To version is the last update of OSCAR v2. It is meant to be as close to OSCAR v3 as possible.
+* Added: The `mod_biomeV3` option to force biome aggregation to that of v3.
+
 ###### v2.3.1
 * Added: a new parameter `p_HWP1_BB` quantifying how much of the harvested wood products in pool 1 are actually burnt in the open, and thus accounted for in non-CO<sub>2</sub> anthropogenic biomass burning emissions. It is set to `0.5` to roughly match present-day estimates.
 * Added: a new configuration based on `GISS-E2-R-TOMAS` to the `mod_O3Tradeff` option.
