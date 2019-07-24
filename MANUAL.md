@@ -1,4 +1,4 @@
-# OSCAR _v2.3_
+# OSCAR _v2.3.1_
 _Manual_ 
 
 
@@ -485,6 +485,7 @@ Here we provide the correspondence between the notations used in the description
 | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{shift}" /> | `tau_shift` | yr |
 | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{agb}" /> | `p_AGB` | 1 |
 | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{hwp}" /> | `p_HWP` | 1 |
+| <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{hwp,bb}^{w=1}" /> | `p_HWP1_BB` | 1 |
 | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{hwp}" /> | `tau_HWP` | yr |
 | <img src="https://latex.codecogs.com/gif.latex?\mathcal{F}_\mathrm{hwp}" /> | `r_HWP` | 1 |
 ||||
