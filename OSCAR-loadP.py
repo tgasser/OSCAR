@@ -692,7 +692,7 @@ if (mod_LSNKnpp == 'log'):
     beta_npp = np.zeros([nb_regionI,nb_biome], dtype=dty)
 elif (mod_LSNKnpp == 'hyp'):
     beta_npp0 = np.ones([nb_regionI,nb_biome], dtype=dty)*1.000001
-    CO2_comp = np.ones([nb_regionI,nb_biome], dtype=dty)*9E30
+    CO2_comp = np.ones([nb_regionI,nb_biome], dtype=dty)*1E18
 # sensitivity of NPP to climate {/K}&{/mm}
 gamma_nppT = np.zeros([nb_regionI,nb_biome], dtype=dty)
 gamma_nppP = np.zeros([nb_regionI,nb_biome], dtype=dty)
@@ -785,8 +785,8 @@ if (nb_biome > 1)&(mod_biomeURB == 'URB'):
     if (mod_LSNKnpp == 'log'):
         beta_npp[:,biome_index["urb"]] = 0
     elif (mod_LSNKnpp == 'hyp'):
-        beta_npp0[:,biome_index["urb"]] = 0
-        CO2_comp[:,biome_index["urb"]] = 9E30
+        beta_npp0[:,biome_index["urb"]] = 1.000001
+        CO2_comp[:,biome_index["urb"]] = 1E18
     gamma_nppT[:,biome_index["urb"]] = 0
     gamma_nppP[:,biome_index["urb"]] = 0
     prim_rho[:,biome_index["urb"]] = 0
@@ -1192,8 +1192,9 @@ elif(mod_EHWPfct == 'exp'):
 # IRF for wood product fluxes ratio {/yr}
 for N in ['1','2','3']:
     exec('r_HWP'+N+' = np.zeros([ind_final+1], dtype=dty)')
-    exec('r_HWP'+N+'[1:] = -(f_HWP(tau_HWP'+N+')[1:]-f_HWP(tau_HWP'+N+')[:-1])/f_HWP(tau_HWP'+N+')[:-1]')
-    exec('r_HWP'+N+'[np.isnan(r_HWP'+N+')|np.isinf(r_HWP'+N+')] = 0')
+    exec('r_HWP'+N+'[1:] = -(f_HWP(tau_HWP'+N+')[1:]-f_HWP(tau_HWP'+N+')[:-1])/(f_HWP(tau_HWP'+N+')[1:]+f_HWP(tau_HWP'+N+')[:-1])/0.5')
+    exec('r_HWP'+N+'[np.isnan(r_HWP'+N+')|np.isinf(r_HWP'+N+')] = 1')
+    #exec('r_HWP'+N+'[r_HWP'+N+'>1] = 1')
     exec('r_HWP'+N+'[0] = 0')
 
 # -----------

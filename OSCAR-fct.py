@@ -214,12 +214,12 @@ def OSCAR_lite(p=p,fT=fT,\
             FMET_luc = k_met * RH1_luc
             RH2_luc = (rho2_0*(1+D_k_rho))[:,np.newaxis,:,np.newaxis] * CSOIL2_luc
             EHWP1_luc = np.zeros([nb_regionI,nb_biome,nb_biome,ind_final+1],dtype=dty)
-            EHWP1_luc[:,:,:,:t+1] = (r_HWP1*(1-r_HWP1**tt))[np.newaxis,np.newaxis,np.newaxis,t::-1] * CHWP1_luc[:,:,:,:t+1]
+            EHWP1_luc[:,:,:,:t+1] = r_HWP1[np.newaxis,np.newaxis,np.newaxis,t::-1] * CHWP1_luc[:,:,:,:t+1]
             EHWP2_luc = np.zeros([nb_regionI,nb_biome,nb_biome,ind_final+1],dtype=dty)
-            EHWP2_luc[:,:,:,:t+1] = (r_HWP2*(1-r_HWP2**tt))[np.newaxis,np.newaxis,np.newaxis,t::-1] * CHWP2_luc[:,:,:,:t+1]
+            EHWP2_luc[:,:,:,:t+1] = r_HWP2[np.newaxis,np.newaxis,np.newaxis,t::-1] * CHWP2_luc[:,:,:,:t+1]
             EHWP3_luc = np.zeros([nb_regionI,nb_biome,nb_biome,ind_final+1],dtype=dty) 
-            EHWP3_luc[:,:,:,:t+1] = (r_HWP3*(1-r_HWP3**tt))[np.newaxis,np.newaxis,np.newaxis,t::-1] * CHWP3_luc[:,:,:,:t+1]
-            ELUC = np.sum(np.sum(np.sum( RH1_luc + RH2_luc + EFIRE_luc + EHWP1_luc + EHWP2_luc + EHWP3_luc ,3),2),1)
+            EHWP3_luc[:,:,:,:t+1] = r_HWP3[np.newaxis,np.newaxis,np.newaxis,t::-1] * CHWP3_luc[:,:,:,:t+1]
+            ELUC = np.sum(np.sum(np.sum( RH1_luc + RH2_luc + EFIRE_luc + EHWP1_luc + EHWP2_luc + EHWP3_luc - NPP_luc ,3),2),1)
             # biomass burning
             for VAR in ['CO2','CH4','N2O','NOX','CO','VOC','SO2','NH3','OC','BC']:
                 exec('D_EBB_'+VAR+' = np.sum( alpha_BB_'+VAR+'*(igni_0*cveg_0*D_AREA + D_efire*AREA_0 + D_efire*D_AREA) ,1)')
