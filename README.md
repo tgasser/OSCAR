@@ -17,6 +17,8 @@ The source code is provided firstly for transparency, and only secondly for diss
 ##### v2.4
 This version is the last update of OSCAR v2. It is meant to be as close to OSCAR v3.0 as possible.
 * Added: the `mod_biomeV3` option to force biome aggregation to that of v3.0.
+* Added: the `mod_EHWPspeed` option that introduces further variations in the decay time of harvested wood products. In addition to the `normal` configuration, the `fast` one scales the value of `tau_HWP` so that 20% of the pool remains after 80% of the initial decay time (a rescale by ~0.5), and the `slow` one scales the value of `tau_HWP` so that 30% of the pool remains after 150% of the initial decay time (a rescale by ~1.25).
+* Removed: the `mod_EHWPfct` option, so that only exponential decay of harvested wood products is now possible. This slightly increases CO<sub>2</sub> emissions from land-use change in a Monte Carlo run.
 * Removed: the dependency of `p_wet` on the `mod_LSNKcover` option. It is now the average of all possible configurations, which has very little effect on the simulated wetlands CH<sub>4</sub> emissions.
 
 ###### v2.3.1

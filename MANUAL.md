@@ -82,7 +82,7 @@ Any simulation with OSCAR should start with executing the main file `OSCAR.py` i
 | `mod_ELUCagb` | Above-ground biomass fractions. |
 | `mod_EHWPbb` | Biomass burning of non-commercial harvested wood products. |
 | `mod_EHWPtau` | Time constants for the oxidation of HWPs. |
-| `mod_EHWPfct` | Functional form for the oxidation of HWPs. |
+| `mod_EHWPspeed` | Adjustment factor for the speed of oxidation of HWPs. |
 | `mod_OHSNKtau` | Lifetime of methane with respect to the OH sink. |
 | `mod_OHSNKfct` | Functional form of the OH sink’s response to ozone precursors. |
 | `mod_OHSNKtrans` | Transient response of the OH sink. |

@@ -1172,7 +1172,21 @@ elif (mod_EHWPtau == 'Earles2012'):
     tau_HWP2 = np.array([2], dtype=dty)
     tau_HWP3 = np.array([30], dtype=dty)
 
+## decay times variations
+## fast: 20% remaining after 0.8*tau
+if mod_EHWPspeed == 'fast':
+    tau_HWP1 *= 0.8/-np.log(0.2)
+    tau_HWP2 *= 0.8/-np.log(0.2)
+    tau_HWP3 *= 0.8/-np.log(0.2)
+## fast: 30% remaining after 1.5*tau
+elif mod_EHWPspeed == 'slow':
+    tau_HWP1 *= 1.5/-np.log(0.3)
+    tau_HWP2 *= 1.5/-np.log(0.3)
+    tau_HWP3 *= 1.5/-np.log(0.3)
+
 # IRF for wood product pools {.}
+## forced to be exponential in this version
+mod_EHWPfct = 'exp'
 if (mod_EHWPfct == 'gamma'):
     def f_HWP(tau):
         err = lambda a0: gammainc(a0,(a0+1)/2.5)-0.05

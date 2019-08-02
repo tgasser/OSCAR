@@ -115,7 +115,7 @@ mod_EPFmethane = 'best'                 # zero | best | twice
 mod_ELUCagb = 'mean-TRENDYv2'           # mean-TRENDYv2 | CLM-45 | LPJ-GUESS | ORCHIDEE
 mod_EHWPbb = 'high'                     # high | low
 mod_EHWPtau = 'Earles2012'              # Houghton2001 | Earles2012
-mod_EHWPfct = 'gamma'                   # gamma | lin | exp
+mod_EHWPspeed = 'normal'                # normal | fast | slow
 
 mod_OHSNKtau = 'Prather2012'            # Prather2012 | CESM-CAM-superfast | CICERO-OsloCTM2 | CMAM | EMAC | GEOSCCM | GDFL-AM3 | GISS-E2-R | GISS-E2-R-TOMAS | HadGEM2 | LMDzORINCA | MIROC-CHEM | MOCAGE | NCAR-CAM-35 | STOC-HadAM3 | TM5 | UM-CAM
 mod_OHSNKfct = 'lin'                    # lin | log
