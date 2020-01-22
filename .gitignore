@@ -2,8 +2,10 @@
 # MY STUFF TO IGNORE:
 .vscode/
 .IPython.lnk
-manual.docx
 README.pdf
+output_data/
+extra_data/
+testing.py
 #====================
 
 # Byte-compiled / optimized / DLL files

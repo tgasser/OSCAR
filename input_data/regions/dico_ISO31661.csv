@@ -1,0 +1,250 @@
+ISO-Numeric,Country,ISO-Alpha3,GTAP7,SRES_4reg,SRES_11reg,RECCAP1,Raupach_2007,Houghton_2001,IMACLIM,Kyoto,RCP_5reg,RCP_10reg
+4,Afghanistan,AFG,24,3,7,0,9,8,11,2,1,9
+8,Albania,ALB,74,2,4,7,8,3,3,2,5,4
+10,Antarctica,ATA,0,0,0,0,0,0,0,2,0,5
+12,Algeria,DZA,95,4,9,1,8,4,10,2,3,7
+16,American Samoa,ASM,3,3,8,3,9,9,11,2,4,10
+20,Andorra,AND,82,2,4,7,4,3,3,2,5,2
+24,Angola,AGO,100,4,11,1,9,5,10,2,3,6
+28,Antigua and Barbuda,ATG,45,4,10,0,8,2,12,2,2,5
+31,Azerbaijan,AZE,87,2,5,0,5,6,5,2,5,4
+32,Argentina,ARG,29,4,10,10,8,2,12,2,2,5
+36,Australia,AUS,1,1,3,3,4,9,4,1,4,3
+40,Austria,AUT,46,1,2,7,2,3,3,1,4,2
+44,Bahamas,BHS,45,4,10,0,8,2,12,2,2,5
+48,Bahrain,BHR,91,4,9,0,8,4,9,2,3,7
+50,Bangladesh,BGD,20,3,7,6,9,8,11,2,1,9
+51,Armenia,ARM,86,2,5,0,5,6,5,2,5,4
+52,Barbados,BRB,45,4,10,0,8,2,12,2,2,5
+56,Belgium,BEL,47,1,2,7,2,3,3,1,4,2
+60,Bermuda,BMU,28,1,2,8,4,3,12,2,4,5
+64,Bhutan,BTN,24,3,7,6,9,8,11,2,1,9
+68,Bolivia Plurinational State of,BOL,30,4,10,10,8,2,12,2,2,5
+70,Bosnia and Herzegovina,BIH,82,2,4,7,8,3,3,2,5,4
+72,Botswana,BWA,111,4,11,1,8,5,10,2,3,6
+74,Bouvet Island,BVT,0,0,0,0,0,0,0,2,0,5
+76,Brazil,BRA,31,4,10,10,8,2,8,2,2,5
+84,Belize,BLZ,44,4,10,0,8,2,12,2,2,5
+86,British Indian Ocean Territory,IOT,110,4,11,0,8,5,10,2,3,9
+90,Solomon Islands,SLB,3,3,8,3,9,9,11,2,4,10
+92,Virgin Islands British,VGB,45,4,10,10,8,2,12,2,2,10
+96,Brunei Darussalam,BRN,19,3,8,5,8,8,11,2,1,10
+100,Bulgaria,BGR,75,2,4,11,8,3,3,2,5,4
+104,Myanmar,MMR,13,3,8,5,9,8,11,2,1,10
+108,Burundi,BDI,110,4,11,1,9,5,10,2,3,6
+112,Belarus,BLR,76,2,5,9,5,6,5,2,5,4
+116,Cambodia,KHM,10,3,6,5,9,8,11,2,1,10
+120,Cameroon,CMR,99,4,11,1,8,5,10,2,3,6
+124,Canada,CAN,25,1,1,8,4,1,2,1,4,1
+132,Cabo bierde,CPV,98,4,11,1,9,5,10,2,3,6
+136,Cayman Islands,CYM,45,4,10,0,8,2,12,2,2,5
+140,Central African Republic,CAF,99,4,11,1,9,5,10,2,3,6
+144,Sri Lanka,LKA,23,3,7,6,8,8,11,2,1,9
+148,Chad,TCD,99,4,11,1,9,5,10,2,3,6
+152,Chile,CHL,32,4,10,10,8,2,12,2,2,5
+156,China,CHN,4,3,6,4,6,7,6,2,1,8
+158,Taiwan,TWN,8,3,6,4,4,9,11,2,1,8
+162,Christmas Island,CXR,19,3,8,5,9,8,11,2,1,10
+166,Cocos (Keeling) Islands,CCK,19,3,8,5,9,8,11,2,1,10
+170,Colombia,COL,33,4,10,10,8,2,12,2,2,5
+174,Comoros,COM,110,4,11,1,9,5,10,2,3,6
+175,Mayotte,MYT,110,4,11,1,8,5,10,2,3,6
+178,Congo,COG,99,4,11,1,9,5,10,2,3,6
+180,Congo the Democratic Republic of the,COD,100,4,11,1,9,5,10,2,3,6
+184,Cook Islands,COK,3,3,8,3,8,9,11,2,4,10
+188,Costa Rica,CRI,40,4,10,0,8,2,12,2,2,5
+191,Croatia,HRV,77,2,4,7,8,3,3,1,5,4
+192,Cuba,CUB,45,4,10,0,8,2,12,2,2,5
+196,Cyprus,CYP,48,1,2,7,2,4,3,1,5,4
+203,Czechia,CZE,49,2,4,7,8,3,3,1,5,4
+204,Benin,BEN,98,4,11,1,9,5,10,2,3,6
+208,Denmark,DNK,50,1,2,7,2,3,3,1,4,2
+212,Dominica,DMA,45,4,10,10,8,2,12,2,2,5
+214,Dominican Republic,DOM,45,4,10,10,8,2,12,2,2,5
+218,Ecuador,ECU,34,4,10,10,8,2,12,2,2,5
+222,El Salvador,SLV,44,4,10,0,8,2,12,2,2,5
+226,Equatorial Guinea,GNQ,99,4,11,1,9,5,10,2,3,6
+231,Ethiopia,ETH,101,4,11,1,9,5,10,2,3,6
+232,Eritrea,ERI,110,4,11,1,9,5,10,2,3,6
+233,Estonia,EST,51,2,5,7,5,6,3,1,5,4
+234,Faroe Islands,FRO,82,2,4,0,4,3,3,2,5,2
+238,Falkland Islands (Malvinas),FLK,39,4,10,10,8,2,12,2,2,5
+239,South Georgia and the South Sandwich Islands,SGS,0,0,0,0,0,0,0,2,0,5
+242,Fiji,FJI,3,3,8,3,8,9,11,2,4,10
+246,Finland,FIN,52,1,2,7,2,3,3,1,4,2
+248,Aland Islands,ALA,82,1,2,7,2,3,3,1,4,2
+250,France,FRA,53,1,2,7,2,3,3,1,4,2
+254,French Guiana,GUF,39,4,10,10,8,2,12,2,2,5
+258,French Polynesia,PYF,3,3,8,3,8,9,11,2,4,10
+260,French Southern Territories,ATF,110,4,11,1,8,5,10,2,3,5
+262,Djibouti,DJI,110,4,11,1,9,5,10,2,3,6
+266,Gabon,GAB,99,4,11,1,8,5,10,2,3,6
+268,Georgia,GEO,88,2,5,0,5,6,5,2,5,4
+270,Gambia,GMB,98,4,11,1,9,5,10,2,3,6
+275,Palestine State of,PSE,91,4,9,0,8,4,9,2,3,7
+276,Germany,DEU,54,1,2,7,2,3,3,1,4,2
+288,Ghana,GHA,98,4,11,1,8,5,10,2,3,6
+292,Gibraltar,GIB,82,2,4,0,4,3,3,2,5,2
+296,Kiribati,KIR,3,3,8,3,9,9,11,2,4,10
+300,Greece,GRC,55,1,2,7,2,3,3,1,4,2
+304,Greenland,GRL,28,1,2,8,4,3,12,2,4,2
+308,Grenada,GRD,45,4,10,0,8,2,12,2,2,5
+312,Guadeloupe,GLP,45,4,10,0,8,2,12,2,2,5
+316,Guam,GUM,3,3,8,3,8,9,11,2,4,1
+320,Guatemala,GTM,41,4,10,0,8,2,12,2,2,5
+324,Guinea,GIN,98,4,11,1,9,5,10,2,3,6
+328,Guyana,GUY,39,4,10,10,9,2,12,2,2,5
+332,Haiti,HTI,45,4,10,0,8,2,12,2,2,5
+334,Heard Island and McDonald Islands,HMD,0,0,0,0,0,0,0,2,0,10
+336,Holy See,VAT,82,1,2,7,0,3,3,1,4,2
+340,Honduras,HND,44,4,10,0,8,2,12,2,2,5
+344,Hong Kong,HKG,5,3,6,4,6,7,11,2,1,8
+348,Hungary,HUN,56,2,4,7,2,3,3,1,5,4
+352,Iceland,ISL,73,1,2,7,4,3,3,1,4,2
+356,India,IND,21,3,7,6,7,8,7,2,1,9
+360,Indonesia,IDN,11,3,8,5,8,8,11,2,1,10
+364,Iran Islamic Republic of,IRN,89,4,9,0,8,4,9,2,3,7
+368,Iraq,IRQ,91,4,9,0,8,4,9,2,3,7
+372,Ireland,IRL,1,2,7,7,2,3,1,1,4,2
+376,Israel,ISR,91,4,9,0,4,4,9,2,3,7
+380,Italy,ITA,58,1,2,7,2,3,3,1,4,2
+384,Cote d'Ivoire,CIV,98,4,11,1,8,5,10,2,3,6
+388,Jamaica,JAM,45,4,10,0,8,2,12,2,2,5
+392,Japan,JPN,6,1,3,4,3,9,4,1,4,3
+398,Kazakhstan,KAZ,83,2,5,0,5,6,5,2,5,4
+400,Jordan,JOR,91,4,9,0,8,4,9,2,3,7
+404,Kenya,KEN,110,4,11,1,8,5,10,2,3,6
+408,"Korea, Democratic People's Republic of",PRK,9,3,6,4,8,7,11,2,1,8
+410,"Korea, Republic of",KOR,7,3,8,4,4,9,4,2,1,8
+414,Kuwait,KWT,91,4,9,0,8,4,9,2,3,7
+417,Kyrgyzstan,KGZ,84,2,5,0,5,6,5,2,5,4
+418,Lao People's Democratic Republic,LAO,12,3,6,5,9,8,11,2,1,10
+422,Lebanon,LBN,91,4,9,0,8,4,9,2,3,7
+426,Lesotho,LSO,113,4,11,1,9,5,10,2,3,6
+428,Latvia,LVA,59,2,5,7,5,6,3,1,5,4
+430,Liberia,LBR,98,4,11,1,9,5,10,2,3,6
+434,Libya,LBY,95,4,9,1,8,4,10,2,3,7
+438,Liechtenstein,LIE,73,1,2,7,4,3,3,1,4,2
+440,Lithuania,LTU,60,2,5,7,5,6,3,1,5,4
+442,Luxembourg,LUX,61,1,2,7,2,3,3,1,4,2
+446,Macao,MAC,9,3,6,4,8,7,11,2,1,8
+450,Madagascar,MDG,102,4,11,1,9,5,10,2,3,6
+454,Malawi,MWI,103,4,11,1,9,5,10,2,3,6
+458,Malaysia,MYS,14,3,8,5,8,8,11,2,1,10
+462,Maldives,MDV,24,3,7,6,9,8,11,2,1,9
+466,Mali,MLI,98,4,11,1,9,5,10,2,3,6
+470,Malta,MLT,62,1,2,7,2,3,3,1,5,4
+474,Martinique,MTQ,45,4,10,0,8,2,12,2,2,5
+478,Mauritania,MRT,98,4,11,1,9,5,10,2,3,6
+480,Mauritius,MUS,104,4,11,1,8,5,10,2,3,6
+484,Mexico,MEX,27,4,10,8,8,2,12,2,2,5
+492,Monaco,MCO,82,2,4,7,4,3,3,2,5,2
+496,Mongolia,MNG,9,3,6,4,8,7,11,2,1,8
+498,"Moldova, Republic of",MDA,81,2,5,7,5,6,3,2,5,4
+499,Montenegro,MNE,0,2,4,7,8,3,3,2,5,4
+500,Montserrat,MSR,45,4,10,0,8,2,12,2,2,5
+504,Morocco,MAR,93,4,9,1,8,4,10,2,3,7
+508,Mozambique,MOZ,105,4,11,1,9,5,10,2,3,6
+512,Oman,OMN,91,4,9,0,8,4,9,2,3,7
+516,Namibia,NAM,113,4,11,1,8,5,10,2,3,6
+520,Nauru,NRU,3,3,8,3,8,9,11,2,4,10
+524,Nepal,NPL,24,3,7,6,9,8,11,2,1,9
+528,Netherlands,NLD,63,1,2,7,2,3,3,1,4,2
+531,Curacao,CUW,45,4,10,0,8,2,12,2,2,5
+533,Aruba,ABW,45,4,10,0,8,2,12,2,2,5
+534,Sint Maarten (Dutch part),SXM,45,4,10,0,8,2,12,2,2,5
+535,Bonaire Sint Eustatius and Saba,BES,45,4,10,0,8,2,12,2,2,5
+540,New Caledonia,NCL,3,3,8,3,8,9,11,2,4,10
+548,Vanuatu,VUT,3,3,8,3,9,9,11,2,4,10
+554,New Zealand,NZL,2,1,3,3,4,9,4,1,4,3
+558,Nicaragua,NIC,42,4,10,0,8,2,12,2,2,5
+562,Niger,NER,98,4,11,1,9,5,10,2,3,6
+566,Nigeria,NGA,96,4,11,1,8,5,10,2,3,6
+570,Niue,NIU,3,3,8,3,8,9,11,2,4,10
+574,Norfolk Island,NFK,3,3,8,3,8,9,11,2,4,10
+578,Norway,NOR,72,1,2,7,4,3,3,1,4,2
+580,Northern Mariana Islands,MNP,3,3,8,3,8,9,11,2,4,10
+581,United States Minor Outlying Islands,UMI,3,3,8,3,8,9,11,2,4,10
+583,Micronesia Federated States of,FSM,3,3,8,3,8,9,11,2,4,10
+584,Marshall Islands,MHL,3,3,8,3,8,9,11,2,4,10
+585,Palau,PLW,3,3,8,3,8,9,11,2,4,10
+586,Pakistan,PAK,22,3,7,0,8,8,11,2,1,9
+591,Panama,PAN,43,4,10,0,8,2,12,2,2,5
+598,Papua New Guinea,PNG,3,3,8,3,8,9,11,2,4,10
+600,Paraguay,PRY,35,4,10,10,8,2,12,2,2,5
+604,Peru,PER,36,4,10,10,8,2,12,2,2,5
+608,Philippines,PHL,15,3,8,5,8,8,11,2,1,10
+612,Pitcairn,PCN,3,3,8,3,8,9,11,2,4,10
+616,Poland,POL,64,2,4,7,2,3,3,1,5,4
+620,Portugal,PRT,65,1,2,7,2,3,3,1,4,2
+624,Guinea-Bissau,GNB,98,4,11,1,9,5,10,2,3,6
+626,Timor-Leste,TLS,19,3,8,5,9,8,11,2,1,10
+630,Puerto Rico,PRI,45,4,10,0,8,2,12,2,2,5
+634,Qatar,QAT,91,4,9,0,8,4,9,2,3,7
+638,Reunion,REU,110,4,11,1,8,5,10,2,3,6
+642,Romania,ROU,78,2,4,7,8,3,3,1,5,4
+643,Russian Federation,RUS,79,2,5,9,5,6,5,1,5,4
+646,Rwanda,RWA,110,4,11,1,9,5,10,2,3,6
+652,Saint Barthelemy,BLM,45,4,10,0,8,2,12,2,2,5
+654,Saint Helena Ascension and Tristan da Cunha,SHN,98,4,11,1,8,5,10,2,3,5
+659,Saint Kitts and Nevis,KNA,45,4,10,0,8,2,12,2,2,5
+660,Anguilla,AIA,45,4,10,0,8,2,12,2,2,5
+662,Saint Lucia,LCA,45,4,10,0,8,2,12,2,2,5
+663,Saint Martin (French part),MAF,45,4,10,0,8,2,12,2,2,5
+666,Saint Pierre and Miquelon,SPM,28,1,2,8,4,3,12,2,4,1
+670,Saint Vincent and the Grenadines,VCT,45,4,10,0,8,2,12,2,2,5
+674,San Marino,SMR,82,2,4,0,4,3,3,2,5,2
+678,Sao Tome and Principe,STP,99,4,11,1,9,5,10,2,3,6
+682,Saudi Arabia,SAU,91,4,9,0,8,4,9,2,3,7
+686,Senegal,SEN,97,4,11,1,9,5,10,2,3,6
+688,Serbia,SRB,82,2,4,7,8,3,3,2,5,4
+690,Seychelles,SYC,110,4,11,1,8,5,10,2,3,6
+694,Sierra Leone,SLE,98,4,11,1,9,5,10,2,3,6
+702,Singapore,SGP,16,3,8,5,4,8,11,2,1,10
+703,Slovakia,SVK,66,2,4,7,2,3,3,1,5,4
+704,Viet Nam,VNM,18,3,8,5,8,8,11,2,1,10
+705,Slovenia,SVN,67,2,4,7,2,3,3,1,5,4
+706,Somalia,SOM,110,4,11,1,8,5,10,2,3,6
+710,South Africa,ZAF,112,4,11,1,8,5,10,2,3,6
+716,Zimbabwe,ZWE,109,4,11,1,8,5,10,2,3,6
+724,Spain,ESP,68,1,2,7,2,3,3,1,4,2
+728,South Sudan,SSD,110,4,11,1,8,5,10,2,3,7
+729,Sudan,SDN,110,4,11,1,8,5,10,2,3,7
+732,Western Sahara,ESH,98,4,11,1,9,5,10,2,3,7
+740,Suriname,SUR,39,4,10,10,8,2,12,2,2,5
+744,Svalbard and Jan Mayen,SJM,0,0,0,0,0,0,0,2,0,2
+748,Swaziland,SWZ,113,4,11,1,8,5,10,2,3,6
+752,Sweden,SWE,69,1,2,7,2,3,3,1,4,2
+756,Switzerland,CHE,71,1,2,7,4,3,3,1,4,2
+760,Syrian Arab Republic,SYR,91,4,9,0,8,4,9,2,3,7
+762,Tajikistan,TJK,85,2,5,0,5,6,5,2,5,4
+764,Thailand,THA,17,3,8,5,8,8,11,2,1,10
+768,Togo,TGO,98,4,11,1,9,5,10,2,3,6
+772,Tokelau,TKL,3,3,8,3,8,9,11,2,4,10
+776,Tonga,TON,3,3,8,3,8,9,11,2,4,6
+780,Trinidad and Tobago,TTO,45,4,10,0,8,2,12,2,2,5
+784,United Arab Emirates,ARE,91,4,9,0,8,4,9,2,3,7
+788,Tunisia,TUN,94,4,9,1,8,4,10,2,3,7
+792,Turkey,TUR,90,1,2,0,8,4,3,2,4,2
+795,Turkmenistan,TKM,85,2,5,0,5,6,5,2,5,4
+796,Turks and Caicos Islands,TCA,45,4,10,0,8,2,12,2,2,5
+798,Tuvalu,TUV,3,3,8,3,9,9,11,2,4,10
+800,Uganda,UGA,107,4,11,1,9,5,10,2,3,6
+804,Ukraine,UKR,80,2,5,7,5,6,5,1,5,4
+807,Macedonia the former Yugoslav Republic of,MKD,82,2,4,7,8,3,3,2,5,4
+818,Egypt,EGY,92,4,9,1,8,4,10,2,3,7
+826,United Kingdom,GBR,70,1,2,7,2,3,3,1,4,2
+831,Guernsey,GGY,82,1,2,7,2,3,3,1,4,2
+832,Jersey,JEY,82,1,2,7,2,3,3,1,4,2
+833,Isle of Man,IMN,82,1,2,7,2,3,3,1,4,2
+834,Tanzania United Republic of,TZA,106,4,11,1,9,5,10,2,3,6
+840,United States of America,USA,26,1,1,8,1,1,1,1,4,1
+850,Virgin Islands U.S.,VIR,45,4,10,0,8,2,12,2,2,10
+854,Burkina Faso,BFA,98,4,11,1,9,5,10,2,3,6
+858,Uruguay,URY,37,4,10,10,8,2,12,2,2,5
+860,Uzbekistan,UZB,85,2,5,0,5,6,5,2,5,4
+862,Venezuela Bolivarian Republic of,VEN,38,4,10,10,8,2,12,2,2,5
+876,Wallis and Futuna,WLF,3,3,8,3,8,9,11,2,4,10
+882,Samoa,WSM,3,3,8,3,9,9,11,2,4,10
+887,Yemen,YEM,91,4,9,0,9,4,9,2,3,7
+894,Zambia,ZMB,108,4,11,1,9,5,10,2,3,6
