@@ -1,18 +1,27 @@
-# OSCAR v2
+# OSCAR
 A compact Earth system model.
 
-_OSCAR v2 is now discontinued. The last version is v2.4. See OSCAR v3 for the newest iteration._
 
 ## How-to
 
 Download a release. *Read The Fine Manual.*
 
-OSCAR v2 has been developed and run mostly with Python 2.7.x. It relies on very common libraries: `numpy`, `matplotlib`, and a few `scipy` functions.
+OSCAR v3 is developed and run with Python 3.7. It makes heavy use of the `xarray` package (v0.14.1), and `netCDF4` for saving data (v1.4.2). It also relies on other common scientific packages: `numpy` (v1.16.5) and `scipy` (v1.3.1). Although the latest versions of the packages used to run OSCAR v3.0 are given, older versions are likely to work.
 
-The source code is provided firstly for transparency, and only secondly for dissemination. This means that it is provided as is, and no support of any kind is guaranteed. Hopefully, this will change in the future.
+The source code is provided firstly for transparency, and only secondly for dissemination. This means that it is provided as is, and no support of any kind is guaranteed (but feel free to ask). Feedbacks and contributions are always welcome.
 
 
 ## Changelog
+
+##### v3.0
+The physical equations and parameter values of this version are exactly the same as in v2.4. A few notable changes are worth mentioning here.
+* Added: an option to choose the solving scheme of the differential system. The default solving scheme is now an Eulerian exponential integrator (that typically requires fewer sub-timesteps to be stable).
+* Removed: the possibility of recalibrating the model's parameters on-the-fly, and especially the regional aggregation of the land carbon cycle. For now, calibrated parameters are directly imported from OSCAR v2, but this feature will be progressively re-implemented has v3 is developed further and new calibrating data become available.
+* Changed: the global temperature 2-box model's formulation, to correspond to a more usual formulation found in climate science. This is purely esthetic; this does not change the projected global temperature.
+* Changed: the structure of the bookkeeping module for land-use emissions. Specifically, the initialisation is now coded like any other carbon-cycle flux. This does not significantly alter the module's performance.
+
+#### v3
+This is a complete revamp of OSCAR, for which the code was rewritten from scratch and moved to Python 3. OSCAR v3 relies heavily on the `xarray` package (and therefore netCDF saving format), to better structure the input and output data, to more easily deal with the many dimensions of internal data, and to parallelize simulations so that the run time of a typical Monte Carlo ensemble has been significantly reduced. It also uses its own object classes (`Model` and `Process`) that make it easy to change, extend or tune the model's structure and/or equations. Because of this complete overhaul, manipulation of the model has to be learned from scratch, however.
 
 ##### v2.4
 This version is the last update of OSCAR v2. It is meant to be as close to OSCAR v3.0 as possible.

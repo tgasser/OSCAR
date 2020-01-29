@@ -2,7 +2,6 @@
 # MY STUFF TO IGNORE:
 .vscode/
 .IPython.lnk
-README.pdf
 output_data/
 extra_data/
 testing.py
