@@ -727,9 +727,9 @@ def Eq__D_Foxi_CH4(Var, Par):
 ##==============
 
 ## areal wetland emissions
-D_ewet = OSCAR.process('D_ewet', ('csoil1_0', 'D_rh1'), lambda Var, Par: Eq__D_ewet(Var, Par), units='TgC yr-1 Mha-1')
+D_ewet = OSCAR.process('D_ewet', ('D_rh1', 'D_rh2', 'csoil1_0', 'csoil2_0'), lambda Var, Par: Eq__D_ewet(Var, Par), units='TgC yr-1 Mha-1')
 def Eq__D_ewet(Var, Par):
-    return Par.ewet_0 * (Par.p_wet * Var.D_rh1).sum('bio_land', min_count=1) / (Par.p_wet * Par.rho1_0 * Var.csoil1_0).sum('bio_land', min_count=1)
+    return Par.ewet_0 * (Par.p_wet * (Var.D_rh1 + Var.D_rh2)).sum('bio_land', min_count=1) / (Par.p_wet * (Par.rho1_0 * Var.csoil1_0 + Par.rho2_0 * Var.csoil2_0)).sum('bio_land', min_count=1)
 
 
 ## wetland extent
