@@ -1,5 +1,5 @@
 """
-Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2019; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2014-2016
+Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2020; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2014-2016
 Contributor(s): Thomas Gasser (gasser@iiasa.ac.at), Yann Quilcaille
 
 This software is a computer program whose purpose is to simulate the behavior of the Earth system, with a specific but not exclusive focus on anthropogenic climate change.
@@ -66,7 +66,7 @@ import numpy as np
 import xarray as xr
 
 from core_fct.cls_main import Model
-from core_fct.fct_ancillary import Int_ExpInt as Int_dflt
+from core_fct.fct_misc import Int_ExpInt as Int_dflt
 
 
 ##################################################
@@ -1040,9 +1040,9 @@ def Eq__RF_cloud(Var, Par):
 ##==========================
 
 ## radiative forcing from BC deposition on snow
-RF_snow = OSCAR.process('RF_snow', ('E_BC', 'D_Ebb'), lambda Var, Par: Eq__RF_snow(Var, Par), units='W m-2')
-def Eq__RF_snow(Var, Par):
-    return Par.rf_snow * (Par.w_reg_snow * (Par.p_reg_snow * (Var.E_BC + Var.D_Ebb.sel({'spc_bb':'BC'}, drop=True).sum('bio_land', min_count=1))).sum('reg_land', min_count=1)).sum('reg_snow', min_count=1)
+RF_BCsnow = OSCAR.process('RF_BCsnow', ('E_BC', 'D_Ebb'), lambda Var, Par: Eq__RF_BCsnow(Var, Par), units='W m-2')
+def Eq__RF_BCsnow(Var, Par):
+    return Par.rf_bcsnow * (Par.w_reg_bcsnow * (Par.p_reg_bcsnow * (Var.E_BC + Var.D_Ebb.sel({'spc_bb':'BC'}, drop=True).sum('bio_land', min_count=1))).sum('reg_land', min_count=1)).sum('reg_bcsnow', min_count=1)
 
 
 ##=======================
@@ -1108,9 +1108,9 @@ def Eq__RF_slcf(Var, Par):
 
 
 ## radiative forcing of albedo effects
-RF_alb = OSCAR.process('RF_alb', ('RF_snow', 'RF_lcc'), lambda Var, Par: Eq__RF_alb(Var, Par), units='W m-2')
+RF_alb = OSCAR.process('RF_alb', ('RF_BCsnow', 'RF_lcc'), lambda Var, Par: Eq__RF_alb(Var, Par), units='W m-2')
 def Eq__RF_alb(Var, Par):
-    return Var.RF_snow + Var.RF_lcc
+    return Var.RF_BCsnow + Var.RF_lcc
 
 
 ## total radiative forcing (= TOA RF)
@@ -1120,9 +1120,9 @@ def Eq__RF(Var, Par):
 
 
 ## warming radiative forcing (~= ERF)
-RF_warm = OSCAR.process('RF_warm', ('RF_wmghg', 'RF_slcf', 'RF_snow', 'RF_lcc', 'RF_volc', 'RF_solar', 'RF_contr'), lambda Var, Par: Eq__RF_warm(Var, Par), units='W m-2')
+RF_warm = OSCAR.process('RF_warm', ('RF_wmghg', 'RF_slcf', 'RF_BCsnow', 'RF_lcc', 'RF_volc', 'RF_solar', 'RF_contr'), lambda Var, Par: Eq__RF_warm(Var, Par), units='W m-2')
 def Eq__RF_warm(Var, Par):
-    return Var.RF_wmghg + Var.RF_slcf + Par.w_warm_snow * Var.RF_snow + Par.w_warm_lcc * Var.RF_lcc + Par.w_warm_volc * Var.RF_volc + Var.RF_solar + Var.RF_contr
+    return Var.RF_wmghg + Var.RF_slcf + Par.w_warm_bcsnow * Var.RF_BCsnow + Par.w_warm_lcc * Var.RF_lcc + Par.w_warm_volc * Var.RF_volc + Var.RF_solar + Var.RF_contr
 
 
 ## atmospheric fraction of radiative forcing
@@ -1148,7 +1148,7 @@ def Eq__RF_atm(Var, Par):
 ## (Geoffroy et al., 2013; doi:10.1175/JCLI-D-12-00195.1)
 D_Tg = OSCAR.process('D_Tg', ('D_Tg', 'D_Td', 'RF_warm'), lambda Var, Par, **Int_args: DiffEq__D_Tg(Var, Par, **Int_args), units='K')
 def DiffEq__D_Tg(Var, Par, Int=Int_dflt, dt=1.):
-    return Int(Var.D_Tg, 1/Par.Th_g * (1/Par.ecs_0 + Par.th_0), 1/Par.Th_g * (Var.RF_warm - Var.D_Tg / Par.ecs_0 - Par.th_0 * (Var.D_Tg - Var.D_Td)), dt)
+    return Int(Var.D_Tg, 1/Par.Th_g * (1/Par.lambda_0 + Par.th_0), 1/Par.Th_g * (Var.RF_warm - Var.D_Tg / Par.lambda_0 - Par.th_0 * (Var.D_Tg - Var.D_Td)), dt)
 
 
 ## PROGNOSTIC: deep ocean temperature
@@ -1161,7 +1161,7 @@ def DiffEq__D_Td(Var, Par, Int=Int_dflt, dt=1.):
 ## METRIC: global mean surface temperature rate of change
 d_Tg = OSCAR.process('d_Tg', ('D_Tg', 'D_Td', 'RF_warm'), lambda Var, Par: Eq__d_Tg(Var, Par), units='K yr-1')
 def Eq__d_Tg(Var, Par):
-    return 1/Par.Th_g * (Var.RF_warm - Var.D_Tg / Par.ecs_0 - Par.th_0 * (Var.D_Tg - Var.D_Td))
+    return 1/Par.Th_g * (Var.RF_warm - Var.D_Tg / Par.lambda_0 - Par.th_0 * (Var.D_Tg - Var.D_Td))
 
 
 ## land surface temperature
@@ -1202,7 +1202,7 @@ D_OHC = OSCAR.process('D_OHC', ('D_OHC', 'D_Tg', 'RF'), lambda Var, Par, **Int_a
 def DiffEq__D_OHC(Var, Par, Int=Int_dflt, dt=1.):
     a_conv = 3600*24*365.25 / 1E21 # from {W yr} to {ZJ}
     A_Earth = 510072E9 # m2
-    return Int(Var.D_OHC, 1E-18, a_conv * A_Earth * Par.p_ohc * (Var.RF - Var.D_Tg / Par.ecs_0), dt)
+    return Int(Var.D_OHC, 1E-18, a_conv * A_Earth * Par.p_ohc * (Var.RF - Var.D_Tg / Par.lambda_0), dt)
 
 
 ##################################################

@@ -1,5 +1,5 @@
 """
-Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2018; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2016
+Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2020; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2016
 Contributor(s): Thomas Gasser (gasser@iiasa.ac.at), Yann Quilcaille
 
 This software is a computer program whose purpose is to simulate the behavior of the Earth system, with a specific but not exclusive focus on anthropogenic climate change.
@@ -53,7 +53,7 @@ import warnings
 import numpy as np
 import xarray as xr
 
-from core_fct.fct_ancillary import aggreg_region, group_scenarios
+from core_fct.fct_misc import aggreg_region, group_scenarios
 
 
 ##################################################
@@ -69,6 +69,26 @@ def load_emissions_hist(mod_region,
     datasets=['ACCMIP', 'CDIAC', 'CEDS', 'EDGAR-HYDEv13', 'EDGAR-HYDEv14', 'EDGARv42', 'EDGARv42-FT2010', 'EDGARv432', 'EDGARv432-FT2016', 'EPA', 'Meinshausen_2011', 'PRIMAP'], 
     dropped_species=['PM10', 'PM2p5'], 
     **useless):
+    '''
+    Function to load and format primary historical emissions datasets, taken from the 'input_data' folder.
+    
+    Input:
+    ------
+    mod_region (str)            regional aggregation name
+
+    Output:
+    -------
+    For (xr.Dataset)            dataset that contains the loaded datasets aggregated over 'mod_region'
+
+    Options:
+    --------
+    datasets (list)             names of primary datasets to be loaded;
+                                default = ['ACCMIP', 'CDIAC', 'CEDS', 'EDGAR-HYDEv13', 'EDGAR-HYDEv14', 
+                                           'EDGARv42', 'EDGARv42-FT2010', 'EDGARv432', 'EDGARv432-FT2016', 
+                                           'EPA', 'Meinshausen_2011', 'PRIMAP']
+    dropped_species (list)      species to be excluded from the loaded datasets;
+                                default = ['PM10', 'PM2p5']
+    '''
 
     ## list of missing halogenated species taken from Meinshausen_2011
     missing_halo = ['CFC-11', 'CFC-12', 'CFC-113', 'CFC-114', 'CFC-115', 'CCl4', 'CH3CCl3', 'HCFC-22', 'Halon-1211', 'Halon-1202', 'Halon-1301', 'Halon-2402', 'CH3Br', 'CH3Cl']
@@ -216,6 +236,35 @@ def load_emissions_scen(mod_region,
     Xhalo_offset={'CF4':{}, 'C2F6':{}, 'HFC-23':{}, 'CH3Br':{},
         'CH3Cl':{'RCPdb':3100.211, 'Meinshausen_2011':3100.211}},
     **useless):
+    '''
+    Function to load and format primary scenario emissions datasets, taken from the 'input_data' folder.
+    
+    Input:
+    ------
+    mod_region (str)            regional aggregation name
+
+    Output:
+    -------
+    For (xr.Dataset)            dataset that contains the loaded datasets tentatively aggregated over 'mod_region'
+
+    Options:
+    --------
+    datasets (list)             names of primary datasets to be loaded;
+                                default = ['Meinshausen_2011', 'RCPdb', 'SRES', 'ScenarioMIP']
+    all_SRES (bool)             whether to take all SRES scenarios (if loaded) or just markers;
+                                default = False
+    all_SSPdb (bool)            whether to take all SSP database scenarios (if loaded) or just markers;
+                                default = False
+    dropped_species (list)      species to be excluded from the loaded datasets;
+                                default = ['CCS']
+    Xhalo_offset (dict)         how the offset by Xhalo preindustrial emissions is handled;
+                                keys are species whose emissions must be offset;
+                                values are another dict being:
+                                    either empty, in which case the offset is made on RCP2.6;
+                                    or whose keys are dataset names and values are floats, for offset by the specified values;
+                                default = {'CF4':{}, 'C2F6':{}, 'HFC-23':{}, 'CH3Br':{},
+                                           'CH3Cl':{'RCPdb':3100.211, 'Meinshausen_2011':3100.211}}
+    '''
 
     ## dictionaries for ignoring sectors
     ## non-CO2 emissions
@@ -359,6 +408,25 @@ def load_landuse_hist(mod_region,
     datasets=['LUH1', 'LUH1-TRENDYv4', 'LUH2', 'LUH2-TRENDYv8'],
     LCC='all',
     **useless):
+    '''
+    Function to load and format primary historical land-use datasets, taken from the 'input_data' folder.
+    
+    Input:
+    ------
+    mod_region (str)        regional aggregation name
+
+    Output:
+    -------
+    For (xr.Dataset)        dataset that contains the loaded datasets aggregated over 'mod_region'
+
+    Options:
+    --------
+    datasets (list)         names of primary datasets to be loaded;
+                            default = ['LUH1', 'LUH1-TRENDYv4', 'LUH2', 'LUH2-TRENDYv8']
+    LCC (str)               which of 'gross' or 'net' land-cover transitions should be kept;
+                            unless both are kept ('all'), the driver is renamed to 'd_Acover';
+                            default = 'all'
+    '''
 
     ## main loading loop
     For0 = []
@@ -439,6 +507,25 @@ def load_landuse_scen(mod_region,
     datasets=['LUH1', 'LUH2'], 
     LCC='all',
     **useless):
+    '''
+    Function to load and format primary scenario land-use datasets, taken from the 'input_data' folder.
+    
+    Input:
+    ------
+    mod_region (str)        regional aggregation name
+
+    Output:
+    -------
+    For (xr.Dataset)        dataset that contains the loaded datasets aggregated over 'mod_region'
+
+    Options:
+    --------
+    datasets (list)         names of primary datasets to be loaded;
+                            default = ['LUH1', 'LUH2']
+    LCC (str)               which of 'gross' or 'net' land-cover transitions should be kept;
+                            unless both are kept ('all'), the driver is renamed to 'd_Acover';
+                            default = 'all'
+    '''
 
     ## main loading loop
     For0 = []
@@ -513,6 +600,28 @@ def load_RFdrivers_hist(
     extension={'RF_volc':'AOD550', 'RF_solar':'TSI', 'RF_contr':'dist_flown'}, 
     offset_volc=True,
     **useless):
+    '''
+    Function to load and format primary historical RF drivers datasets, taken from the 'input_data' folder.
+    
+    Input:
+    ------
+    None
+
+    Output:
+    -------
+    For (xr.Dataset)        dataset that contains the loaded datasets
+
+    Options:
+    --------
+    datasets (list)         names of primary datasets to be loaded;
+                            default = ['radiative-forcing_AR5', 
+                                       'volcanic-activity_CMIP6', 'solar-activity_CMIP6', 'aviation_ICAO']
+    extension (dict)        keys are the name of RF drivers that will be extended;
+                            values are the name of non-RF driversto be used for extension;
+                            default = {'RF_volc':'AOD550', 'RF_solar':'TSI', 'RF_contr':'dist_flown'}
+    offset_volc (bool)      whether volcanoes forcing should be offset by the average of the whole time-series;
+                            default = True
+    '''
 
     ## main loading loop
     For0 = []
@@ -626,6 +735,25 @@ def load_RFdrivers_scen(
     datasets=['solar-activity_CMIP6'],
     add_data=['volcanic-activity_CMIP5', 'volcanic-activity_CMIP6', 'solar-activity_CMIP5', 'contrails_CMIP5'],
     **useless):
+    '''
+    Function to load and format primary scenario RF drivers datasets, taken from the 'input_data' folder.
+    WARNING: these are used to extend historical drivers, and are defined as relative variations!
+    
+    Input:
+    ------
+    None
+
+    Output:
+    -------
+    For (xr.Dataset)        dataset that contains the loaded datasets
+
+    Options:
+    --------
+    datasets (list)         names of primary datasets to be loaded;
+                            default = ['solar-activity_CMIP6']
+    add_data (list)         names of datasets that are hard-coded in the function!
+                            default = ['volcanic-activity_CMIP5', 'volcanic-activity_CMIP6', 'solar-activity_CMIP5', 'contrails_CMIP5']
+    '''
 
     ## main loading loop
     For0 = []
@@ -723,6 +851,22 @@ def load_RFdrivers_scen(
 
 ## wrapping function for historical
 def load_all_hist(mod_region, **kwargs):
+    '''
+    Wrapper function to load all primary historical drivers.
+    
+    Input:
+    ------
+    mod_region (str)        regional aggregation name       
+
+    Output:
+    -------
+    For (xr.Dataset)        merged dataset
+
+    Options:
+    --------
+    **kwargs                arguments to be passed on to individual loading functions
+    '''
+
     print('loading primary historical drivers')
 
     ## list of loading fuctions
@@ -734,6 +878,26 @@ def load_all_hist(mod_region, **kwargs):
 
 ## wrapping function for scenarios
 def load_all_scen(mod_region, group_scen=None, default_scen=['CMIP6', 'CMIP5'], **kwargs):
+    '''
+    Wrapper function to load all primary scenario drivers.
+    
+    Input:
+    ------
+    mod_region (str)        regional aggregation name       
+
+    Output:
+    -------
+    For (xr.Dataset)        merged dataset
+
+    Options:
+    --------
+    group_scen (list)       scenarios that must be grouped under the same 'scen' dimension;
+                            default = None
+    default_scen (list)     fallback scenarios taken in order when using 'group_scen' option;
+                            default = ['CMIP6', 'CMIP5']
+    **kwargs                arguments to be passed on to individual loading functions
+    '''
+    
     print('loading primary scenario drivers')
 
     ## list of loading fuctions

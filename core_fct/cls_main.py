@@ -1,5 +1,5 @@
 """
-Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2019; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2014-2016
+Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2020; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2014-2016
 Contributor(s): Thomas Gasser (gasser@iiasa.ac.at), Yann Quilcaille
 
 This software is a computer program whose purpose is to simulate the behavior of the Earth system, with a specific but not exclusive focus on anthropogenic climate change.
@@ -19,7 +19,7 @@ import xarray as xr
 
 from time import perf_counter
 
-from core_fct.fct_ancillary import Int_ExpInt as Int_dflt
+from core_fct.fct_misc import Int_ExpInt as Int_dflt
 
 
 ##################################################
@@ -272,8 +272,10 @@ class Model():
             ## get time axis
             time = For.coords[time_axis]
             
-            ## get variables' level in causality tree
+            ## level in causality tree of variables (excl. non-kept metrics)
             levels = self.proc_levels()
+            levels = {lvl:list(set(levels[lvl]) - (self.var_out - set(var_keep))) for lvl in levels}
+            levels = {lvl:levels[lvl] for lvl in levels if len(levels[lvl]) > 0}
 
             ## initialization of all variables
             Var_old = Ini.copy(deep=True)

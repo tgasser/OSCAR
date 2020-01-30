@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from core_fct.fct_loadP import load_all_param
 from core_fct.fct_genMC import generate_config
 from core_fct.fct_loadD import load_landuse_hist
-from core_fct.fct_ancillary import load_data, aggreg_region
+from core_fct.fct_misc import load_data, aggreg_region
 
 ## import submodel that contains only the land carbon cycle
 from core_fct.fct_process import OSCAR_landC

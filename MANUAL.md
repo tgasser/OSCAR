@@ -9,7 +9,7 @@ Essentially, to make a basic simulation one must:
 2. define the `Ini` (initial state), `For` (forcing data) and `Par` (parameters) arguments; 
 3. call `OSCAR` with these arguments (and possibly other optional arguments). 
 
-The `run_model` function found in `core_fct.fct_main` is a wrapper that does all that and more, using internal data for forcings and parameters. However, this function may not be adequate for advanced usage of OSCAR, in which case it should be used as inspiration for defining one's own run scripts. To further help with this, the `run_scripts` folder contains a few basic examples.
+The `run_model` function found in `core_fct.fct_wrap` is a wrapper that does all that and more, using internal data for forcings and parameters. However, this function may not be adequate for advanced usage of OSCAR, in which case it should be used as inspiration for defining one's own run scripts. To further help with this, the `run_scripts` folder contains a few basic examples.
 
 
 ## Core structure
@@ -19,12 +19,12 @@ Here is a quick overview of the files contained in the `core_fct` folder and the
 | File | Content |
 | --- | --- |
 | `cls_main` | definition of the `Model` and `Process` classes upon which OSCAR v3 is based |
-| `fct_ancillary` | a bunch of useful functions, notably including the solving schemes, a generic loading function called `load_data`, and a function to regionally aggregate datasets called `aggreg_region` |
+| `fct_misc` | a bunch of useful functions, notably including the solving schemes, a generic loading function called `load_data`, and a function to regionally aggregate datasets called `aggreg_region` |
 | `fct_genD` | functions to generate consistent timeseries of drivers |
 | `fct_genMC` | functions to generate the Monte Carlo setup |
 | `fct_loadD` | functions to load the primary drivers |
 | `fct_loadP` | functions to load the primary parameters, some of them being loaded from files and others manually written there |
-| `fct_main` | wrapper function to run the model in a not-so-flexible standard mode |
+| `fct_wrap` | wrapper function to run the model in a not-so-flexible standard mode |
 | `fct_process` | equations for the physical processes constituting OSCAR; also contains `OSCAR` and submodels |
 
 
@@ -49,7 +49,7 @@ Here is a table summerizing the various dimensions over which OSCAR's input, int
 | `box_thaw` | pools of thawed permafrost |
 | `spc_bb` | species from biomass burning |
 | `reg_slcf` | regions specific to SLCF regional saturation effects |
-| `reg_snow` | regions specific to BC deposition on snow |
+| `reg_bcsnow` | regions specific to BC deposition on snow |
 
 
 ### Drivers
@@ -223,7 +223,7 @@ Each of the model's variable is defined through a `Process` object; and a `Model
 | `RF_cloud2` | - | W m<sup>-2</sup> | - ||
 | `RF_cloud` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{RF}^\mathrm{cloud}" /> | W m<sup>-2</sup> | - ||
 ||||||
-| `RF_snow` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{RF}^\mathrm{BCsnow}" /> | W m<sup>-2</sup> | - ||
+| `RF_BCsnow` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{RF}^\mathrm{BCsnow}" /> | W m<sup>-2</sup> | - ||
 ||||||
 | `RF_lcc` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{RF}^\mathrm{LCC}" /> | W m<sup>-2</sup> | - ||
 ||||||
@@ -459,17 +459,17 @@ Parameters are implicitly defined when creating a model's processes. When OSCAR 
 | `Phi_0` | <img src="https://latex.codecogs.com/gif.latex?\Phi" /> | W m<sup>-2</sup> | - | `mod_RFcloud_erf, mod_RFcloud_solub` |
 | `AERsol_0` | <img src="https://latex.codecogs.com/gif.latex?\mathrm{AER}_{\mathrm{sol},0}" /> | Tg | - | `mod_RFcloud_solub, mod_RFcloud_erf, mod_RFcloud_preind` |
 ||||||
-| `p_reg_snow` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{reg}" /> | 1 | `reg_land, reg_snow` | - |
+| `p_reg_bcsnow` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{reg}" /> | 1 | `reg_land, reg_bcsnow` | - |
 ||||||
-| `w_reg_snow` | <img src="https://latex.codecogs.com/gif.latex?\omega_\mathrm{BCsnow}" /> | 1 | `reg_snow` | `mod_RFsnow_reg` |
-| `rf_snow` | <img src="https://latex.codecogs.com/gif.latex?\alpha_\mathrm{rf}^\mathrm{BCsnow}" /> | W m<sup>-2</sup> [TgC yr<sup>-1</sup>]<sup>-1</sup> | - | `mod_RFsnow_rf` |
+| `w_reg_bcsnow` | <img src="https://latex.codecogs.com/gif.latex?\omega_\mathrm{BCsnow}" /> | 1 | `reg_bcsnow` | `mod_RFbcsnow_reg` |
+| `rf_bcsnow` | <img src="https://latex.codecogs.com/gif.latex?\alpha_\mathrm{rf}^\mathrm{BCsnow}" /> | W m<sup>-2</sup> [TgC yr<sup>-1</sup>]<sup>-1</sup> | - | `mod_RFbcsnow_rf` |
 ||||||
 | `p_trans` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{trans}" /> | 1 | - | - |
 | `alpha_alb` | <img src="https://latex.codecogs.com/gif.latex?\alpha_\mathrm{alb}" /> | 1 | `reg_land, bio_land` | `mod_RFlcc_alb, mod_RFlcc_flux, mod_RFlcc_cover` |
 | `F_rsds` | <img src="https://latex.codecogs.com/gif.latex?\phi_\mathrm{rsds}" /> | W m<sup>-2</sup> | `reg_land` | `mod_RFlcc_flux` |
 ||||||
 | `w_warm_volc` | <img src="https://latex.codecogs.com/gif.latex?\kappa_\mathrm{warm}^\mathrm{volc}" /> | 1 | - | - |
-| `w_warm_snow` | <img src="https://latex.codecogs.com/gif.latex?\kappa_\mathrm{warm}^\mathrm{BCsnow}" /> | 1 | - | `mod_RFsnow_warmeff` |
+| `w_warm_bcsnow` | <img src="https://latex.codecogs.com/gif.latex?\kappa_\mathrm{warm}^\mathrm{BCsnow}" /> | 1 | - | `mod_RFbcsnow_warmeff` |
 | `w_warm_lcc` | <img src="https://latex.codecogs.com/gif.latex?\kappa_\mathrm{warm}^\mathrm{LCC}" /> | 1 | - | `mod_RFlcc_warmeff` |
 |||||||
 | `p_atm_CO2` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{atm}^\mathrm{CO_2}" /> | 1 | - | `mod_Pg_radfact` |
@@ -482,7 +482,7 @@ Parameters are implicitly defined when creating a model's processes. When OSCAR 
 | `p_atm_alb` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{atm}^\mathrm{alb}" /> | 1 | - | `mod_Pg_radfact` |
 | `p_atm_solar` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{atm}^\mathrm{solar}" /> | 1 | - | `mod_Pg_radfact` |
 ||||||
-| `ecs_0` | <img src="https://latex.codecogs.com/gif.latex?\lambda" /> | K [W m<sup>-2</sup>]<sup>-1</sup> | - | `mod_Tg_resp` |
+| `lambda_0` | <img src="https://latex.codecogs.com/gif.latex?\lambda" /> | K [W m<sup>-2</sup>]<sup>-1</sup> | - | `mod_Tg_resp` |
 | `Th_g` | <img src="https://latex.codecogs.com/gif.latex?\frac{\tau_{T_G}}{\lambda}" /> | yr W m<sup>-2</sup> K<sup>-1</sup> | - | `mod_Tg_resp` |
 | `Th_d` | <img src="https://latex.codecogs.com/gif.latex?\frac{\tau_{T_D}}{\lambda}" /> | yr W m<sup>-2</sup> K<sup>-1</sup> | - | `mod_Tg_resp` |
 | `th_0` | <img src="https://latex.codecogs.com/gif.latex?\frac{\theta}{\lambda}" /> | W m<sup>-2</sup> K<sup>-1</sup> | - | `mod_Tg_resp` |

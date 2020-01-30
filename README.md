@@ -6,7 +6,7 @@ A compact Earth system model.
 
 Download a release. *Read The Fine Manual.*
 
-OSCAR v3 is developed and run with Python 3.7. It makes heavy use of the `xarray` package (v0.14.1), and `netCDF4` for saving data (v1.4.2). It also relies on other common scientific packages: `numpy` (v1.16.5) and `scipy` (v1.3.1). Although the latest versions of the packages used to run OSCAR v3.0 are given, older versions are likely to work.
+OSCAR v3 is developed in Python 3.7 and run preferentially through IPython. It makes heavy use of the `xarray` package (v0.14.1), and `netCDF4` for saving data (v1.4.2). It also relies on other common scientific packages: `numpy` (v1.16.5) and `scipy` (v1.3.1). Although the latest versions of the packages used to run OSCAR v3 are given, older versions are likely to work.
 
 The source code is provided firstly for transparency, and only secondly for dissemination. This means that it is provided as is, and no support of any kind is guaranteed (but feel free to ask). Feedbacks and contributions are always welcome.
 

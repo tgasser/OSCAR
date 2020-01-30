@@ -1,5 +1,5 @@
 """
-Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2018; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2016
+Copyright: IIASA (International Institute for Applied Systems Analysis), 2016-2020; CEA (Commissariat a L'Energie Atomique) & UVSQ (Universite de Versailles et Saint-Quentin), 2016
 Contributor(s): Thomas Gasser (gasser@iiasa.ac.at), Yann Quilcaille
 
 This software is a computer program whose purpose is to simulate the behavior of the Earth system, with a specific but not exclusive focus on anthropogenic climate change.
@@ -68,7 +68,7 @@ CONTENT
         load_RFaer_indirect
     3.3. Black carbon on snow
         load_regions_Reddy_2007
-        load_RFsnow_all
+        load_RFbcsnow_all
     3.4. Land-cover change
         load_RFlcc_all
     3.5. Specific RFs
@@ -1036,6 +1036,7 @@ def load_AER_solub(**useless):
 ## radiative forcing factors of WMGHGs
 ## based on IPCC AR5
 def load_RFghg_all(**useless):
+    ## TODO v3.1: extend to Etminan formulas
 
     ## initialization
     Par = xr.Dataset()
@@ -1238,28 +1239,28 @@ def load_regions_Reddy_2007(mod_region, recalibrate=False, **useless):
 
 ## parameters for RF from BC deposition on snow
 ## partly based on ACCMIP
-def load_RFsnow_all(**useless):
+def load_RFbcsnow_all(**useless):
 
     ## initialization
     Par = xr.Dataset()
-    Par.coords['mod_RFsnow_reg'] = ['Reddy_2007']
-    Par.coords['reg_snow'] = ['Globe', 'SAM', 'NAM', 'AFR', 'EUR', 'WCA', 'SAS', 'EAS', 'AUP', 'OCE']
-    Par.coords['mod_RFsnow_radeff'] = ['Boucher_2013', 'CICERO-OsloCTM2', 'GFDL-AM3', 'GISS-E2-R', 'GISS-E2-R-TOMAS', 'HadGEM2', 'MIROC-CHEM', 'NCAR-CAM3.5', 'NCAR-CAM5.1']
+    Par.coords['mod_RFbcsnow_reg'] = ['Reddy_2007']
+    Par.coords['reg_bcsnow'] = ['Globe', 'SAM', 'NAM', 'AFR', 'EUR', 'WCA', 'SAS', 'EAS', 'AUP', 'OCE']
+    Par.coords['mod_RFbcsnow_radeff'] = ['Boucher_2013', 'CICERO-OsloCTM2', 'GFDL-AM3', 'GISS-E2-R', 'GISS-E2-R-TOMAS', 'HadGEM2', 'MIROC-CHEM', 'NCAR-CAM3.5', 'NCAR-CAM5.1']
 
     ## regional weighting coefficients
     ## (Reddy et al., 2007; doi:10.1029/2006GL028904) (Table 1)
-    Par['w_reg_snow'] = xr.DataArray(
+    Par['w_reg_bcsnow'] = xr.DataArray(
         [[1., 1/6., 11/11., 1/10., 63/12., 2/3., 2/13., 17/43., 1/1., 2/1.]],
-        dims=['mod_RFsnow_reg', 'reg_snow'], attrs={'units':'1'})
+        dims=['mod_RFbcsnow_reg', 'reg_bcsnow'], attrs={'units':'1'})
 
     ## radiative forcing normalized to emissions
     ## 1st value from IPCC AR5 (Boucher et al., 2013; doi:10.1017/CBO9781107415324.016) (text & Table 7.1a)
     ## all others from ACCMIP (Lee et al., 2013; doi:10.5194/acp-13-2607-2013) (Table 3 & Fig. 15; data provided by author)
     ## note: Boucher_2013 is best guess, and other values rescaled to it (models' mean = 0.0146/(7.9-3.2))
-    Par['rf_snow'] = xr.DataArray((0.04/4.8) / (0.0146/(7.9-3.2)) * 
+    Par['rf_bcsnow'] = xr.DataArray((0.04/4.8) / (0.0146/(7.9-3.2)) * 
         np.array([0.0146, 0.0131, 0.0130, 0.0142, 0.0175, 0.0133, 0.0173, 0.0143, 0.0141]) /
         np.array([7.9-3.2, 7.8-3.1, 7.8-3.1, 8.8-4.0, 7.8-3.1, 7.8-3.1, 7.7-3.0, 7.8-3.1, 7.8-3.1]),
-        dims='mod_RFsnow_radeff', attrs={'units':'W yr m-2 TgC-1'})
+        dims='mod_RFbcsnow_radeff', attrs={'units':'W yr m-2 TgC-1'})
 
     ## return
     return Par
@@ -1304,7 +1305,7 @@ def load_RF_warmeff(**useless):
 
     ## initialization
     Par = xr.Dataset()
-    Par.coords['mod_RFsnow_warmeff'] = ['median', 'low', 'high']
+    Par.coords['mod_RFbcsnow_warmeff'] = ['median', 'low', 'high']
     Par.coords['mod_RFlcc_warmeff'] = ['Hansen_2005', 'Davin_2007', 'Davin_2010', 'Jones_2013']
 
     ## volcano forcing
@@ -1313,7 +1314,7 @@ def load_RF_warmeff(**useless):
 
     ## black carbon on snow
     ## (Boucher et al., 2013; doi:10.1017/CBO9781107415324.016) (Sect. 7.5.2.3)
-    Par['w_warm_snow'] = xr.DataArray([3., 2., 4.], dims='mod_RFsnow_warmeff', attrs={'units':'1'})
+    Par['w_warm_bcsnow'] = xr.DataArray([3., 2., 4.], dims='mod_RFbcsnow_warmeff', attrs={'units':'1'})
 
     ## land-cover change
     ## (Bright et al., 2015; doi:10.1111/gcb.12951) (Table 7)
@@ -1399,7 +1400,8 @@ def load_prec_CMIP5(mod_region, recalibrate=False, **useless):
 
 ## OHC parameters
 def load_OHC_all(**useless):
-    
+    ## TODO v3.1: use alternative formula
+
     ## initialization
     Par = xr.Dataset()
     
@@ -1440,6 +1442,24 @@ def load_pH_all(**useless):
 
 ## wrapping function
 def load_all_param(mod_region, recalibrate=False):
+    '''
+    Wrapper function to load all primary parameters.
+    
+    Input:
+    ------
+    mod_region (str)        regional aggregation name       
+
+    Output:
+    -------
+    Par (xr.Dataset)        merged dataset
+
+    Options:
+    --------
+    recalibrate (bool)      whether to recalibrate all possible parameters;
+                            WARNING: currently not working;
+                            default = False
+    '''
+
     print('loading primary parameters')
 
     ## list of loading fuctions
@@ -1456,7 +1476,7 @@ def load_all_param(mod_region, recalibrate=False):
         load_AER_regional, load_AER_atmoload, load_AER_solub,
         load_RFghg_all, 
         load_RFozo_all, load_RFaer_direct, load_RFaer_semidirect, load_RFaer_indirect,
-        load_regions_Reddy_2007, load_RFsnow_all,
+        load_regions_Reddy_2007, load_RFbcsnow_all,
         load_RFlcc_all,
         load_RF_warmeff, load_RF_atmfrac,
         load_temp_CMIP5,

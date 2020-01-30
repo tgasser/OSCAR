@@ -5,7 +5,7 @@
 ## GOAL: use the wrapper function to run historical simulations in a Monte Carlo setup
 
 ## being in the OSCAR folder, import the wrapper function
-from core_fct.fct_main import run_model
+from core_fct.fct_wrap import run_model
 
 ## import the OSCAR model
 from core_fct.fct_process import OSCAR
@@ -31,7 +31,7 @@ plt.fill_between(OUT.year, OUT.D_Tg.mean('config') - OUT.D_Tg.std('config'), OUT
 ## GOAL: use the wrapper function to run the RCP scenarios in a Monte Carlo setup
 
 ## same imports as before
-from core_fct.fct_main import run_model
+from core_fct.fct_wrap import run_model
 from core_fct.fct_process import OSCAR
 
 ## import function to load scenarios provided with OSCAR
