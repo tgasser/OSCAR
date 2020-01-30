@@ -13,6 +13,9 @@ The source code is provided firstly for transparency, and only secondly for diss
 
 ## Changelog
 
+###### v3.0.1
+* Fixed: an error in the formula of the function describing the overlap of absorption bands between CH<sub>4</sub> and N<sub>2</sub>O, causing significantly wrong RFs. This error appeared during the conversion from v2 to v3, however, and it did not affect the earlier versions of the model.
+
 ##### v3.0
 The physical equations and parameter values of this version are exactly the same as in v2.4. A few notable changes are worth mentioning here.
 * Added: an option to choose the solving scheme of the differential system. The default solving scheme is now an Eulerian exponential integrator (that typically requires fewer sub-timesteps to be stable).

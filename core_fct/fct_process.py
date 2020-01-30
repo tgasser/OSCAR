@@ -682,8 +682,8 @@ def Eq__tau_CH4(Var, Par):
 ## (Myhre et al., 1998; doi:10.1029/98GL01908)
 RF_CH4 = OSCAR.process('RF_CH4', ('D_CH4', 'D_N2O'), lambda Var, Par: Eq__RF_CH4(Var, Par), units='W m-2')
 def Eq__RF_CH4(Var, Par):
-    RF_overlap = 0.47 * np.log1p(2.01E-5 * ((Par.CH4_0 + Var.D_CH4) * (Par.N2O_0 + Var.D_N2O))**0.75 + 5.31E-15 * (Par.CH4_0 + Var.D_CH4) * ((Par.CH4_0 + Var.D_CH4) * (Par.N2O_0 + Var.D_N2O))**1.52)
-    RF_overlap -= 0.47 * np.log1p(2.01E-5 * ((Par.CH4_0 + Var.D_CH4) * Par.N2O_0)**0.75 + 5.31E-15 * (Par.CH4_0 + Var.D_CH4) * ((Par.CH4_0 + Var.D_CH4) * Par.N2O_0)**1.52)
+    RF_overlap = 0.47 * np.log1p(2.01E-5 * ((Par.CH4_0 + Var.D_CH4) * Par.N2O_0)**0.75 + 5.31E-15 * (Par.CH4_0 + Var.D_CH4) * ((Par.CH4_0 + Var.D_CH4) * (Par.N2O_0))**1.52)
+    RF_overlap -= 0.47 * np.log1p(2.01E-5 * (Par.CH4_0  * Par.N2O_0)**0.75 + 5.31E-15 * Par.CH4_0 * (Par.CH4_0 * Par.N2O_0)**1.52)
     return Par.rf_CH4 * (np.sqrt(Par.CH4_0 + Var.D_CH4) - np.sqrt(Par.CH4_0)) - RF_overlap
 
 
@@ -748,8 +748,8 @@ def Eq__tau_N2O(Var, Par):
 ## (Myhre et al., 1998; doi:10.1029/98GL01908)
 RF_N2O = OSCAR.process('RF_N2O', ('D_CH4', 'D_N2O'), lambda Var, Par: Eq__RF_N2O(Var, Par), units='W m-2')
 def Eq__RF_N2O(Var, Par):
-    RF_overlap = 0.47 * np.log1p(2.01E-5 * ((Par.CH4_0 + Var.D_CH4) * (Par.N2O_0 + Var.D_N2O))**0.75 + 5.31E-15 * (Par.CH4_0 + Var.D_CH4) * ((Par.CH4_0 + Var.D_CH4) * (Par.N2O_0 + Var.D_N2O))**1.52)
-    RF_overlap -= 0.47 * np.log1p(2.01E-5 * (Par.CH4_0 * (Par.N2O_0 + Var.D_N2O))**0.75 + 5.31E-15 * Par.CH4_0  * (Par.CH4_0 * (Par.N2O_0 + Var.D_N2O))**1.52)
+    RF_overlap = 0.47 * np.log1p(2.01E-5 * (Par.CH4_0 * (Par.N2O_0 + Var.D_N2O))**0.75 + 5.31E-15 * Par.CH4_0 * (Par.CH4_0 * (Par.N2O_0 + Var.D_N2O))**1.52)
+    RF_overlap -= 0.47 * np.log1p(2.01E-5 * (Par.CH4_0 * Par.N2O_0)**0.75 + 5.31E-15 * Par.CH4_0 * (Par.CH4_0 * Par.N2O_0)**1.52)
     return Par.rf_N2O * (np.sqrt(Par.N2O_0 + Var.D_N2O) - np.sqrt(Par.N2O_0)) - RF_overlap
 
 
