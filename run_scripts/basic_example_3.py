@@ -19,13 +19,14 @@ from core_fct.fct_misc import load_data, aggreg_region
 from core_fct.fct_process import OSCAR_landC
 
 ## set run options
-mod_region = 'Houghton_2001'
+mod_region = 'Houghton_2017'
 ind0, ind1 = 1750, 2018
 
 ## load primary parameters and generate an averaged configuration 
-## note: some 'mod_' options are prescribed to mimic ORCHIDEE/IPSL-CM5A-LR
+## note: some 'mod_' options are prescribed to mimic ORCHIDEE-CNP/IPSL-CM5A-LR
 Par0 = load_all_param(mod_region)
-Par_mc = generate_config(Par0, 1000, fixed={'mod_Fland_preind':'ORCHIDEE', 'mod_Efire_preind':'ORCHIDEE', 'mod_Eluc_agb':'ORCHIDEE',
+Par_mc = generate_config(Par0, 1000, fixed={'mod_Fland_preind':'ORCHIDEE-CNP', 'mod_Efire_preind':'off_', 
+    'mod_Eharv_preind':'ORCHIDEE-CNP', 'mod_Egraz_preind':'off_','mod_Eluc_agb':'ORCHIDEE-CNP',
     'mod_Fland_trans':'IPSL-CM5A-LR', 'mod_Efire_trans':'IPSL-CM5A-LR'})
 Par = Par_mc.mean('config')
 

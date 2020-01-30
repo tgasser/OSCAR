@@ -26,7 +26,7 @@ CONTENT
         load_ocean_CMIP5
     1.2. Land
         load_land_misc
-        load_land_TRENDYv2
+        load_land_TRENDYv7
         load_land_CMIP5
         load_land_wooduse
         load_land_GFED3
@@ -208,10 +208,6 @@ def load_land_misc(**useless):
     ## option to choose NPP functional form
     Par['fert_is_Log'] = xr.DataArray([True, False], dims='mod_Fland_fert')
 
-    ## metabolization factor
-    ## (Foley, 1995; doi:10.3402/tellusb.v47i3.16050)
-    Par['k_met'] = xr.DataArray(0.3/0.7, attrs={'units':'1'})
-
     ## characteristic time for shifting cultivation
     ## (Hurtt et al., 2006; doi:10.1111/j.1365-2486.2006.01150.x)
     Par['t_shift'] = xr.DataArray(15., attrs={'units':'yr'})
@@ -221,21 +217,17 @@ def load_land_misc(**useless):
 
 
 ## preindustrial land carbon-cycle
-## calibrated on TRENDYv2 models
-def load_land_TRENDYv2(mod_region, recalibrate=False, **useless):
-    ## TODO v3.1: take TRENDY v7
+## calibrated on TRENDYv7 models
+def load_land_TRENDYv7(mod_region, recalibrate=False, **useless):
 
     ## load from existing file
-    if os.path.isfile('input_data/parameters/from_OSCARv2/land_TRENDYv2__' + mod_region + '.nc') and not recalibrate:
-        with xr.open_dataset('input_data/parameters/from_OSCARv2/land_TRENDYv2__' + mod_region + '.nc') as TMP: 
+    if os.path.isfile('input_data/parameters/land_TRENDYv7__' + mod_region + '.nc') and not recalibrate:
+        with xr.open_dataset('input_data/parameters/land_TRENDYv7__' + mod_region + '.nc') as TMP: 
             Par = TMP.load()
     ## otherwise, launch calibration
     else:
         raise RuntimeError('embedded calibration not available yet')
-        #Par = calib_land_TRENDYv2(mod_region=mod_region)
-
-    ## drop land cover (it comes from land-use drivers)
-    Par = Par.drop(['Aland_0', 'data_LULCC'])
+        #Par = calib_land_TRENDYv7(mod_region=mod_region)
 
     ## return
     return Par
@@ -1464,7 +1456,7 @@ def load_all_param(mod_region, recalibrate=False):
 
     ## list of loading fuctions
     load_list = [load_ocean_struct, load_ocean_chem, load_ocean_CMIP5,
-        load_land_misc, load_land_TRENDYv2, load_land_CMIP5, load_land_wooduse, load_land_GFED3,
+        load_land_misc, load_land_TRENDYv7, load_land_CMIP5, load_land_wooduse, load_land_GFED3,
         load_permafrost_all, 
         load_wetlands_WETCHIMP,
         load_atmosphere_misc, load_atmosphere_CCMVal2, load_atmochem_adhoc,

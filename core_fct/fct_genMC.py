@@ -31,7 +31,7 @@ from core_fct.fct_misc import extend_timeseries
 ##################################################
 
 ## generate all Monte Carlo configurations 
-def generate_config(Par, nMC, ignored=['mean_', 'old_'], fixed={}):
+def generate_config(Par, nMC, ignored=['mean_', 'old_', 'off_'], fixed={}, return_details=False):
     '''
     Function to generate Monte Carlo configuration (= parameters) for OSCAR.
     
@@ -43,14 +43,17 @@ def generate_config(Par, nMC, ignored=['mean_', 'old_'], fixed={}):
     Output:
     -------
     Par_mc (xr.Dataset)     dataset containing MC parameters
+    mod_mc (xr.Dataset)     (optional) dataset containing the name of the chosen options for each configuration
 
     Options:
     --------
     ignored (list)          configurations containing any of the list's elements in their names will be ignored;
-                            default = ['mean_', 'old_']
+                            default = ['mean_', 'old_', 'off_']
     fixed (dict)            dict of options to be fixed (i.e. ignored by MC and taken as provided);
                             keys are configuration options (starting with 'mod_') and values are desired configuration;
                             default = {}
+    return_details (bool)   whether details on each configuration should be returned
+                            default = False
     '''
 
     print('generating MC configurations')
@@ -60,6 +63,7 @@ def generate_config(Par, nMC, ignored=['mean_', 'old_'], fixed={}):
 
     ## draw configurations (loop)
     Par_mc = []
+    mod_mc = []
     for n in range(nMC):
 
         ## pick randomly
@@ -67,10 +71,14 @@ def generate_config(Par, nMC, ignored=['mean_', 'old_'], fixed={}):
         
         ## apply fixed values and select config
         for mod in fixed.keys(): mod_dic[mod] = fixed[mod]
-        Par_mc.append(Par.sel(mod_dic, drop=True).expand_dims('config', -1).assign_coords(config=[n]))
+        Par_mc.append(Par.sel(mod_dic, drop=True).assign_coords(config=n).expand_dims('config', -1))
     
+        ## save config details
+        mod_mc.append(xr.Dataset(mod_dic).assign_coords(config=n).expand_dims('config', -1))
+
     ## concatenate configurations
     Par_mc = xr.concat(Par_mc, dim='config')
+    mod_mc = xr.concat(mod_mc, dim='config')
 
     ## remove useless configuration axis
     for VAR in Par_mc:
@@ -78,7 +86,8 @@ def generate_config(Par, nMC, ignored=['mean_', 'old_'], fixed={}):
             Par_mc[VAR] = Par_mc[VAR].sel(config=0, drop=True)
 
     ## return final dataset
-    return Par_mc
+    if not return_details: return Par_mc
+    else: return Par_mc, mod_mc
 
 
 ##################################################
