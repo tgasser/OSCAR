@@ -13,6 +13,10 @@ The source code is provided firstly for transparency, and only secondly for diss
 
 ## Changelog
 
+##### v3.1
+* Improved: land carbon cycle, exactly as described by Gasser et al. (2020). This comes with a recalibration of the module's preindustrial steady-state on TRENDYv7 models.
+* Changed: the formulation of `D_ewet` (wetlands areal emissions), to account for the new flxible structure of the land carbon cycle. This reduces the speed at which CH<sub>4</sub> emissions respond to a change in net primary productivity.
+
 ###### v3.0.1
 * Fixed: an error in the formula of the function describing the overlap of absorption bands between CH<sub>4</sub> and N<sub>2</sub>O, causing significantly wrong RFs. This error appeared during the conversion from v2 to v3, however, and it did not affect the earlier versions of the model.
 
@@ -21,7 +25,7 @@ The physical equations and parameter values of this version are exactly the same
 * Added: an option to choose the solving scheme of the differential system. The default solving scheme is now an Eulerian exponential integrator (that typically requires fewer sub-timesteps to be stable).
 * Removed: the possibility of recalibrating the model's parameters on-the-fly, and especially the regional aggregation of the land carbon cycle. For now, calibrated parameters are directly imported from OSCAR v2, but this feature will be progressively re-implemented has v3 is developed further and new calibrating data become available.
 * Changed: the global temperature 2-box model's formulation, to correspond to a more usual formulation found in climate science. This is purely esthetic; this does not change the projected global temperature.
-* Changed: the structure of the bookkeeping module for land-use emissions. Specifically, the initialisation is now coded like any other carbon-cycle flux. This does not significantly alter the module's performance.
+* Changed: the structure of the bookkeeping module for land-use emissions. Specifically, the initialisation is now coded like any other carbon cycle flux. This does not significantly alter the module's performance.
 
 #### v3
 This is a complete revamp of OSCAR, for which the code was rewritten from scratch and moved to Python 3. OSCAR v3 relies heavily on the `xarray` package (and therefore netCDF saving format), to better structure the input and output data, to more easily deal with the many dimensions of internal data, and to parallelize simulations so that the run time of a typical Monte Carlo ensemble has been significantly reduced. It also uses its own object classes (`Model` and `Process`) that make it easy to change, extend or tune the model's structure and/or equations. Because of this complete overhaul, manipulation of the model has to be learned from scratch, however.
@@ -59,6 +63,8 @@ Initial release on GitHub. Exact model used by Gasser et al. (2017).
 
 
 ## References
+
+**v3.1 (partial) |** : Gasser, T., L. Crepin, Y. Quilcaille, R. A. Houghton, P. Ciais & M. Obersteiner. "Historical CO<sub>2</sub> emissions from land-use and land-cover change and their uncertainty." *Biogeosciences Discuss.*, under review (2020). [doi:10.5194/bg-2020-33](https://doi.org/doi:10.5194/bg-2020-33)
 
 **v2.3 (partial) |** : Gasser, T., M. Kechiar, P. Ciais, E. J. Burke, T. Kleinen, D. Zhu, Y. Huang, A. Ekici & M. Obersteiner. "Path-dependent reductions in CO<sub>2</sub> emission budgets caused by permafrost carbon release." *Nature Geoscience* 11: 830-835 (2018). [doi:10.1038/s41561-018-0227-0](https://doi.org/doi:10.1038/s41561-018-0227-0)
 

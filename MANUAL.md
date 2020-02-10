@@ -1,4 +1,4 @@
-# OSCAR v3.0.1
+# OSCAR v3.1
 _Manual_ 
 
 
@@ -19,13 +19,14 @@ Here is a quick overview of the files contained in the `core_fct` folder and the
 | File | Content |
 | --- | --- |
 | `cls_main` | definition of the `Model` and `Process` classes upon which OSCAR v3 is based |
-| `fct_misc` | a bunch of useful functions, notably including the solving schemes, a generic loading function called `load_data`, and a function to regionally aggregate datasets called `aggreg_region` |
+| `fct_calib` | functions to calibrate some of the model's parameters |
 | `fct_genD` | functions to generate consistent timeseries of drivers |
 | `fct_genMC` | functions to generate the Monte Carlo setup |
 | `fct_loadD` | functions to load the primary drivers |
 | `fct_loadP` | functions to load the primary parameters, some of them being loaded from files and others manually written there |
-| `fct_wrap` | wrapper function to run the model in a not-so-flexible standard mode |
+| `fct_misc` | a bunch of useful functions, notably including the solving schemes, a generic loading function called `load_data`, and a function to regionally aggregate datasets called `aggreg_region` |
 | `fct_process` | equations for the physical processes constituting OSCAR; also contains `OSCAR` and submodels |
+| `fct_wrap` | wrapper function to run the model in a not-so-flexible standard mode |
 
 
 ## Dimensions, drivers, variables and parameters
@@ -97,36 +98,44 @@ Each of the model's variable is defined through a `Process` object; and a `Model
 | `D_npp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{npp}" />| PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
 | `f_igni` | <img src="https://latex.codecogs.com/gif.latex?\mathcal{F}_\mathrm{igni}" /> | 1 | `reg_land, bio_land` ||
 | `D_efire` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,e_\mathrm{fire}" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
-| `D_fmort` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,f_\mathrm{mort}" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> |`reg_land, bio_land` ||
+| `D_eharv` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,e_\mathrm{harv}" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
+| `D_egraz` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,e_\mathrm{graz}" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
+| `D_fmort1` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,f_\mathrm{mort1}" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> |`reg_land, bio_land` ||
+| `D_fmort2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,f_\mathrm{mort2}" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> |`reg_land, bio_land` ||
 | `f_resp` | <img src="https://latex.codecogs.com/gif.latex?\mathcal{F}_\mathrm{resp}" /> | 1 | `reg_land, bio_land` ||
-| `D_rh1` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{rh}_\mathrm{litt}" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
+| `D_rh1` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{rh}_1" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
 | `D_fmet` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,f_\mathrm{met}" /> |  PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
-| `D_rh2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{rh}_\mathrm{soil}" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
+| `D_rh2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{rh}_2" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
 | `D_nbp` | - |  PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` ||
 | `D_cveg` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,c_\mathrm{veg}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | **yes** |
-| `D_csoil1` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,c_\mathrm{litt}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | **yes** |
-| `D_csoil2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,c_\mathrm{soil}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | **yes** |
+| `D_csoil1` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,c_\mathrm{soil1}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | **yes** |
+| `D_csoil2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,c_\mathrm{soil2}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | **yes** |
 ||||||
-| `D_Fveg_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fsoil1_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fsoil2_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Fveg_bk` | <img src="https://latex.codecogs.com/gif.latex?\delta\!\,C_\mathrm{veg,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Fsoil1_bk` | <img src="https://latex.codecogs.com/gif.latex?\delta\!\,C_\mathrm{soil1,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Fsoil2_bk` | <img src="https://latex.codecogs.com/gif.latex?\delta\!\,C_\mathrm{soil2,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
 | `D_Fslash` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fhwp` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to, box_hwp` ||
-| `D_NPP_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Efire_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fmort_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_RH1_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fmet_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_RH2_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Ehwp` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_NBP_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to, box_hwp` ||
+| `D_Fslash1` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{slash1}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Fslash2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{slash2}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Fhwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{hwp}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to, box_hwp` ||
+| `D_NPP_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{NPP}_\mathrm{bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Efire_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{fire,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Eharv_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{harv,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Egraz_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{graz,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Fmort1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{mort1,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Fmort2_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{mort2,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Rh1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{Rh}_\mathrm{1,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Fmet_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{met,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Rh2_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{Rh}_\mathrm{2,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Ehwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{hwp}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to, box_hwp` ||
+| `D_NBP_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
 | `D_Eluc` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{LUC}" /> | PgC yr<sup>-1</sup> | - ||
 | `D_Fland` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{\downarrow\,land}" /> | PgC yr<sup>-1</sup> | - ||
 | `D_Aland` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,A" />  | Mha | `reg_land, bio_land` | **yes** |
-| `D_Cveg_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{veg,luc}" /> | PgC | `reg_land, bio_from, bio_to` | **yes** |
-| `D_Csoil1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{litt,luc}" /> | PgC | `reg_land, bio_from, bio_to` | **yes** |
-| `D_Csoil_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{soil,luc}" /> | PgC | `reg_land, bio_from, bio_to` | **yes** |
-| `D_Chwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{hwp,luc}" /> | PgC | `reg_land, bio_from, bio_to, box_hwp` | **yes** |
+| `D_Cveg_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{veg,bk}" /> | PgC | `reg_land, bio_from, bio_to` | **yes** |
+| `D_Csoil1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{soil1,bk}" /> | PgC | `reg_land, bio_from, bio_to` | **yes** |
+| `D_Csoil2_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{soil2,bk}" /> | PgC | `reg_land, bio_from, bio_to` | **yes** |
+| `D_Chwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{hwp}" /> | PgC | `reg_land, bio_from, bio_to, box_hwp` | **yes** |
 ||||||
 | `f_resp_pf` | - | 1 | `reg_pf` ||
 | `D_pthaw_bar` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\bar{p}_\mathrm{thaw}" /> | 1 | `reg_pf` ||
@@ -273,17 +282,17 @@ Parameters are implicitly defined when creating a model's processes. When OSCAR 
 | `g_mld` | <img src="https://latex.codecogs.com/gif.latex?\gamma_\mathrm{mld}" /> | K<sup>-1</sup> | - | `mod_Focean_trans` |
 ||||||
 | `fert_is_Log` | - | `bool` | - | `mod_Fland_fert` |
-| `k_met` | <img src="https://latex.codecogs.com/gif.latex?\kappa_\mathrm{met}" /> | 1 | - | - |
 | `t_shift` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{shift}" /> | yr | - | - |
 ||||||
 | `npp_0` | <img src="https://latex.codecogs.com/gif.latex?\eta" /> | PgC Mha<sup>-1</sup> yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind` |
 | `igni_0` | <img src="https://latex.codecogs.com/gif.latex?\iota" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Efire_preind` |
-| `cveg_0` | <img src="https://latex.codecogs.com/gif.latex?c_{\mathrm{veg},0}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind, mod_Efire_preind` |
-| `mu_0` | <img src="https://latex.codecogs.com/gif.latex?\mu" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind` |
-| `rho1_0` | <img src="https://latex.codecogs.com/gif.latex?\rho_\mathrm{litt}" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind` |
-| `csoil1_0` | <img src="https://latex.codecogs.com/gif.latex?c_{\mathrm{litt},0}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind, mod_Efire_preind` |
-| `rho2_0` | <img src="https://latex.codecogs.com/gif.latex?\rho_\mathrm{soil}" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind` |
-| `csoil2_0` | <img src="https://latex.codecogs.com/gif.latex?c_{\mathrm{soil},0}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind, mod_Efire_preind` |
+| `harv_0` | <img src="https://latex.codecogs.com/gif.latex?\epsilon_\mathrm{harv}" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Eharv_preind` |
+| `graz_0` | <img src="https://latex.codecogs.com/gif.latex?\epsilon_\mathrm{graz}" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Egraz_preind` |
+| `mu1_0` | <img src="https://latex.codecogs.com/gif.latex?\mu_1" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind` |
+| `mu2_0` | <img src="https://latex.codecogs.com/gif.latex?\mu_2" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind` |
+| `muM_0` | <img src="https://latex.codecogs.com/gif.latex?\mu_\mathrm{met}" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind` |
+| `rho1_0` | <img src="https://latex.codecogs.com/gif.latex?\rho_1" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind` |
+| `rho2_0` | <img src="https://latex.codecogs.com/gif.latex?\rho_2" /> | yr<sup>-1</sup> | `reg_land, bio_land` | `mod_Fland_preind` |
 | `p_agb` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{agb}" /> | 1 | `reg_land, bio_land` | `mod_Eluc_agb` |
 ||||||
 | `b_npp` | <img src="https://latex.codecogs.com/gif.latex?\beta_\mathrm{npp}" /> | 1 | `reg_land, bio_land` | `mod_Fland_trans` |
