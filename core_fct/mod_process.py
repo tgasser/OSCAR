@@ -63,7 +63,6 @@ B. SUB-MODELS
 ##################################################
 
 import numpy as np
-import xarray as xr
 
 from core_fct.cls_main import Model
 from core_fct.fct_misc import Int_ExpInt as Int_dflt
@@ -316,53 +315,64 @@ def DiffEq__D_csoil2(Var, Par, Int=Int_dflt, dt=1.):
 ## land-use book-keeping initialization of vegetation carbon
 D_Fveg_bk = OSCAR.process('D_Fveg_bk', ('cveg_0', 'D_cveg', 'd_Acover', 'd_Hwood', 'd_Ashift'), lambda Var, Par: Eq__D_Fveg_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Fveg_bk(Var, Par):
-    D_Fveg_bk_lcc = -(Var.cveg_0 + Var.D_cveg).rename({'bio_land':'bio_to'}) * Var.d_Acover
-    D_Fveg_bk_harv = -0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Acover.bio_from == Var.d_Acover.bio_to, 0.)
-    D_Fveg_bk_shift = -((Var.cveg_0 + Var.D_cveg) * (1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift))).rename({'bio_land':'bio_to'}) * Var.d_Ashift
+    ## ancillary
+    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+    ## main values
+    D_Fveg_bk_lcc = -(Var.cveg_0 + Var.D_cveg) * Var.d_Acover.sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
+    D_Fveg_bk_harv = -Var.d_Hwood
+    D_Fveg_bk_shift = -(Var.cveg_0 + Var.D_cveg) * p_shift * Var.d_Ashift.sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
     return D_Fveg_bk_lcc + D_Fveg_bk_harv + D_Fveg_bk_shift
 
 
 ## land-use book-keeping initialization of litter carbon
 D_Fsoil1_bk = OSCAR.process('D_Fsoil1_bk', ('csoil1_0', 'D_csoil1', 'd_Acover'), lambda Var, Par: Eq__D_Fsoil1_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Fsoil1_bk(Var, Par):
-    D_Fsoil1_bk_lcc = ((Var.csoil1_0 + Var.D_csoil1).rename({'bio_land':'bio_from'}) - (Var.csoil1_0 + Var.D_csoil1).rename({'bio_land':'bio_to'})) * Var.d_Acover
+    D_Fsoil1_bk_lcc = (((Var.csoil1_0 + Var.D_csoil1).rename({'bio_land':'bio_from'}) - (Var.csoil1_0 + Var.D_csoil1).rename({'bio_land':'bio_to'})) * Var.d_Acover).sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
     return D_Fsoil1_bk_lcc
 
 
 ## land-use book-keeping initialization of soil carbon
 D_Fsoil2_bk = OSCAR.process('D_Fsoil2_bk', ('csoil2_0', 'D_csoil2', 'd_Acover'), lambda Var, Par: Eq__D_Fsoil2_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Fsoil2_bk(Var, Par):
-    D_Fsoil2_bk_lcc = ((Var.csoil2_0 + Var.D_csoil2).rename({'bio_land':'bio_from'}) - (Var.csoil2_0 + Var.D_csoil2).rename({'bio_land':'bio_to'})) * Var.d_Acover
+    D_Fsoil2_bk_lcc = (((Var.csoil2_0 + Var.D_csoil2).rename({'bio_land':'bio_from'}) - (Var.csoil2_0 + Var.D_csoil2).rename({'bio_land':'bio_to'})) * Var.d_Acover).sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
     return D_Fsoil2_bk_lcc
 
 
-## land-use initial slash flux
-D_Fslash = OSCAR.process('D_Fslash', ('cveg_0', 'D_cveg', 'd_Acover', 'd_Hwood', 'd_Ashift'), lambda Var, Par: Eq__D_Fslash(Var, Par), units='PgC yr-1')
-def Eq__D_Fslash(Var, Par):
-    D_Fslash_lcc = ((Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb))).rename({'bio_land':'bio_from'}) * Var.d_Acover
-    D_Fslash_harv = (1 - Par.p_hwp.sum('box_hwp', min_count=1)).rename({'bio_land':'bio_from'}) * 0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Acover.bio_from == Var.d_Acover.bio_to, 0.)
-    D_Fslash_shift = ((Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb)) * (1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift))).rename({'bio_land':'bio_from'}) * Var.d_Ashift
+## land-use initial slash flux to litter pool
+D_Fslash1 = OSCAR.process('D_Fslash1', ('cveg_0', 'D_cveg', 'd_Acover', 'd_Hwood', 'd_Ashift'), lambda Var, Par: Eq__D_Fslash1(Var, Par), units='PgC yr-1')
+def Eq__D_Fslash1(Var, Par):
+    ## ancillary
+    p_mu1 = Par.mu1_0 / (Par.mu1_0 + Par.mu2_0)
+    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+    ## main values
+    D_Fslash_lcc = ((p_mu1 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb))).rename({'bio_land':'bio_from'}) * Var.d_Acover).sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
+    D_Fslash_harv = p_mu1 * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) * Var.d_Hwood
+    D_Fslash_shift = ((p_mu1 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb)) * p_shift).rename({'bio_land':'bio_from'}) * Var.d_Ashift).sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
     return D_Fslash_lcc + D_Fslash_harv + D_Fslash_shift
 
 
-## land-use slash flux to litter pool
-D_Fslash1 = OSCAR.process('D_Fslash1', ('D_Fslash',), lambda Var, Par: Eq__D_Fslash1(Var, Par), units='PgC yr-1')
-def Eq__D_Fslash1(Var, Par):
-    return (Par.mu1_0 / (Par.mu1_0 + Par.mu2_0)).rename({'bio_land':'bio_from'}) * Var.D_Fslash
-
-
-## land-use slash flux to soil pool
-D_Fslash2 = OSCAR.process('D_Fslash2', ('D_Fslash',), lambda Var, Par: Eq__D_Fslash2(Var, Par), units='PgC yr-1')
+## land-use initial slash flux to soil pool
+D_Fslash2 = OSCAR.process('D_Fslash2', ('cveg_0', 'D_cveg', 'd_Acover', 'd_Hwood', 'd_Ashift'), lambda Var, Par: Eq__D_Fslash2(Var, Par), units='PgC yr-1')
 def Eq__D_Fslash2(Var, Par):
-    return (Par.mu2_0 / (Par.mu1_0 + Par.mu2_0)).rename({'bio_land':'bio_from'}) * Var.D_Fslash
+    ## ancillary
+    p_mu2 = Par.mu2_0 / (Par.mu1_0 + Par.mu2_0)
+    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+    ## main values
+    D_Fslash_lcc = ((p_mu2 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb))).rename({'bio_land':'bio_from'}) * Var.d_Acover).sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
+    D_Fslash_harv = p_mu2 * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) * Var.d_Hwood
+    D_Fslash_shift = ((p_mu2 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb)) * p_shift).rename({'bio_land':'bio_from'}) * Var.d_Ashift).sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
+    return D_Fslash_lcc + D_Fslash_harv + D_Fslash_shift
 
 
 ## land-use initial flux to harvested wood product pools
 D_Fhwp = OSCAR.process('D_Fhwp', ('cveg_0', 'D_cveg', 'd_Acover', 'd_Hwood', 'd_Ashift'), lambda Var, Par: Eq__D_Fhwp(Var, Par), units='PgC yr-1')
 def Eq__D_Fhwp(Var, Par):
-    D_Fhwp_lcc = ((Var.cveg_0 + Var.D_cveg) * Par.p_agb * Par.p_hwp).rename({'bio_land':'bio_from'}) * Var.d_Acover
-    D_Fhwp_harv = Par.p_hwp.rename({'bio_land':'bio_from'}) * 0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Acover.bio_from == Var.d_Acover.bio_to, 0.)
-    D_Fhwp_shift = ((Var.cveg_0 + Var.D_cveg) * Par.p_agb * Par.p_hwp * (1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift))).rename({'bio_land':'bio_from'}) * Var.d_Ashift
+    ## ancillary
+    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+    ## main values
+    D_Fhwp_lcc = (((Var.cveg_0 + Var.D_cveg) * Par.p_agb * Par.p_hwp).rename({'bio_land':'bio_from'}) * Var.d_Acover).sum('bio_to', min_count=1).rename({'bio_from':'bio_land'})
+    D_Fhwp_harv = Par.p_hwp * Var.d_Hwood
+    D_Fhwp_shift = (((Var.cveg_0 + Var.D_cveg) * Par.p_agb * Par.p_hwp * p_shift).rename({'bio_land':'bio_from'}) * Var.d_Ashift).sum('bio_to', min_count=1).rename({'bio_from':'bio_land'})
     return D_Fhwp_lcc + D_Fhwp_harv + D_Fhwp_shift
 
 
@@ -375,49 +385,49 @@ def Eq__D_NPP_bk(Var, Par):
 ## wildfire emissions (under book-keeping)
 D_Efire_bk = OSCAR.process('D_Efire_bk', ('f_igni', 'D_Cveg_bk'), lambda Var, Par: Eq__D_Efire_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Efire_bk(Var, Par):
-    return (Par.igni_0 * Var.f_igni).rename({'bio_land':'bio_to'}) * Var.D_Cveg_bk
+    return Par.igni_0 * Var.f_igni * Var.D_Cveg_bk
 
 
 ## crop harvest emissions (under book-keeping)
 D_Eharv_bk = OSCAR.process('D_Eharv_bk', ('D_Cveg_bk',), lambda Var, Par: Eq__D_Eharv_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Eharv_bk(Var, Par):
-    return Par.harv_0.rename({'bio_land':'bio_to'}) * Var.D_Cveg_bk
+    return Par.harv_0 * Var.D_Cveg_bk
 
 
 ## pasture grazing emissions (under book-keeping)
 D_Egraz_bk = OSCAR.process('D_Egraz_bk', ('D_Cveg_bk',), lambda Var, Par: Eq__D_Egraz_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Egraz_bk(Var, Par):
-    return Par.graz_0.rename({'bio_land':'bio_to'}) * Var.D_Cveg_bk
+    return Par.graz_0 * Var.D_Cveg_bk
 
 
 ## mortality flux to litter (under book-keeping)
 D_Fmort1_bk = OSCAR.process('D_Fmort1_bk', ('D_Cveg_bk',), lambda Var, Par: Eq__D_Fmort1_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Fmort1_bk(Var, Par):
-    return Par.mu1_0.rename({'bio_land':'bio_to'}) * Var.D_Cveg_bk
+    return Par.mu1_0 * Var.D_Cveg_bk
 
 
 ## mortality flux to soil (under book-keeping)
 D_Fmort2_bk = OSCAR.process('D_Fmort2_bk', ('D_Cveg_bk',), lambda Var, Par: Eq__D_Fmort2_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Fmort2_bk(Var, Par):
-    return Par.mu2_0.rename({'bio_land':'bio_to'}) * Var.D_Cveg_bk
+    return Par.mu2_0 * Var.D_Cveg_bk
 
 
 ## litter respiration flux (under book-keeping)
 D_Rh1_bk = OSCAR.process('D_Rh1_bk', ('f_resp', 'D_Csoil1_bk'), lambda Var, Par: Eq__D_Rh1_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Rh1_bk(Var, Par):
-    return (Par.rho1_0 * Var.f_resp).rename({'bio_land':'bio_to'}) * Var.D_Csoil1_bk
+    return Par.rho1_0 * Var.f_resp * Var.D_Csoil1_bk
 
 
 ## metabolisation flux (under book-keeping)
 D_Fmet_bk = OSCAR.process('D_Fmet_bk', ('f_resp', 'D_Csoil1_bk'), lambda Var, Par: Eq__D_Fmet_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Fmet_bk(Var, Par):
-    return (Par.muM_0 * Var.f_resp).rename({'bio_land':'bio_to'}) * Var.D_Csoil1_bk
+    return Par.muM_0 * Var.f_resp * Var.D_Csoil1_bk
 
 
 ## soil respiration flux (under book-keeping)
 D_Rh2_bk = OSCAR.process('D_Rh2_bk', ('f_resp', 'D_Csoil2_bk'), lambda Var, Par: Eq__D_Rh2_bk(Var, Par), units='PgC yr-1')
 def Eq__D_Rh2_bk(Var, Par):
-    return (Par.rho2_0 * Var.f_resp).rename({'bio_land':'bio_to'}) * Var.D_Csoil2_bk
+    return Par.rho2_0 * Var.f_resp * Var.D_Csoil2_bk
 
 
 ## harvested wood product oxidation
@@ -435,7 +445,7 @@ def Eq__D_NBP_bk(Var, Par):
 ## land-use change emissions
 D_Eluc = OSCAR.process('D_Eluc', ('D_NBP_bk',), lambda Var, Par: Eq__D_Eluc(Var, Par), units='PgC yr-1')
 def Eq__D_Eluc(Var, Par):
-    return -Var.D_NBP_bk.sum('bio_from', min_count=1).sum('bio_to', min_count=1).sum('reg_land', min_count=1)
+    return -Var.D_NBP_bk.sum('bio_land', min_count=1).sum('reg_land', min_count=1)
 
 
 ## land carbon sink
@@ -457,28 +467,28 @@ def DiffEq__D_Aland(Var, Par, Int=Int_dflt, dt=1.):
 
 
 ## PROGNOSTIC: vegetation carbon stock (under book-keeping)
-D_Cveg_bk = OSCAR.process('D_Cveg_bk', ('D_Cveg_bk', 'D_Fveg_bk', 'D_NPP_bk', 'D_Efire_bk', 'D_Eharv_bk', 'D_Egraz_bk', 'D_Fmort1_bk', 'D_Fmort2_bk'), lambda Var, Par, **Int_args: DiffEq__D_Cveg_bk(Var, Par, **Int_args), units='PgC', core_dims=['reg_land', 'bio_from', 'bio_to'])
+D_Cveg_bk = OSCAR.process('D_Cveg_bk', ('D_Cveg_bk', 'D_Fveg_bk', 'D_NPP_bk', 'D_Efire_bk', 'D_Eharv_bk', 'D_Egraz_bk', 'D_Fmort1_bk', 'D_Fmort2_bk'), lambda Var, Par, **Int_args: DiffEq__D_Cveg_bk(Var, Par, **Int_args), units='PgC', core_dims=['reg_land', 'bio_land'])
 def DiffEq__D_Cveg_bk(Var, Par, Int=Int_dflt, dt=1.):
-    v = (Par.igni_0 + Par.harv_0 + Par.graz_0 + Par.mu1_0 + Par.mu2_0).rename({'bio_land':'bio_to'})
+    v = Par.igni_0 + Par.harv_0 + Par.graz_0 + Par.mu1_0 + Par.mu2_0
     return Int(Var.D_Cveg_bk, v, Var.D_Fveg_bk + Var.D_NPP_bk - Var.D_Efire_bk - Var.D_Eharv_bk - Var.D_Egraz_bk - Var.D_Fmort1_bk - Var.D_Fmort2_bk, dt)
 
 
 ## PROGNOSTIC: litter carbon stock (under book-keeping)
-D_Csoil1_bk = OSCAR.process('D_Csoil1_bk', ('D_Csoil1_bk', 'D_Fsoil1_bk', 'D_Fslash1', 'D_Fmort1_bk', 'D_Rh1_bk', 'D_Fmet_bk'), lambda Var, Par, **Int_args: DiffEq__D_Csoil1_bk(Var, Par, **Int_args), units='PgC', core_dims=['reg_land', 'bio_from', 'bio_to'])
+D_Csoil1_bk = OSCAR.process('D_Csoil1_bk', ('D_Csoil1_bk', 'D_Fsoil1_bk', 'D_Fslash1', 'D_Fmort1_bk', 'D_Rh1_bk', 'D_Fmet_bk'), lambda Var, Par, **Int_args: DiffEq__D_Csoil1_bk(Var, Par, **Int_args), units='PgC', core_dims=['reg_land', 'bio_land'])
 def DiffEq__D_Csoil1_bk(Var, Par, Int=Int_dflt, dt=1.):
-    v = (Par.rho1_0 + Par.muM_0).where(Par.rho1_0 + Par.muM_0 != 0, 1E-18).rename({'bio_land':'bio_to'})
+    v = (Par.rho1_0 + Par.muM_0).where(Par.rho1_0 + Par.muM_0 != 0, 1E-18)
     return Int(Var.D_Csoil1_bk, v, Var.D_Fsoil1_bk + Var.D_Fslash1 + Var.D_Fmort1_bk - Var.D_Rh1_bk - Var.D_Fmet_bk, dt)
 
 
 ## PROGNOSTIC: soil carbon stock (under book-keeping)
-D_Csoil2_bk = OSCAR.process('D_Csoil2_bk', ('D_Csoil2_bk', 'D_Fsoil2_bk', 'D_Fslash2', 'D_Fmort2_bk', 'D_Fmet_bk', 'D_Rh2_bk'), lambda Var, Par, **Int_args: DiffEq__D_Csoil2_bk(Var, Par, **Int_args), units='PgC', core_dims=['reg_land', 'bio_from', 'bio_to'])
+D_Csoil2_bk = OSCAR.process('D_Csoil2_bk', ('D_Csoil2_bk', 'D_Fsoil2_bk', 'D_Fslash2', 'D_Fmort2_bk', 'D_Fmet_bk', 'D_Rh2_bk'), lambda Var, Par, **Int_args: DiffEq__D_Csoil2_bk(Var, Par, **Int_args), units='PgC', core_dims=['reg_land', 'bio_land'])
 def DiffEq__D_Csoil2_bk(Var, Par, Int=Int_dflt, dt=1.):
-    v = Par.rho2_0.rename({'bio_land':'bio_to'})
+    v = Par.rho2_0
     return Int(Var.D_Csoil2_bk, v, Var.D_Fsoil2_bk + Var.D_Fslash2 + Var.D_Fmort2_bk + Var.D_Fmet_bk - Var.D_Rh2_bk, dt)
 
 
 ## PROGNOSTIC: harvested wood products stock
-D_Chwp = OSCAR.process('D_Chwp', ('D_Chwp', 'D_Fhwp', 'D_Ehwp'), lambda Var, Par, **Int_args: DiffEq__D_Chwp(Var, Par, **Int_args), units='PgC', core_dims=['reg_land', 'bio_from', 'bio_to', 'box_hwp'])
+D_Chwp = OSCAR.process('D_Chwp', ('D_Chwp', 'D_Fhwp', 'D_Ehwp'), lambda Var, Par, **Int_args: DiffEq__D_Chwp(Var, Par, **Int_args), units='PgC', core_dims=['reg_land', 'bio_land', 'box_hwp'])
 def DiffEq__D_Chwp(Var, Par, Int=Int_dflt, dt=1.):
     v = 1 / Par.w_t_hwp / Par.t_hwp
     return Int(Var.D_Chwp, v, Var.D_Fhwp - Var.D_Ehwp, dt)
@@ -608,7 +618,7 @@ def Eq__RF_CO2(Var, Par):
 ## CO2 emissions from natural biomass burning (= wildfire)
 D_Efire = OSCAR.process('D_Efire', ('cveg_0', 'D_efire', 'D_Aland', 'D_Efire_bk'), lambda Var, Par: Eq__D_Efire(Var, Par), units='PgC yr-1')
 def Eq__D_Efire(Var, Par):
-    return Par.igni_0 * Var.cveg_0 * Var.D_Aland + Var.D_efire * (Par.Aland_0 + Var.D_Aland) + Var.D_Efire_bk.sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
+    return Par.igni_0 * Var.cveg_0 * Var.D_Aland + Var.D_efire * (Par.Aland_0 + Var.D_Aland) + Var.D_Efire_bk
 
 
 ## non-CO2 emissions from natural biomass burning
@@ -620,7 +630,7 @@ def Eq__D_Ebb_nat(Var, Par):
 ## non-CO2 emissions from anthropogenic biomass burning
 D_Ebb_ant = OSCAR.process('D_Ebb_ant', ('D_Ehwp',), lambda Var, Par: Eq__D_Ebb_ant(Var, Par), units='TgX yr-1')
 def Eq__D_Ebb_ant(Var, Par):
-    return Par.a_bb * (Par.p_hwp_bb * Var.D_Ehwp).sum('box_hwp', min_count=1).sum('bio_to', min_count=1).rename({'bio_from':'bio_land'})
+    return Par.a_bb * (Par.p_hwp_bb * Var.D_Ehwp).sum('box_hwp', min_count=1)
 
 
 ## non-CO2 total emissions from biomass burning

@@ -220,12 +220,24 @@ class Model():
         if var_miss != set(): raise RuntimeError('missing forcing variables: {0}'.format(str(var_miss).replace("'", "")))
         if time_axis not in For.coords: raise RuntimeError("forcing dataset has no time axis: '{0}'".format(time_axis))
 
+    ## get zeroed initial conditions
+    def _get_Ini(self, Par, For):
+        Ini = xr.Dataset()
+        for var in list(self.var_prog):
+            if len(self[var].core_dims) == 0: 
+                Ini[var] = xr.DataArray(0.)
+            elif all([dim in set(Par.dims) | set(For.dims) for dim in self[var].core_dims]): 
+                Ini[var] = sum([xr.zeros_like(Par[dim], dtype=float) if dim in Par.coords else xr.zeros_like(For[dim], dtype=float) for dim in self[var].core_dims])
+            else:
+                raise RuntimeError("cannot auto-create initial conditions")
+        return Ini
+
     ## running model
     def __call__(self, Ini, Par, For, dtype=np.float32, var_keep=[], keep_prog=True, time_axis='year', Int=Int_dflt, nt=2, no_warnings=True):
         '''
         Input:
         ------
-        Ini (xr.Dataset)        initial conditions
+        Ini (xr.Dataset)        initial conditions (set to None for automatic nil values)
         Par (xr.Dataset)        parameters
         For (xr.Dataset)        forcing data
 
@@ -251,9 +263,10 @@ class Model():
 
         ## various checks
         self._check_solvable()
-        self._check_Ini(Ini)
         self._check_For(For, time_axis)
-        
+        if Ini is None: Ini = self._get_Ini(Par, For)
+        else: self._check_Ini(Ini)
+
         ## force data type
         if dtype is not None:
             Ini = Ini.astype(dtype)
@@ -281,7 +294,7 @@ class Model():
             Var_old = Ini.copy(deep=True)
             for lvl in np.sort(list(levels.keys()))[1:]:
                 for var in levels[lvl]:
-                    Var_old[var] = self._processes[var](Var_old, Par, For.sel({time_axis:time[0]}, drop=True))
+                    Var_old[var] = self[var](Var_old, Par, For.sel({time_axis:time[0]}, drop=True))
 
             ## initialization of kept variables
             Var_out = Var_old.drop([var for var in Var_old if var not in (list(self.var_prog)) * keep_prog + var_keep])
@@ -301,12 +314,12 @@ class Model():
 
                     ## 1. prognostic variables
                     for var in self.var_prog:
-                        Var_new[var] = self._processes[var](Var_old, Par, For_t, dt=dt/nt, Int=Int)
+                        Var_new[var] = self[var](Var_old, Par, For_t, dt=dt/nt, Int=Int)
                     
                     ## 2. diagnostic variables
                     for lvl in np.sort(list(levels.keys()))[1:]:
                         for var in levels[lvl]:
-                            Var_new[var] = self._processes[var](Var_new, Par, For_t)
+                            Var_new[var] = self[var](Var_new, Par, For_t)
 
                     ## finalize (iterate variables)
                     Var_old = Var_new.copy(deep=True)
@@ -324,7 +337,7 @@ class Model():
 
             ## add units to output
             for var in Var_out: 
-                Var_out[var].attrs['units'] = self._processes[var].units
+                Var_out[var].attrs['units'] = self[var].units
 
         ## printing time counter
         print('total running time: {:.0f} seconds'.format(perf_counter() - t0))

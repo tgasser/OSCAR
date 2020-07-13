@@ -16,7 +16,7 @@ from core_fct.fct_loadD import load_landuse_hist
 from core_fct.fct_misc import load_data, aggreg_region
 
 ## import submodel that contains only the land carbon cycle
-from core_fct.fct_process import OSCAR_landC
+from core_fct.mod_process import OSCAR_landC
 
 ## set run options
 mod_region = 'Houghton_2017'
@@ -48,18 +48,8 @@ For = For.fillna(0).sel(year=slice(1900)).combine_first(For)
 Par['Aland_0'] = For.Aland_0
 For = For.drop('Aland_0')
 
-## create initial state
-Ini = xr.Dataset()
-for VAR in ['D_Aland', 'D_cveg', 'D_csoil1', 'D_csoil2']:
-    Ini[VAR] = xr.zeros_like(Par.reg_land) + xr.zeros_like(Par.bio_land)
-for VAR in ['D_Cveg_bk', 'D_Csoil1_bk', 'D_Csoil2_bk']:
-    Ini[VAR] = xr.zeros_like(Par.reg_land) + xr.zeros_like(For.bio_from) + xr.zeros_like(For.bio_to)
-for VAR in ['D_Chwp']:
-    Ini[VAR] = xr.zeros_like(Par.reg_land) + xr.zeros_like(For.bio_from) + xr.zeros_like(For.bio_to) + xr.zeros_like(Par.box_hwp)
-Ini = Ini.astype(float)
-
 ## run OSCAR land carbon cycle
-OUT = OSCAR_landC(Ini=Ini, Par=Par, For=For)
+OUT = OSCAR_landC(Ini=None, Par=Par, For=For)
 
 ## DAMNED! forgot to specify which diagnostic variables to keep
 ## SOLUTION: recursively call the corresponding process of the model using the computed prognostic variables as input

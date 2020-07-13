@@ -15,7 +15,7 @@ The source code is provided firstly for transparency, and only secondly for diss
 
 ##### v3.1
 * Improved: land carbon cycle, exactly as described by Gasser et al. (2020). This comes with a recalibration of the module's preindustrial steady-state on TRENDYv7 models.
-* Changed: the formulation of `D_ewet` (wetlands areal emissions), to account for the new flxible structure of the land carbon cycle. This reduces the speed at which CH<sub>4</sub> emissions respond to a change in net primary productivity.
+* Changed: the formulation of `D_ewet` (wetlands areal emissions), to account for the new flexible structure of the land carbon cycle. This reduces the speed at which CH<sub>4</sub> emissions respond to a change in net primary productivity.
 
 ###### v3.0.1
 * Fixed: an error in the formula of the function describing the overlap of absorption bands between CH<sub>4</sub> and N<sub>2</sub>O, causing significantly wrong RFs. This error appeared during the conversion from v2 to v3, however, and it did not affect the earlier versions of the model.
@@ -64,8 +64,8 @@ Initial release on GitHub. Exact model used by Gasser et al. (2017).
 
 ## References
 
-**v3.1 (partial) |** : Gasser, T., L. Crepin, Y. Quilcaille, R. A. Houghton, P. Ciais & M. Obersteiner. "Historical CO<sub>2</sub> emissions from land-use and land-cover change and their uncertainty." *Biogeosciences Discuss.*, under review (2020). [doi:10.5194/bg-2020-33](https://doi.org/doi:10.5194/bg-2020-33)
+**v3.1 (partial) |** Gasser, T., L. Crepin, Y. Quilcaille, R. A. Houghton, P. Ciais & M. Obersteiner. "Historical CO<sub>2</sub> emissions from land-use and land-cover change and their uncertainty." *Biogeosciences Discuss.*, under review (2020). [doi:10.5194/bg-2020-33](https://doi.org/doi:10.5194/bg-2020-33)
 
-**v2.3 (partial) |** : Gasser, T., M. Kechiar, P. Ciais, E. J. Burke, T. Kleinen, D. Zhu, Y. Huang, A. Ekici & M. Obersteiner. "Path-dependent reductions in CO<sub>2</sub> emission budgets caused by permafrost carbon release." *Nature Geoscience* 11: 830-835 (2018). [doi:10.1038/s41561-018-0227-0](https://doi.org/doi:10.1038/s41561-018-0227-0)
+**v2.3 (partial) |** Gasser, T., M. Kechiar, P. Ciais, E. J. Burke, T. Kleinen, D. Zhu, Y. Huang, A. Ekici & M. Obersteiner. "Path-dependent reductions in CO<sub>2</sub> emission budgets caused by permafrost carbon release." *Nature Geoscience* 11: 830-835 (2018). [doi:10.1038/s41561-018-0227-0](https://doi.org/doi:10.1038/s41561-018-0227-0)
 
 **v2.2 (full) |** Gasser, T., P. Ciais, O. Boucher, Y. Quilcaille, M. Tortora, L. Bopp & D. Hauglustaine. "The compact Earth system model OSCAR v2.2: description and first results." *Geoscientific Model Development* 10: 271-319 (2017). [doi:10.5194/gmd-10-271-2017](https://doi.org/doi:10.5194/gmd-10-271-2017)

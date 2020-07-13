@@ -8,7 +8,7 @@
 from core_fct.fct_wrap import run_model
 
 ## import the OSCAR model
-from core_fct.fct_process import OSCAR
+from core_fct.mod_process import OSCAR
 
 ## run the model and save output
 ## note: the creation of secondary drivers is rather long!
@@ -32,7 +32,7 @@ plt.fill_between(OUT.year, OUT.D_Tg.mean('config') - OUT.D_Tg.std('config'), OUT
 
 ## same imports as before
 from core_fct.fct_wrap import run_model
-from core_fct.fct_process import OSCAR
+from core_fct.mod_process import OSCAR
 
 ## import function to load scenarios provided with OSCAR
 from core_fct.fct_loadD import load_all_scen

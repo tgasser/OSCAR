@@ -5,9 +5,9 @@ _Manual_
 ## Basic simulation
 
 Essentially, to make a basic simulation one must: 
-1. import the `OSCAR` object from `core_fct.fct_process`; 
-2. define the `Ini` (initial state), `For` (forcing data) and `Par` (parameters) arguments; 
-3. call `OSCAR` with these arguments (and possibly other optional arguments). 
+1. import the `OSCAR` object from `core_fct.mod_process`; 
+2. define the `For` (forcing data) and `Par` (parameters) arguments;
+3. call `OSCAR` with these arguments (and possibly other optional arguments, like `Ini` (initial state)). 
 
 The `run_model` function found in `core_fct.fct_wrap` is a wrapper that does all that and more, using internal data for forcings and parameters. However, this function may not be adequate for advanced usage of OSCAR, in which case it should be used as inspiration for defining one's own run scripts. To further help with this, the `run_scripts` folder contains a few basic examples.
 
@@ -24,9 +24,10 @@ Here is a quick overview of the files contained in the `core_fct` folder and the
 | `fct_genMC` | functions to generate the Monte Carlo setup |
 | `fct_loadD` | functions to load the primary drivers |
 | `fct_loadP` | functions to load the primary parameters, some of them being loaded from files and others manually written there |
+| `fct_process_alt` | functions to replace some processes with alternative formulations |
 | `fct_misc` | a bunch of useful functions, notably including the solving schemes, a generic loading function called `load_data`, and a function to regionally aggregate datasets called `aggreg_region` |
-| `fct_process` | equations for the physical processes constituting OSCAR; also contains `OSCAR` and submodels |
 | `fct_wrap` | wrapper function to run the model in a not-so-flexible standard mode |
+| `mod_process` | equations for the physical processes constituting OSCAR; also contains `OSCAR` and submodels |
 
 
 ## Dimensions, drivers, variables and parameters

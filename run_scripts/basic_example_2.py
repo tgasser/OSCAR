@@ -7,7 +7,7 @@
 ## imports
 import xarray as xr
 import matplotlib.pyplot as plt
-from core_fct.fct_process import OSCAR
+from core_fct.mod_process import OSCAR
 from core_fct.fct_loadD import load_all_hist
 from core_fct.fct_loadP import load_all_param
 from core_fct.fct_genMC import generate_config
@@ -46,11 +46,8 @@ Par_av['Aland_0'] = For_bg.Aland_0
 For_bg = For_bg.drop('Aland_0')
 
 ## create initial state
-## note: basically copy-pasted from 'run_model'
-Ini = xr.Dataset()
-for VAR in list(OSCAR.var_prog):
-    if len(OSCAR[VAR].core_dims) == 0: Ini[VAR] = xr.DataArray(0.)
-    else: Ini[VAR] = sum([xr.zeros_like(Par0[dim], dtype=float) if dim in Par0.coords else xr.zeros_like(For0[dim], dtype=float) for dim in OSCAR[VAR].core_dims])
+## note: can be set to None to ask the model to create zero-valued xarrays by itself
+Ini = None
 
 ## run control simulation
 ## note: OSCARv3 is comparatively slow when running with only one set of drivers parameters, because of all the xarray packing/unpacking; better use a MC setup!
