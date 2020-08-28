@@ -444,6 +444,12 @@ def Eq__D_Fland(Var, Par):
     return (Var.D_nbp * (Par.Aland_0 + Var.D_Aland)).sum('bio_land', min_count=1).sum('reg_land', min_count=1)
 
 
+## METRIC: loss of sink capacity
+D_Flasc = OSCAR.process('D_Flasc', ('D_nbp', 'D_Aland'), lambda Var, Par: Eq__D_Flasc(Var, Par), units='PgC yr-1')
+def Eq__D_Flasc(Var, Par):
+    return (Var.D_nbp * Var.D_Aland).sum('bio_land', min_count=1).sum('reg_land', min_count=1)
+
+
 ## PROGNOSTIC: biome area
 D_Aland = OSCAR.process('D_Aland', ('D_Aland', 'd_Acover'), lambda Var, Par, **Int_args: DiffEq__D_Aland(Var, Par, **Int_args), units='Mha', core_dims=['reg_land', 'bio_land'])
 def DiffEq__D_Aland(Var, Par, Int=Int_dflt, dt=1.):
@@ -564,6 +570,12 @@ def DiffEq__D_Cthaw(Var, Par, Int=Int_dflt, dt=1.):
 D_CO2 = OSCAR.process('D_CO2', ('D_CO2', 'Eff', 'D_Eluc', 'D_Epf_CO2', 'D_Fland', 'D_Focean', 'D_Foxi_CH4'), lambda Var, Par, **Int_args: DiffEq__D_CO2(Var, Par, **Int_args), units='ppm')
 def DiffEq__D_CO2(Var, Par, Int=Int_dflt, dt=1.):
     return Int(Var.D_CO2, 1E-18, 1/Par.a_CO2 * (Var.Eff.sum('reg_land', min_count=1) + Var.D_Eluc + Var.D_Epf_CO2.sum('reg_pf', min_count=1) - Var.D_Fland - Var.D_Focean + Var.D_Foxi_CH4), dt)
+
+
+## METRIC: atmospheric growth rate of CO2
+d_CO2 = OSCAR.process('d_CO2', ('Eff', 'D_Eluc', 'D_Epf_CO2', 'D_Fland', 'D_Focean', 'D_Foxi_CH4'), lambda Var, Par: Eq__AF(Var, Par), units='ppm yr-1')
+def Eq__d_CO2(Var, Par):
+    return 1/Par.a_CO2 * (Var.Eff.sum('reg_land', min_count=1) + Var.D_Eluc + Var.D_Epf_CO2.sum('reg_pf', min_count=1) - Var.D_Fland - Var.D_Focean + Var.D_Foxi_CH4)
 
 
 ## METRIC: airborne fraction
@@ -1291,6 +1303,14 @@ def DiffEq__D_OHC(Var, Par, Int=Int_dflt, dt=1.):
     a_conv = 3600*24*365.25 / 1E21 # from {W yr} to {ZJ}
     A_Earth = 510072E9 # m2
     return Int(Var.D_OHC, 1E-18, a_conv * A_Earth * Par.p_ohc * (Var.RF - Var.D_Tg / Par.lambda_0), dt)
+
+
+## METRIC: ocean heat content
+d_OHC = OSCAR.process('d_OHC', ('D_Tg', 'RF'), lambda Var, Par: Eq__d_OHC(Var, Par), units='ZJ yr-1')
+def Eq__d_OHC(Var, Par):
+    a_conv = 3600*24*365.25 / 1E21 # from {W yr} to {ZJ}
+    A_Earth = 510072E9 # m2
+    return a_conv * A_Earth * Par.p_ohc * (Var.RF - Var.D_Tg / Par.lambda_0)
 
 
 ##################################################
