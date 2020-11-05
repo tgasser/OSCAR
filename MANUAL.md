@@ -23,7 +23,7 @@ Here is a quick overview of the files contained in the `core_fct` folder and the
 | `fct_genD` | functions to generate consistent timeseries of drivers |
 | `fct_genMC` | functions to generate the Monte Carlo setup |
 | `fct_loadD` | functions to load the primary drivers |
-| `fct_loadP` | functions to load the primary parameters, some of them being loaded from files and others manually written there |
+| `fct_loadP` | functions to load the primary parameters, some being loaded from files and others manually written therein |
 | `fct_process_alt` | functions to replace some processes with alternative formulations |
 | `fct_misc` | a bunch of useful functions, notably including the solving schemes, a generic loading function called `load_data`, and a function to regionally aggregate datasets called `aggreg_region` |
 | `fct_wrap` | wrapper function to run the model in a not-so-flexible standard mode |
@@ -496,6 +496,7 @@ Parameters are implicitly defined when creating a model's processes. When OSCAR 
 | `Th_g` | <img src="https://latex.codecogs.com/gif.latex?\frac{\tau_{T_G}}{\lambda}" /> | yr W m<sup>-2</sup> K<sup>-1</sup> | - | `mod_Tg_resp` |
 | `Th_d` | <img src="https://latex.codecogs.com/gif.latex?\frac{\tau_{T_D}}{\lambda}" /> | yr W m<sup>-2</sup> K<sup>-1</sup> | - | `mod_Tg_resp` |
 | `th_0` | <img src="https://latex.codecogs.com/gif.latex?\frac{\theta}{\lambda}" /> | W m<sup>-2</sup> K<sup>-1</sup> | - | `mod_Tg_resp` |
+| `e_ohu` | - | 1 | - | - |
 | `w_clim_Tl` | <img src="https://latex.codecogs.com/gif.latex?\omega_{T_L}" /> | 1 | `reg_land` | `mod_Tl_pattern, mod_Tg_resp` |
 | `w_clim_To` | <img src="https://latex.codecogs.com/gif.latex?\omega_{T_S}" /> | 1 | - | `mod_Tl_pattern, mod_Tg_resp` |
 ||||||

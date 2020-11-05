@@ -1349,6 +1349,10 @@ def load_temp_CMIP5(mod_region, recalibrate=False, **useless):
         raise RuntimeError('embedded calibration not available yet')
         #Par = calib_temp_CMIP5(mod_region=mod_region)
 
+    ## deep-ocean heat uptake efficacy
+    ## note: taken equal to one for now
+    Par['e_ohu'] = xr.DataArray(1., attrs={'units':'1'})
+
     ## return
     return Par
 

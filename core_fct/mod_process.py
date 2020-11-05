@@ -1253,15 +1253,15 @@ def Eq__RF_atm(Var, Par):
 ##=================
 
 ## PROGNOSTIC: global mean surface temperature
-## (Geoffroy et al., 2013; doi:10.1175/JCLI-D-12-00195.1)
+## (Geoffroy et al., 2013; doi:10.1175/JCLI-D-12-00196.1)
 D_Tg = OSCAR.process('D_Tg', ('D_Tg', 'D_Td', 'RF_warm'), lambda Var, Par, **Int_args: DiffEq__D_Tg(Var, Par, **Int_args), units='K')
 def DiffEq__D_Tg(Var, Par, Int=Int_dflt, dt=1.):
     v = 1/Par.Th_g * (1/Par.lambda_0 + Par.th_0)
-    return Int(Var.D_Tg, v, 1/Par.Th_g * (Var.RF_warm - Var.D_Tg / Par.lambda_0 - Par.th_0 * (Var.D_Tg - Var.D_Td)), dt)
+    return Int(Var.D_Tg, v, 1/Par.Th_g * (Var.RF_warm - Var.D_Tg / Par.lambda_0 - Par.e_ohu * Par.th_0 * (Var.D_Tg - Var.D_Td)), dt)
 
 
 ## PROGNOSTIC: deep ocean temperature
-## (Geoffroy et al., 2013; doi:10.1175/JCLI-D-12-00195.1)
+## (Geoffroy et al., 2013; doi:10.1175/JCLI-D-12-00196.1)
 D_Td = OSCAR.process('D_Td', ('D_Td', 'D_Tg'), lambda Var, Par, **Int_args: DiffEq__D_Td(Var, Par, **Int_args), units='K')
 def DiffEq__D_Td(Var, Par, Int=Int_dflt, dt=1.):
     v = Par.th_0 / Par.Th_d
@@ -1271,7 +1271,13 @@ def DiffEq__D_Td(Var, Par, Int=Int_dflt, dt=1.):
 ## METRIC: global mean surface temperature rate of change
 d_Tg = OSCAR.process('d_Tg', ('D_Tg', 'D_Td', 'RF_warm'), lambda Var, Par: Eq__d_Tg(Var, Par), units='K yr-1')
 def Eq__d_Tg(Var, Par):
-    return 1/Par.Th_g * (Var.RF_warm - Var.D_Tg / Par.lambda_0 - Par.th_0 * (Var.D_Tg - Var.D_Td))
+    return 1/Par.Th_g * (Var.RF_warm - Var.D_Tg / Par.lambda_0 - Par.e_ohu * Par.th_0 * (Var.D_Tg - Var.D_Td))
+
+
+## METRIC: climate feedback factor
+CFF = OSCAR.process('CFF', ('D_Tg', 'D_Td'), lambda Var, Par: Eq__CFF(Var, Par), units='W m-2 K-1')
+def Eq__CFF(Var, Par):
+    return 1 / Par.lambda_0 + Par.th_0 * (Par.e_ohu - 1) * (1 - Var.D_Td / Var.D_Tg)
 
 
 ## land surface temperature
