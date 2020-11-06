@@ -30,6 +30,7 @@ CONTENT
 ##################################################
 
 import numpy as np
+import xarray as xr
 
 from core_fct.fct_misc import Int_ExpInt as Int_dflt
 
@@ -298,6 +299,42 @@ def lite_LUC(model_in):
     def DiffEq__D_Aland(Var, Par, Int=Int_dflt, dt=1.):
         return Int(Var.D_Aland, 1E-18, Var.d_Again - Var.d_Aloss, dt)
 
+
+    ## RETURN
+    return model
+
+
+##=========
+## 1.3. Cut
+##=========
+
+## this version entirely removes the bookkeeping and the endogenous biomass burning
+## it is much faster but makes the carbon cycle inconsistent (i.e. non-conservative)
+## note: it requires an exogenous 'Eluc' forcing (similar to 'Eff')
+## note: biome area extent keep changing unless 'd_Acover' is set to zero
+
+def cut_LUC(model_in):
+    model = model_in.copy(add_name='_cut_LUC')
+
+    ## list LUC & BB processes to be removed
+    proc_LUC = ['D_Fveg_bk', 'D_Fsoil1_bk', 'D_Fsoil2_bk', 'D_Fslash1', 'D_Fslash2', 'D_Fhwp', 
+        'D_NPP_bk', 'D_Efire_bk', 'D_Eharv_bk', 'D_Egraz_bk', 'D_Fmort1_bk', 'D_Fmort2_bk', 'D_Rh1_bk', 'D_Fmet_bk', 'D_Rh2_bk', 'D_Ehwp', 'D_NBP_bk', 
+        'D_Cveg_bk', 'D_Csoil1_bk', 'D_Csoil2_bk', 'D_Chwp']
+    proc_BB = ['D_Efire', 'D_Ebb_nat', 'D_Ebb_ant']
+
+    ## remove listed processes
+    for proc in proc_LUC + proc_BB:
+        if proc in model: del model[proc]
+
+    ## non-CO2 total emissions from biomass burning (kept for simplicity but set to zero)
+    model.process('D_Ebb', (), lambda Var, Par: Eq__D_Ebb(Var, Par), units='TgX yr-1')
+    def Eq__D_Ebb(Var, Par):
+        return xr.zeros_like(Par.a_bb)
+
+    ## land-use change emissions
+    model.process('D_Eluc', ('Eluc',), lambda Var, Par: Eq__D_Eluc(Var, Par), units='PgC yr-1')
+    def Eq__D_Eluc(Var, Par):
+        return Var.Eluc.sum('reg_land', min_count=1)
 
     ## RETURN
     return model
