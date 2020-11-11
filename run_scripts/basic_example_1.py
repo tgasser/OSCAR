@@ -13,7 +13,7 @@ from core_fct.mod_process import OSCAR
 ## run the model and save output
 ## note: the creation of secondary drivers is rather long!
 ## note: requires defining a 'mod_region' and the number of MC elements 'nMC'
-RUN_a = run_model(OSCAR, (1750, 1750, 2014), mod_region='Houghton_2001', nMC=200, output=True)
+RUN_a = run_model(OSCAR, (1750, 1750, 2014), mod_region='AR6_22reg', nMC=200, output=True)
 OUT = RUN_a['Out_hist']
 
 ## import matplotlib
@@ -38,7 +38,7 @@ from core_fct.mod_process import OSCAR
 from core_fct.fct_loadD import load_all_scen
 
 ## load RCP-specific drivers
-For_rcp = load_all_scen(mod_region='RCP_5reg', group_scen=['RCP2.6', 'RCP4.5', 'RCP6.0', 'RCP8.5'], LCC='gross')
+For_rcp = load_all_scen(mod_region='AR6_22reg', group_scen=['RCP2.6', 'RCP4.5', 'RCP6.0', 'RCP8.5'], LCC='gross')
 
 ## define which variables will be kept (in addition to state variables)
 var_keep = ['D_Eluc', 'D_Focean', 'D_Fland', 'D_Epf'] + ['tau_CH4', 'tau_N2O'] + [var for var in list(OSCAR._processes.keys()) if 'RF' in var]

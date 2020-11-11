@@ -13,7 +13,7 @@ from core_fct.fct_loadP import load_all_param
 from core_fct.fct_genMC import generate_config
 
 ## choose a regional aggregation
-mod_region = 'Houghton_2001'
+mod_region = 'AR6_5reg'
 
 ## load primary parameters and drivers
 Par0 = load_all_param(mod_region)
@@ -50,7 +50,7 @@ For_bg = For_bg.drop('Aland_0')
 Ini = None
 
 ## run control simulation
-## note: OSCARv3 is comparatively slow when running with only one set of drivers parameters, because of all the xarray packing/unpacking; better use a MC setup!
+## note: OSCARv3 is comparatively slow when running with only one set of drivers and parameters, because of all the xarray packing/unpacking; better use a MC setup!
 Out_ctrl = OSCAR(Ini, Par_av, For_bg, var_keep=['RF'])
 
 ## run simulation in which atmospheric CO2 / CH4 /climate remains at preindustrial level

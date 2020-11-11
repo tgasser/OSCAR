@@ -1,36 +1,36 @@
-ISO-Numeric,Country,ISO-Alpha3,GTAP7,SRES_4reg,SRES_11reg,RECCAP1,Raupach_2007,Houghton_2001,IMACLIM,Kyoto,RCP_5reg,RCP_10reg,Houghton_2017
-901,Alaska (isolated in LUH2),XAL,26,1,1,8,1,1,1,1,4,1,4
-902,Cockburn Island (isolated in LUH2),XCB,25,1,1,8,4,1,2,1,4,1,4
-903,France (including Monaco),XFR,0,1,2,7,2,3,3,1,4,2,5
-904,French Equatorial Africa,XFE,99,4,11,1,8,5,10,2,3,6,1
-905,French Indo-China,XFC,0,3,0,0,0,0,0,2,1,0,3
-906,French West Africa,XFW,0,4,11,1,8,5,10,2,3,6,1
-907,Italy (including San Marino),XIT,0,0,0,0,0,3,3,2,1,2,5
-908,Leeward Islands,XLI,45,4,10,0,8,2,12,2,2,5,2
-909,Rhodesia-Nyasaland,XRN,0,4,11,1,9,5,10,2,3,6,1
-910,Rwanda-Urundi,XRU,110,4,11,1,9,5,10,2,3,6,1
-911,United Korea,XKO,0,3,0,4,0,0,0,2,1,8,9
-912,Zanzibar,XZA,0,4,11,1,8,5,10,2,3,6,1
-913,Japan (excluding the Ruyuku islands),XJA,6,1,3,4,3,9,4,1,4,3,9
-914,Kuwaiti oil fires,XKF,91,4,9,0,8,4,9,2,3,7,8
-915,Peninsular Malaysia,XPM,14,3,8,5,8,8,11,2,1,10,3
-916,Sabah,XSB,14,3,8,5,8,8,11,2,1,10,3
-917,Sarawak,XSK,14,3,8,5,8,8,11,2,1,10,3
-918,Gilbert and Ellice Islands,XGE,3,3,8,3,9,9,11,2,4,10,10
-919,East & West Pakistan,XPA,22,3,7,0,8,8,11,2,1,9,3
-920,Federation of Malaya-Singapore,XMS,0,3,8,5,8,8,11,2,1,10,3
-921,Republic of South VietNam,XSV,18,3,8,5,8,8,11,2,1,10,3
-922,"Israel and Palestine, State of",XIP,91,4,9,0,4,4,9,2,3,7,8
-923,Italy and San Marino and Holy See (the),XIH,0,1,2,7,2,3,3,1,4,2,5
-924,Spain and Andorra,XSA,0,1,2,7,2,3,3,1,4,2,5
-925,Switzerland and Liechtenstein,XSL,0,1,2,7,4,3,3,1,4,2,5
-981,Rest of Africa,XAF,0,4,0,1,0,0,10,2,3,0,0
-982,Rest of Asia,XAS,0,3,0,0,0,0,11,2,1,0,0
-983,Rest of Latin America,XLA,0,4,10,10,0,2,12,2,2,5,2
-984,Rest of Middle East,XME,0,0,9,0,0,4,9,2,2,7,8
-985,Rest of Eurasia,XEA,0,0,0,0,0,0,0,2,0,0,5
-989,Unknown in EU27,XEU,0,0,0,7,0,3,3,1,0,0,5
-990,International,XIN,0,0,0,0,0,0,0,0,0,0,0
-991,Shipping,XSH,0,0,0,0,0,0,0,0,0,0,0
-992,Aviation,XAV,0,0,0,0,0,0,0,0,0,0,0
-999,Unknown,XXX,0,0,0,0,0,0,0,0,0,0,0
+ISO-Numeric,Country,ISO-Alpha3,GTAP7,SRES_4reg,SRES_11reg,RECCAP1,Raupach_2007,Houghton_2001,IMACLIM,Kyoto,RCP_5reg,RCP_10reg,Houghton_2017,AR6_5reg,AR6_10reg,AR6_22reg
+901,Alaska (isolated in LUH2),XAL,26,1,1,8,1,1,1,1,4,1,4,3,8,19
+902,Cockburn Island (isolated in LUH2),XCB,25,1,1,8,4,1,2,1,4,1,4,3,8,19
+903,France (including Monaco),XFR,0,1,2,7,2,3,3,1,4,2,5,3,5,13
+904,French Equatorial Africa,XFE,99,4,11,1,8,5,10,2,3,6,1,1,1,18
+905,French Indo-China,XFC,0,3,0,0,0,0,0,2,1,0,3,2,9,16
+906,French West Africa,XFW,0,4,11,1,8,5,10,2,3,6,1,1,1,20
+907,Italy (including San Marino),XIT,0,0,0,0,0,3,3,2,1,2,5,3,5,17
+908,Leeward Islands,XLI,45,4,10,0,8,2,12,2,2,5,2,5,6,3
+909,Rhodesia-Nyasaland,XRN,0,4,11,1,9,5,10,2,3,6,1,1,1,18
+910,Rwanda-Urundi,XRU,110,4,11,1,9,5,10,2,3,6,1,1,1,5
+911,United Korea,XKO,0,3,0,4,0,0,0,2,1,8,9,2,3,6
+912,Zanzibar,XZA,0,4,11,1,8,5,10,2,3,6,1,1,1,5
+913,Japan (excluding the Ruyuku islands),XJA,6,1,3,4,3,9,4,1,4,3,9,3,2,1
+914,Kuwaiti oil fires,XKF,91,4,9,0,8,4,9,2,3,7,8,0,0,0
+915,Peninsular Malaysia,XPM,14,3,8,5,8,8,11,2,1,10,3,2,9,16
+916,Sabah,XSB,14,3,8,5,8,8,11,2,1,10,3,2,9,16
+917,Sarawak,XSK,14,3,8,5,8,8,11,2,1,10,3,2,9,16
+918,Gilbert and Ellice Islands,XGE,3,3,8,3,9,9,11,2,4,10,10,2,9,4
+919,East & West Pakistan,XPA,22,3,7,0,8,8,11,2,1,9,3,2,10,14
+920,Federation of Malaya-Singapore,XMS,0,3,8,5,8,8,11,2,1,10,3,2,9,16
+921,Republic of South VietNam,XSV,18,3,8,5,8,8,11,2,1,10,3,2,9,16
+922,"Israel and Palestine, State of",XIP,91,4,9,0,4,4,9,2,3,7,8,1,7,11
+923,Italy and San Marino and Holy See (the),XIH,0,1,2,7,2,3,3,1,4,2,5,3,5,17
+924,Spain and Andorra,XSA,0,1,2,7,2,3,3,1,4,2,5,3,5,17
+925,Switzerland and Liechtenstein,XSL,0,1,2,7,4,3,3,1,4,2,5,3,5,13
+981,Rest of Africa,XAF,0,4,0,1,0,0,10,2,3,0,0,1,1,0
+982,Rest of Asia,XAS,0,3,0,0,0,0,11,2,1,0,0,2,0,0
+983,Rest of Latin America,XLA,0,4,10,10,0,2,12,2,2,5,2,5,6,0
+984,Rest of Middle East,XME,0,0,9,0,0,4,9,2,2,7,8,1,7,11
+985,Rest of Eurasia,XEA,0,0,0,0,0,0,0,2,0,0,5,4,4,7
+989,Unknown in EU27,XEU,0,0,0,7,0,3,3,1,0,0,5,3,5,0
+990,International,XIN,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+991,Shipping,XSH,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+992,Aviation,XAV,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+999,Unknown,XXX,0,0,0,0,0,0,0,0,0,0,0,0,0,0

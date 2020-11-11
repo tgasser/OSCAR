@@ -19,7 +19,7 @@ from core_fct.fct_misc import load_data, aggreg_region
 from core_fct.mod_process import OSCAR_landC
 
 ## set run options
-mod_region = 'Houghton_2017'
+mod_region = 'AR6_10reg'
 ind0, ind1 = 1750, 2018
 
 ## load primary parameters and generate an averaged configuration 
