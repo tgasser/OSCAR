@@ -44,7 +44,18 @@ def Int_imex(X, v, dX, dt):
 
 
 ##################################################
-##   B. REGIONAL AGGREGATION
+##   B. PROBABILITY DISTRIBUTIONS
+##################################################
+
+## function to get lognorm distrib parameters
+def lognorm_distrib_param(mean, std):
+    mu = np.log(mean / np.sqrt(1. + std**2./mean**2.))
+    sigma = np.sqrt(np.log(1. + std**2./mean**2.))
+    return mu, sigma
+
+
+##################################################
+##   C. REGIONAL AGGREGATION
 ##################################################
 
 ## aggregate regional data to OSCAR regions
@@ -139,7 +150,7 @@ def aggreg_region(ds_in, mod_region, weight_var={}, old_axis='reg_iso', new_axis
 
 
 ##################################################
-##   C. GENERAL LOADING
+##   D. GENERAL LOADING
 ##################################################
 
 ## general loading function
@@ -174,7 +185,7 @@ def load_data(name):
 
 
 ##################################################
-##   D. EXTEND TIME-SERIES
+##   E. EXTEND TIME-SERIES
 ##################################################
 
 ## extend one timeseries following another timeseries
@@ -281,7 +292,7 @@ def extend_timeseries(ref, ext, direction, time_axis='year', juxtaposition=False
 
 
 ##################################################
-##   E. GROUP CONSISTENT SCENARIOS
+##   F. GROUP CONSISTENT SCENARIOS
 ##################################################
 
 ## group scenarios on one common axis

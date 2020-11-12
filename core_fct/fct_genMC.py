@@ -23,7 +23,7 @@ import xarray as xr
 
 from scipy.stats import theilslopes
 
-from core_fct.fct_misc import extend_timeseries
+from core_fct.fct_misc import extend_timeseries, lognorm_distrib_param
 
 
 ##################################################
@@ -88,6 +88,57 @@ def generate_config(Par, nMC, ignored=['mean_', 'old_', 'off_'], fixed={}, retur
     ## return final dataset
     if not return_details: return Par_mc
     else: return Par_mc, mod_mc
+
+
+## function to add noise and shift existing MC parameters
+def adjust_config(Par_mc, shift={}, noise={}):
+    '''
+    Function to add shift (first) and/or noise (second) to the input Monte Carlo parameters.
+    
+    Input:
+    ------
+    Par_mc (xr.Dataset)     dataset containing MC parameters
+    
+    Output:
+    -------
+    Par_mc2 (xr.Dataset)    dataset containing adjusted MC parameters
+
+    Options:
+    --------
+    shift (dict)            dict of options to shift all MC values of a parameter;
+                            keys are parameter names and values are float;
+                            default = {}
+    noise (dict)            dict of options to add extra noise to a parameter;
+                            keys are parameter names and values are 2-tuples with chosen distrib ('normal' or 'lognormal') and normalized std;
+                            default = {}
+    '''
+
+    ## copy input dataset
+    Par_mc2 = Par_mc.copy(deep=True)
+
+    ## loop on parameters
+    for par in Par_mc2:
+        
+        ## add config axis if missing
+        if par in shift or par in noise:
+            if 'config' not in Par_mc2[par].dims:
+                Par_mc2[par] = Par_mc2[par] * xr.full_like(Par_mc[par] + Par_mc.config, 1)
+
+        ## shifting
+        if par in shift:
+            Par_mc2[par] = Par_mc2[par] + shift[par]
+
+        ## adding noise
+        if par in noise:
+            ## normal distrib
+            if noise[par][0] == 'normal':
+                Par_mc2[par] = Par_mc2[par] * np.random.normal(1., scale=noise[par][1], size=Par_mc2[par].shape)
+            ## lognormal distrib
+            elif noise[par][0] == 'lognormal':
+                Par_mc2[par] = Par_mc2[par] * np.random.lognormal(*lognorm_distrib_param(1., noise[par][1]), size=Par_mc2[par].shape)
+
+    ## return adjusted dataset
+    return Par_mc2
 
 
 ##################################################
