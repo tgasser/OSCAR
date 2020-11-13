@@ -405,7 +405,7 @@ def load_emissions_scen(mod_region,
 
 ## historical anthropogenic land-use and land-cover change
 def load_landuse_hist(mod_region, 
-    datasets=['LUH1', 'LUH1-TRENDYv4', 'LUH2', 'LUH2-TRENDYv8'],
+    datasets=['LUH1', 'LUH1-TRENDYv4', 'LUH2', 'LUH2-TRENDYv8', 'Houghton_2017'],
     LCC='all',
     **useless):
     '''
@@ -422,7 +422,7 @@ def load_landuse_hist(mod_region,
     Options:
     --------
     datasets (list)         names of primary datasets to be loaded;
-                            default = ['LUH1', 'LUH1-TRENDYv4', 'LUH2', 'LUH2-TRENDYv8']
+                            default = ['LUH1', 'LUH1-TRENDYv4', 'LUH2', 'LUH2-TRENDYv8', 'Houghton_2017']
     LCC (str)               which of 'gross' or 'net' land-cover transitions should be kept;
                             unless both are kept ('all'), the driver is renamed to 'd_Acover';
                             default = 'all'
@@ -465,6 +465,11 @@ def load_landuse_hist(mod_region,
         if data in ['LUH2']:
             For1 = For1.sel(scen=['historical', 'historical_high', 'historical_low']).dropna('year', how='all')
             For1 = For1.rename({'scen':'data_LULCC'}).assign_coords(data_LULCC=['LUH2', 'LUH2-High', 'LUH2-Low'])
+
+        ## drop peatland emissions (+ data dim)
+        if data in ['Houghton_2017']:
+            For1 = For1.drop('Epeat')
+            For1 = For1.expand_dims('data_LULCC', -1).assign_coords(data_LULCC=[data])
 
         ##---
 
