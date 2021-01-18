@@ -1,4 +1,4 @@
-# OSCAR v3.1
+# OSCAR v3.1.1
 _Manual_ 
 
 
@@ -112,31 +112,31 @@ Each of the model's variable is defined through a `Process` object; and a `Model
 | `D_csoil1` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,c_\mathrm{soil1}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | **yes** |
 | `D_csoil2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,c_\mathrm{soil2}" /> | PgC Mha<sup>-1</sup> | `reg_land, bio_land` | **yes** |
 ||||||
-| `D_Fveg_bk` | <img src="https://latex.codecogs.com/gif.latex?\delta\!\,C_\mathrm{veg,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fsoil1_bk` | <img src="https://latex.codecogs.com/gif.latex?\delta\!\,C_\mathrm{soil1,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fsoil2_bk` | <img src="https://latex.codecogs.com/gif.latex?\delta\!\,C_\mathrm{soil2,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fslash` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fslash1` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{slash1}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fslash2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{slash2}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fhwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{hwp}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to, box_hwp` ||
-| `D_NPP_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{NPP}_\mathrm{bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Efire_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{fire,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Eharv_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{harv,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Egraz_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{graz,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fmort1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{mort1,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fmort2_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{mort2,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Rh1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{Rh}_\mathrm{1,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Fmet_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{met,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Rh2_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{Rh}_\mathrm{2,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
-| `D_Ehwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{hwp}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to, box_hwp` ||
-| `D_NBP_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_from, bio_to` ||
+| `D_Fveg_bk` | <img src="https://latex.codecogs.com/gif.latex?\delta\!\,C_\mathrm{veg,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Fsoil1_bk` | <img src="https://latex.codecogs.com/gif.latex?\delta\!\,C_\mathrm{soil1,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Fsoil2_bk` | <img src="https://latex.codecogs.com/gif.latex?\delta\!\,C_\mathrm{soil2,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Fslash1` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{slash1}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Fslash2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{slash2}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Fhwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{hwp}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land, box_hwp`&#8224; ||
+| `D_NPP_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{NPP}_\mathrm{bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Efire_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{fire,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Eharv_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{harv,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Egraz_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{graz,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Fmort1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{mort1,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Fmort2_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{mort2,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Rh1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{Rh}_\mathrm{1,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Fmet_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{met,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Rh2_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{Rh}_\mathrm{2,bk}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
+| `D_Ehwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{hwp}" /> | PgC yr<sup>-1</sup> | `reg_land, bio_land, box_hwp`&#8224; ||
+| `D_NBP_bk` | - | PgC yr<sup>-1</sup> | `reg_land, bio_land`&#8224; ||
 | `D_Eluc` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,E_\mathrm{LUC}" /> | PgC yr<sup>-1</sup> | - ||
 | `D_Fland` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{\downarrow\,land}" /> | PgC yr<sup>-1</sup> | - ||
+| `D_Flasc` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,F_\mathrm{LASC}" /> | PgC yr<sup>-1</sup> | - ||
 | `D_Aland` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,A" />  | Mha | `reg_land, bio_land` | **yes** |
-| `D_Cveg_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{veg,bk}" /> | PgC | `reg_land, bio_from, bio_to` | **yes** |
-| `D_Csoil1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{soil1,bk}" /> | PgC | `reg_land, bio_from, bio_to` | **yes** |
-| `D_Csoil2_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{soil2,bk}" /> | PgC | `reg_land, bio_from, bio_to` | **yes** |
-| `D_Chwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{hwp}" /> | PgC | `reg_land, bio_from, bio_to, box_hwp` | **yes** |
+| `D_Cveg_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{veg,bk}" /> | PgC | `reg_land, bio_land`&#8224; | **yes** |
+| `D_Csoil1_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{soil1,bk}" /> | PgC | `reg_land, bio_land`&#8224; | **yes** |
+| `D_Csoil2_bk` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{soil2,bk}" /> | PgC | `reg_land, bio_land`&#8224; | **yes** |
+| `D_Chwp` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{hwp}" /> | PgC | `reg_land, bio_land, box_hwp`&#8224; | **yes** |
 ||||||
 | `f_resp_pf` | - | 1 | `reg_pf` ||
 | `D_pthaw_bar` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\bar{p}_\mathrm{thaw}" /> | 1 | `reg_pf` ||
@@ -151,6 +151,7 @@ Each of the model's variable is defined through a `Process` object; and a `Model
 | `D_Cthaw` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,C_\mathrm{thaw}" /> | PgC | `reg_pf, box_thaw` | **yes** |
 ||||||
 | `D_CO2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{CO_2}" /> | ppm | - | **yes** |
+| `d_CO2` | <img src="https://latex.codecogs.com/gif.latex?\textstyle{\frac{\mathrm{d}}{\mathrm{d}t}}\mathrm{CO_2}" /> | ppm yr<sup>-1</sup> | - ||
 | `AF` | - | 1 | - ||
 | `kS` | - | yr<sup>-1</sup> | - ||
 | `RF_CO2` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{RF}^\mathrm{CO_2}" /> | W m<sup>-2</sup> | - ||
@@ -252,6 +253,7 @@ Each of the model's variable is defined through a `Process` object; and a `Model
 | `D_Tg` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,T_G" /> | K | - | **yes** |
 | `D_Td` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,T_D" /> | K | - | **yes** |
 | `d_Tg` | <img src="https://latex.codecogs.com/gif.latex?\textstyle{\frac{\mathrm{d}}{\mathrm{d}t}}T_G" /> | K yr<sup>-1</sup> | - |
+| `CFF` | - | W m<sup>-2</sup> K<sup>-1</sup> | - ||
 | `D_Tl` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,T_L" /> | K | `reg_land` ||
 | `D_To` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,T_S" /> | K | - ||
 ||||||
@@ -259,9 +261,10 @@ Each of the model's variable is defined through a `Process` object; and a `Model
 | `D_Pl` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,P_L" /> | mm yr<sup>-1</sup> | `reg_land` ||
 ||||||
 | `D_OHC` | <img src="https://latex.codecogs.com/gif.latex?\Delta\!\,\mathrm{OHC}" /> | ZJ | - | **yes** |
+| `d_OHC` | <img src="https://latex.codecogs.com/gif.latex?\textstyle{\frac{\mathrm{d}}{\mathrm{d}t}}\mathrm{OHC}" /> | ZJ yr<sup>-1</sup> | - ||
 ||||||
 | `D_pH` | - | 1 | - ||
-
+&#8224; Default; can be altered through the `fct_process_alt` functions.
 
 ### Parameters
 
@@ -316,18 +319,18 @@ Parameters are implicitly defined when creating a model's processes. When OSCAR 
 ||||||
 | `a_bb` | <img src="https://latex.codecogs.com/gif.latex?\alpha_\mathrm{bb}" /> | Tg<i>X</i> PgC<sup>-1</sup> | `reg_land, bio_land, spc_bb` | - |
 ||||||
-| `Cfroz_0` | <img src="https://latex.codecogs.com/gif.latex?C_{\mathrm{froz},0}}" /> | PgC | `reg_pf` | `mod_Epf_main` |
-| `w_clim_pf` | <img src="https://latex.codecogs.com/gif.latex?\omega_{T_\mathrm{pf}}}" /> | 1 | `reg_pf` | `mod_Epf_main` |
-| `g_respT_pf` | <img src="https://latex.codecogs.com/gif.latex?\gamma_{\mathrm{pf},T_1}}" /> | K<sup>-1</sup> | `reg_pf` | `mod_Epf_main` |
-| `g_respT2_pf` | <img src="https://latex.codecogs.com/gif.latex?\gamma_{\mathrm{pf},T_2}}" /> | K<sup>-2</sup> | `reg_pf` | `mod_Epf_main` |
-| `k_resp_pf` | <img src="https://latex.codecogs.com/gif.latex?\kappa_\mathrm{resp,pf}}" /> | 1 | `reg_pf` | `mod_Epf_main` |
-| `pthaw_min` | <img src="https://latex.codecogs.com/gif.latex?p_\mathrm{thaw,min}}" /> | 1 | `reg_pf` | `mod_Epf_main` |
-| `g_pthaw` | <img src="https://latex.codecogs.com/gif.latex?\gamma_{p_\mathrm{thaw}}}" /> | K<sup>-1</sup> | `reg_pf` | `mod_Epf_main` |
-| `k_pthaw` | <img src="https://latex.codecogs.com/gif.latex?\kappa_{p_\mathrm{thaw}}}" /> | 1 | `reg_pf` | `mod_Epf_main` |
-| `v_thaw` | <img src="https://latex.codecogs.com/gif.latex?\nu_\mathrm{thaw}}" /> | yr<sup>-1</sup> | `reg_pf` | `mod_Epf_main` |
-| `v_froz` | <img src="https://latex.codecogs.com/gif.latex?\nu_\mathrm{froz}}" /> | yr<sup>-1</sup> | `reg_pf` | `mod_Epf_main` |
-| `p_pf_thaw` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{thaw}}" /> | 1 | `reg_pf, box_thaw` | `mod_Epf_main` |
-| `t_pf_thaw` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{thaw}}" /> | yr | `reg_pf, box_thaw` | `mod_Epf_main` |
+| `Cfroz_0` | <img src="https://latex.codecogs.com/gif.latex?C_{\mathrm{froz},0}" /> | PgC | `reg_pf` | `mod_Epf_main` |
+| `w_clim_pf` | <img src="https://latex.codecogs.com/gif.latex?\omega_{T_\mathrm{pf}}" /> | 1 | `reg_pf` | `mod_Epf_main` |
+| `g_respT_pf` | <img src="https://latex.codecogs.com/gif.latex?\gamma_{\mathrm{pf},T_1}" /> | K<sup>-1</sup> | `reg_pf` | `mod_Epf_main` |
+| `g_respT2_pf` | <img src="https://latex.codecogs.com/gif.latex?\gamma_{\mathrm{pf},T_2}" /> | K<sup>-2</sup> | `reg_pf` | `mod_Epf_main` |
+| `k_resp_pf` | <img src="https://latex.codecogs.com/gif.latex?\kappa_\mathrm{resp,pf}" /> | 1 | `reg_pf` | `mod_Epf_main` |
+| `pthaw_min` | <img src="https://latex.codecogs.com/gif.latex?p_\mathrm{thaw,min}" /> | 1 | `reg_pf` | `mod_Epf_main` |
+| `g_pthaw` | <img src="https://latex.codecogs.com/gif.latex?\gamma_{p_\mathrm{thaw}}" /> | K<sup>-1</sup> | `reg_pf` | `mod_Epf_main` |
+| `k_pthaw` | <img src="https://latex.codecogs.com/gif.latex?\kappa_{p_\mathrm{thaw}}" /> | 1 | `reg_pf` | `mod_Epf_main` |
+| `v_thaw` | <img src="https://latex.codecogs.com/gif.latex?\nu_\mathrm{thaw}" /> | yr<sup>-1</sup> | `reg_pf` | `mod_Epf_main` |
+| `v_froz` | <img src="https://latex.codecogs.com/gif.latex?\nu_\mathrm{froz}" /> | yr<sup>-1</sup> | `reg_pf` | `mod_Epf_main` |
+| `p_pf_thaw` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{thaw}" /> | 1 | `reg_pf, box_thaw` | `mod_Epf_main` |
+| `t_pf_thaw` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{thaw}" /> | yr | `reg_pf, box_thaw` | `mod_Epf_main` |
 | `p_pf_inst` | - | 1 | - | - |
 | `p_pf_CH4` | - | 1 | - | `mod_Epf_CH4` |
 ||||||
@@ -388,9 +391,9 @@ Parameters are implicitly defined when creating a model's processes. When OSCAR 
 | `x_hv_EESC` | <img src="https://latex.codecogs.com/gif.latex?\chi_\mathrm{EESC}^\mathrm{h\nu}" /> | 1 | - | `mod_Fhv_trans` |
 | `x_hv_age` | <img src="https://latex.codecogs.com/gif.latex?\chi_\mathrm{age}^\mathrm{h\nu}" /> | 1 | - | `mod_Fhv_trans` |
 ||||||
-| `t_OH_Xhalo` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{OH}^X}" /> | yr | `spc_halo` | - |
-| `t_hv_Xhalo` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{h\nu}^X}" /> | yr | `spc_halo` | - |
-| `t_other_Xhalo` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{othr}^X}" /> | yr | `spc_halo` | - |
+| `t_OH_Xhalo` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{OH}^X" /> | yr | `spc_halo` | - |
+| `t_hv_Xhalo` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{h\nu}^X" /> | yr | `spc_halo` | - |
+| `t_other_Xhalo` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{othr}^X" /> | yr | `spc_halo` | - |
 ||||||
 | `p_reg_slcf` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{reg}" /> | 1 | `reg_land, reg_slcf` | - |
 ||||||
@@ -407,8 +410,8 @@ Parameters are implicitly defined when creating a model's processes. When OSCAR 
 | `t_lag` | <img src="https://latex.codecogs.com/gif.latex?\tau_\mathrm{lag}" /> | yr | - | - |
 | `p_fracrel` | <img src="https://latex.codecogs.com/gif.latex?\pi_\mathrm{rel}^X" /> | 1 | `spc_halo` | `mod_O3s_fracrel` |
 | `k_Br_Cl` | <img src="https://latex.codecogs.com/gif.latex?\alpha_\mathrm{Cl}^\mathrm{Br}" /> | 1 | - | - |
-| `n_Cl` | <img src="https://latex.codecogs.com/gif.latex?n_\mathrm{Cl}^X}" /> | 1 | `spc_halo` | - |
-| `n_Br` | <img src="https://latex.codecogs.com/gif.latex?n_\mathrm{Br}^X}" /> | 1 | `spc_halo` | - |
+| `n_Cl` | <img src="https://latex.codecogs.com/gif.latex?n_\mathrm{Cl}^X" /> | 1 | `spc_halo` | - |
+| `n_Br` | <img src="https://latex.codecogs.com/gif.latex?n_\mathrm{Br}^X" /> | 1 | `spc_halo` | - |
 | `EESC_x` | <img src="https://latex.codecogs.com/gif.latex?\mathrm{EESC}_\times" /> | ppt | - | - |
 | `k_EESC_N2O` | <img src="https://latex.codecogs.com/gif.latex?\frac{\chi_\mathrm{N2O}^\mathrm{O_3s}}{\chi_\mathrm{EESC}^\mathrm{O_3s}}" /> | ppt ppb<sup>-1</sup> | - | `mod_O3s_nitrous, mod_O3s_fracrel` |
 ||||||

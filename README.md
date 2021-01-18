@@ -13,6 +13,16 @@ The source code is provided firstly for transparency, and only secondly for diss
 
 ## Changelog
 
+###### v3.1.1
+This version is exactly the one used in the IPCC AR6. A number of functionalities were added, mostly for convenience.
+* WARNING: `fct_process` was renamed `mod_process` for consistency, which may affect existing run scripts.
+* Added: options in `fct_process_alt` to alter the structure of the bookkeeping module. The default structure is now defined over only one `bio_land` dimension instead of two (`bio_from` and `bio_to`) to reduce the model's memory demand. Mathematically, this is equivalent to the full structure, although extremely small differences can be seen because of the numerical solving. This can be tested using the provided `check_LUC_structure` script.
+* Added: an option to add a constant shift and/or some noise to the Monte Carlo parameters, through the new `adjust_config` function in `fct_genMC`.
+* Added: the `e_ohu` parameter representing the ocean heat uptake efficacy in the climate module (see e.g. [here](https://doi.org/10.1175/JCLI-D-12-00196.1)). For consistency, this parameter is set to one by default for all configurations.
+* Added: new metrics (`D_Flasc`, `d_CO2`, `CFF`, `d_OHC`) in `mod_process` to help diagnose the model ex-post.
+* Added: new regional aggregations consistent with the IPCC AR6.
+* Added: the `IPCC_AR6_parameters` script, to generate a set of prior parameters identical to those used in the IPCC AR6.
+
 ##### v3.1
 * Improved: land carbon cycle, exactly as described by Gasser et al. (2020). This comes with a recalibration of the module's preindustrial steady-state on TRENDYv7 models.
 * Changed: the formulation of `D_ewet` (wetlands areal emissions), to account for the new flexible structure of the land carbon cycle. This reduces the speed at which CH<sub>4</sub> emissions respond to a change in net primary productivity.
@@ -64,7 +74,7 @@ Initial release on GitHub. Exact model used by Gasser et al. (2017).
 
 ## References
 
-**v3.1 (partial) |** Gasser, T., L. Crepin, Y. Quilcaille, R. A. Houghton, P. Ciais & M. Obersteiner. "Historical CO<sub>2</sub> emissions from land-use and land-cover change and their uncertainty." *Biogeosciences Discuss.*, under review (2020). [doi:10.5194/bg-2020-33](https://doi.org/doi:10.5194/bg-2020-33)
+**v3.1 (partial) |** Gasser, T., L. Crepin, Y. Quilcaille, R. A. Houghton, P. Ciais & M. Obersteiner. "Historical CO<sub>2</sub> emissions from land-use and land-cover change and their uncertainty." *Biogeosciences* 17: 4075–4101 (2020). [doi:10.5194/bg-17-4075-2020](https://doi.org/doi:10.5194/bg-17-4075-2020)
 
 **v2.3 (partial) |** Gasser, T., M. Kechiar, P. Ciais, E. J. Burke, T. Kleinen, D. Zhu, Y. Huang, A. Ekici & M. Obersteiner. "Path-dependent reductions in CO<sub>2</sub> emission budgets caused by permafrost carbon release." *Nature Geoscience* 11: 830-835 (2018). [doi:10.1038/s41561-018-0227-0](https://doi.org/doi:10.1038/s41561-018-0227-0)
 
