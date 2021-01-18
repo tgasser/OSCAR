@@ -45,19 +45,15 @@ For_bg = For_bg.rename({'d_Agross':'d_Acover'}).drop('d_Anet')
 Par_av['Aland_0'] = For_bg.Aland_0
 For_bg = For_bg.drop('Aland_0')
 
-## create initial state
-## note: can be set to None to ask the model to create zero-valued xarrays by itself
-Ini = None
-
 ## run control simulation
 ## note: OSCARv3 is comparatively slow when running with only one set of drivers and parameters, because of all the xarray packing/unpacking; better use a MC setup!
-Out_ctrl = OSCAR(Ini, Par_av, For_bg, var_keep=['RF'])
+Out_ctrl = OSCAR(None, Par_av, For_bg, var_keep=['RF'])
 
 ## run simulation in which atmospheric CO2 / CH4 /climate remains at preindustrial level
 ## note: For_bg.RF_contr is used because it already has the right dimensions, but the extra driver can be created from scratch
-Out_noCO2 = OSCAR(Ini, Par_av, xr.merge([For_bg, 0*For_bg.RF_contr.to_dataset(name='D_CO2')]), var_keep=['RF'])
-Out_noCH4 = OSCAR(Ini, Par_av, xr.merge([For_bg, 0*For_bg.RF_contr.to_dataset(name='D_CH4')]), var_keep=['RF'])
-Out_noClim = OSCAR(Ini, Par_av, xr.merge([For_bg, 0*For_bg.RF_contr.to_dataset(name='D_Tg'), 0*For_bg.RF_contr.to_dataset(name='D_Pg')]), var_keep=['RF'])
+Out_noCO2 = OSCAR(None, Par_av, xr.merge([For_bg, 0*For_bg.RF_contr.to_dataset(name='D_CO2')]), var_keep=['RF'])
+Out_noCH4 = OSCAR(None, Par_av, xr.merge([For_bg, 0*For_bg.RF_contr.to_dataset(name='D_CH4')]), var_keep=['RF'])
+Out_noClim = OSCAR(None, Par_av, xr.merge([For_bg, 0*For_bg.RF_contr.to_dataset(name='D_Tg'), 0*For_bg.RF_contr.to_dataset(name='D_Pg')]), var_keep=['RF'])
 
 ## plot results in terms of RF
 plt.figure()
