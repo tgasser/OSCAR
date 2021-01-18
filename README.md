@@ -21,7 +21,7 @@ This version is exactly the one used in the IPCC AR6. A number of functionalitie
 * Added: the `e_ohu` parameter representing the ocean heat uptake efficacy in the climate module (see e.g. [here](https://doi.org/10.1175/JCLI-D-12-00196.1)). For consistency, this parameter is set to one by default for all configurations.
 * Added: new metrics (`D_Flasc`, `d_CO2`, `CFF`, `d_OHC`) in `mod_process` to help diagnose the model ex-post.
 * Added: new regional aggregations consistent with the IPCC AR6.
-* Added: the `IPCC_AR6_parameters` script, to generate a set of prior parameters identical to those used in the IPCC AR6.
+* Added: the `get_IPCC_AR6_parameters` script, to generate a set of prior parameters identical to those used in the IPCC AR6.
 
 ##### v3.1
 * Improved: land carbon cycle, exactly as described by Gasser et al. (2020). This comes with a recalibration of the module's preindustrial steady-state on TRENDYv7 models.

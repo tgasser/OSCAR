@@ -22,8 +22,7 @@ CONTENT
 1. LAND-USE CHANGE
     1.1. Full
     1.2. Lite
-2. PERMAFROST CARBON
-    2.1. Global TODO
+    1.3. Cut
 """
 
 ##################################################
