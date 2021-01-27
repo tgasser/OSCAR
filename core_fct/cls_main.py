@@ -19,8 +19,6 @@ import xarray as xr
 
 from time import perf_counter
 
-from core_fct.fct_misc import Int_ExpInt as Int_dflt
-
 
 ##################################################
 ##   1. MODELS
@@ -65,9 +63,6 @@ class Model():
     ## number of processes
     def __len__(self): return len(self._processes)
 
-    ## may wanna define:
-    ## __del__, __add__, __sub__, __iadd__, __isub__, __radd__, __rsub__
-
     ## ----------
     ## Properties
     ## ----------
@@ -86,13 +81,15 @@ class Model():
     @property
     def var_diag(self): return set([proc.Out for proc in self._processes.values() if not proc.prog])
     @property
+    def var_node(self): return set([var for var in self.var_diag if self._processes[var].node])
+    @property
     def proc_all(self): return list(self._processes.keys())
 
     ## get causality tree levels
-    def proc_levels(self, var_node=[]):
+    def proc_levels(self, test_node=[]):
         ## initialize level 0 with state variables
-        levels = {0:list(self.var_prog) + var_node}
-        proc_remain = set(self.proc_all) - self.var_prog - set(var_node)
+        levels = {0:list(self.var_prog) + list(self.var_node) + test_node}
+        proc_remain = set(self.proc_all) - self.var_prog - self.var_node - set(test_node)
         ## loop through levels
         while proc_remain != set():
             next_level = []
@@ -115,49 +112,37 @@ class Model():
 
     ## copy the model to another one
     def copy(self, add_name='_copy', new_name=None, only=None):
-        ## name new model
+        ## create and name new model
         if new_name is None: new_model = Model(self.name + add_name)
         else: new_model = Model(new_name)
         ## copy processes
         for proc in self._processes.values():
             if only is None or proc.Out in only:
-                new_model.process(proc.Out, proc.In, proc.Eq, units=proc.units, core_dims=proc.core_dims)
+                new_model.process(proc.Out, proc.In, proc.Eq, proc.vLin, units=proc.units, core_dims=proc.core_dims, node=proc.node)
         ## return new model
         return new_model
     
-    ## check whether same model
-    ## /!\ TODO
-    def issame(self, other):
-        assert type(other) == Model
-        if not self.proc_all == other.proc_all: return False
-        for key in self.proc_all:
-            if self._processes[key].In != other._processes[key].In: return False
-            if self._processes[key].Out != other._processes[key].Out: return False
-            if self._processes[key].Eq != other._processes[key].Eq: return False
-        raise Warning('TODO!')
-
-    ## check whether submodel (excl. same model)
-    ## /!\ TODO
-    def issubmodel(self, other):
-        assert type(other) == Model
-        if self.issame(other): return False
-        raise Warning('TODO!')
-
-    ## shortcut for comparison (note: non-equal is not logical negation of equal)
-    def __eq__(self, other): return self.issame(other)
-    def __ne__(self, other): return not self.issame(other) and not self.issubmodel(other) and not other.issubmodel(self)
-    def __le__(self, other): return self.issubmodel(other) or self.issame(other)
-    def __ge__(self, other): return other.issubmodel(self) or self.issame(other)
-    def __lt__(self, other): return self.issubmodel(other)
-    def __gt__(self, other): return other.issubmodel(self)
+    ## merge with another model
+    def merge(self, other, new_name=None, priority_new=False):
+        assert type(other) is Model
+        ## create and name new model
+        if new_name is None and not priority_new: new_model = self.copy(new_name=self.name + ' +> ' + other.name)
+        elif new_name is None and priority_new: new_model = self.copy(new_name=self.name + ' <+ ' + other.name)
+        else: new_model = self.copy(new_name=new_name)
+        ## add processes
+        for proc in other._processes.values():
+            if proc.Out not in new_model or priority_new:
+                new_model.process(proc.Out, proc.In, proc.Eq, proc.vLin, units=proc.units, core_dims=proc.core_dims, node=proc.node)
+        ## return new model
+        return new_model
 
     ## --------
     ## Defining
     ## --------
 
     ## define process
-    def process(self, Out, In, Eq, **proc_args):
-        self._processes[Out] = Process(Out, In, Eq, self, **proc_args)
+    def process(self, Out, In, Eq, *vLin, **kwargs):
+        self._processes[Out] = Process(Out, In, Eq, *vLin, model=self, **kwargs)
         return self._processes[Out]
 
     ## get process
@@ -207,12 +192,12 @@ class Model():
         assert all(var in self.var_all for var in var_node)
         levels = self.proc_levels(var_node)
         if np.inf in levels.keys(): 
-            raise RuntimeError("infinite loop to solve diagnostic variables! set at least one of the following as (fake) prognostic variable: {0}".format([var.replace("'", "") for var in levels[np.inf]]))
+            raise RuntimeError("infinite loop to solve diagnostic variables! set node=True for at least one of the following: {0}".format([var.replace("'", "") for var in levels[np.inf]]))
 
     ## check initialized variables
     def _check_Ini(self, Ini):
         var_miss = (self.var_prog) - set(Ini.keys())
-        if var_miss != set(): raise RuntimeError('missing initialized variables: {0}'.format(str(var_miss).replace("'", "")))
+        if var_miss != set(): raise RuntimeError('missing initialisation for variables: {0}'.format(str(var_miss).replace("'", "")))
 
     ## check forcing variables and time axis
     def _check_For(self, For, time_axis):
@@ -233,7 +218,7 @@ class Model():
         return Ini
 
     ## running model
-    def __call__(self, Ini, Par, For, dtype=np.float32, var_keep=[], keep_prog=True, time_axis='year', Int=Int_dflt, nt=2, no_warnings=True):
+    def __call__(self, Ini, Par, For, dtype=np.float32, var_keep=[], keep_prog=True, time_axis='year', scheme='imex', nt=2, adapt_nt=True, nt_max=16, no_warnings=True):
         '''
         Input:
         ------
@@ -255,10 +240,17 @@ class Model():
                                 default = True
         time_axis (str)         name of the time dimension;
                                 default = 'year'
-        Int (function)          integration function to solve differential equations (solving scheme);
-                                default = exponential integrator ('Int_ExpInt' in 'fct_ancillary')
+        scheme (str)            solving scheme for the differential system (between 'imex' and 'ExpInt');
+                                default = 'imex'
         nt (int)                number of substeps during the solving of the differential system;
                                 default = 2
+        adapt_nt (bool)         whether the model should follow a heuristic rule based on D_CO2 to dynamically change nt;
+                                the rule is: min(nt + max(D_CO2) // 150, nt_max);
+                                default = True
+        nt_max (int)            maximum number of substeps if following the heuristic law;
+                                default = 16
+        no_warnings (bool)      whether warnings should be hidden during core calculations;
+                                default = True
         '''
 
         ## various checks
@@ -273,7 +265,29 @@ class Model():
             Par = Par.astype(dtype)
             For = For.astype(dtype)
 
-        ## printing time counter
+        ## get time axis and substeps
+        time = For.coords[time_axis]
+        steps = (0*time + nt).astype(int)
+
+        ## get levels in causality tree (excl. non-kept metrics)
+        levels = self.proc_levels()
+        levels = {lvl:list(set(levels[lvl]) - (self.var_out - set(var_keep))) for lvl in levels}
+        levels = {lvl:levels[lvl] for lvl in levels if len(levels[lvl]) > 0}
+
+        ## lists of variables to calculate (ordered)
+        list_var_prog = list(self.var_prog)
+        list_var_node = list(self.var_node)
+        list_var_diag = [var for lvl in np.sort(list(levels.keys()))[1:] for var in levels[lvl]]
+
+        ## speeds of the linear part of differential system
+        vLin = xr.Dataset({var:self[var].vLin(Par) for var in list_var_prog})
+
+        ## create quick function for solving scheme
+        if scheme =='ex': dX = lambda dX_dt, v, dt: dt * dX_dt
+        elif scheme == 'imex': dX = lambda dX_dt, v, dt: dt * dX_dt / (1 + v * dt)
+        elif scheme == 'ExpInt': dX = lambda dX_dt, v, dt: np.expm1(-v * dt) / -v * dX_dt
+
+        ## printing and time counter
         print(self.name + ' running')
         t0 = perf_counter()
 
@@ -282,19 +296,10 @@ class Model():
             if no_warnings: warnings.filterwarnings('ignore')
 
             ## INITIALIZATION
-            ## get time axis
-            time = For.coords[time_axis]
-            
-            ## level in causality tree of variables (excl. non-kept metrics)
-            levels = self.proc_levels()
-            levels = {lvl:list(set(levels[lvl]) - (self.var_out - set(var_keep))) for lvl in levels}
-            levels = {lvl:levels[lvl] for lvl in levels if len(levels[lvl]) > 0}
-
             ## initialization of all variables
             Var_old = Ini.copy(deep=True)
-            for lvl in np.sort(list(levels.keys()))[1:]:
-                for var in levels[lvl]:
-                    Var_old[var] = self[var](Var_old, Par, For.sel({time_axis:time[0]}, drop=True))
+            for var in list_var_diag:
+                Var_old[var] = self[var](Var_old, Par, For.sel({time_axis:time[0]}, drop=True))
 
             ## initialization of kept variables
             Var_out = Var_old.drop([var for var in Var_old if var not in (list(self.var_prog)) * keep_prog + var_keep])
@@ -302,24 +307,33 @@ class Model():
 
             ## LOOP ON TIME-STEP
             for t in range(1, len(time)):
-                print(time_axis + ' = ' + str(int(time[t])), end='\n' if t+1==len(time) else '\r')
-                
-                ## get time step and drivers
-                dt = float(time[t] - time[t-1])
-                For_t = For.sel({time_axis:time[t]}, drop=True)
+                print(time_axis + ' = ' + str(int(time[t])), end=' ')
+
+                ## adapt substep size
+                if adapt_nt and 'D_CO2' in self._processes:
+                    steps[t] = int(min(nt + Var_old.D_CO2.max() // 150, nt_max))
+                elif adapt_nt and 'D_CO2' in For:
+                    steps[t] = int(min(nt + For.D_CO2.max() // 150, nt_max))
+                elif adapt_nt and t==1:
+                    print('WARNING: cannot adapt nt as D_CO2 is not a variable or driver')                
+
+                ## get time step and interpolate drivers
+                dt = float(time[t] - time[t-1]) / float(steps[t])
+                For_t = For.interp({time_axis: float(1/steps[t]) + np.arange(time[t-1], time[t], 1/steps[t])})
 
                 ## LOOP ON SUBSTEPS
-                for _ in range(nt):
-                    Var_new = xr.Dataset()
+                print('(nt = ' + str(int(steps[t])) +')', end='\n' if t+1==len(time) else '\r')
+                for yr in For_t[time_axis].values:
+                    For_ = For_t.sel({time_axis:yr}, drop=True)
 
-                    ## 1. prognostic variables
-                    for var in self.var_prog:
-                        Var_new[var] = self[var](Var_old, Par, For_t, dt=dt/nt, Int=Int)
-                    
-                    ## 2. diagnostic variables
-                    for lvl in np.sort(list(levels.keys()))[1:]:
-                        for var in levels[lvl]:
-                            Var_new[var] = self[var](Var_new, Par, For_t)
+                    ## solve for variables
+                    Var_new = xr.Dataset()
+                    for var in list_var_prog:
+                        Var_new[var] = Var_old[var] + dX(self[var](Var_old, Par, For_), vLin[var], dt)
+                    for var in list_var_node:
+                        Var_new[var] = self[var](Var_old, Par, For_)
+                    for var in list_var_diag:
+                        Var_new[var] = self[var](Var_new, Par, For_)
 
                     ## finalize (iterate variables)
                     Var_old = Var_new.copy(deep=True)
@@ -331,6 +345,7 @@ class Model():
             ## FINALIZATION
             ## concatenate final output on time axis
             Var_out = xr.concat(Var_out, dim=time_axis)
+            Var_out = Var_out.assign_coords({time_axis:time})
 
             ## add model info
             Var_out.attrs['model'] = self.name
@@ -340,7 +355,7 @@ class Model():
                 Var_out[var].attrs['units'] = self[var].units
 
         ## printing time counter
-        print('total running time: {:.0f} seconds'.format(perf_counter() - t0))
+        print('total running time: {:.1f} minutes'.format((perf_counter() - t0) / 60))
 
         ## return
         return Var_out
@@ -362,18 +377,22 @@ class Process():
 
     Options:
     --------
+    vLin (callable)     equation of the speed of the linear part of the differential equation (for prognostic variables);
+                        default = lambda Par: 1E-18
     model (Model)       model to which the process belongs;
                         default = Model()
     units (str)         units of Out;
                         default = '?'
     core_dims (list)    dims over which Out must be defined (relevant only for prognostic variables);
                         default = []
+    node (bool)         whether that diagnostic variable should be treated as prognostic for the solving;
+                        default = False
     '''
 
     ## initialization
-    def __init__(self, Out, In, Eq, model=Model(), units='?', core_dims=[]):
-        assert type(Out) is str and type(In) is tuple and callable(Eq) and type(model) is Model and type(units) is str
-        self.Out, self.In, self.Eq, self.model, self.units, self.core_dims = Out, In, Eq, model, units, core_dims
+    def __init__(self, Out, In, Eq, vLin=lambda Par: None, model=Model(), units='?', core_dims=[], node=False):
+        assert (type(Out), type(In), type(model), type(units), type(core_dims), type(node)) == (str, tuple, Model, str, list, bool) and callable(Eq) and callable(vLin)
+        self.Out, self.In, self.Eq, self.vLin, self.model, self.units, self.core_dims, self.node = Out, In, Eq, vLin, model, units, core_dims, node
         if Out in In: self.prog = True
         else: self.prog = False
 
@@ -391,16 +410,16 @@ class Process():
         elif var in Var.keys(): return Var[var]
         ## otherwise
         elif var != self.Out: return self.model[var](Var, Par, For, recursive=True)
-        else: raise RuntimeError('recursive call of process: {0}'.format(var))
+        else: raise RuntimeError('endless recursive call of process: {0}'.format(var))
 
     ## solve process
-    def __call__(self, Var, Par, For=xr.Dataset(), recursive=False, time_axis='year', **Int_args):
+    def __call__(self, Var, Par, For=xr.Dataset(), recursive=False, time_axis='year'):
         ## if prescribed
         if self.Out in For.keys(): return For[self.Out]
         ## otherwise get drivers
         if recursive: Var_in = xr.Dataset({var:self._get_var(var, Var, Par, For) for var in self.In})
         else: Var_in = xr.Dataset(dict([(var, For[var]) if var in For else (var, Var[var]) for var in self.In]))
         ## output (time axis first if requested and available)
-        if time_axis not in Var.coords: return self.Eq(Var_in, Par, **Int_args)
-        else: return 0.*Var[time_axis] + self.Eq(Var_in, Par, **Int_args)
+        if time_axis not in Var.coords: return self.Eq(Var_in, Par)
+        else: return 0.*Var[time_axis] + self.Eq(Var_in, Par)
 

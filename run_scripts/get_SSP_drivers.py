@@ -49,7 +49,7 @@ For_hist = xr.merge([For_hist, TMP])
 For_hist['RF_contr'] *= 0
 
 ## load atmospheric concentrations
-TMP = load_data('concentrations_CMIP6').sel(region='Globe')
+TMP = load_data('concentrations_CMIP6').sel(region='Globe', drop=True)
 for VAR in ['CO2', 'CH4', 'N2O', 'Xhalo']:
     For_hist['D_'+VAR] = TMP[VAR] - Par0[VAR+'_0']
 
@@ -60,7 +60,8 @@ For_hist['E_Xhalo'] = 0*For_hist['D_Xhalo']
 
 ## format and save
 For_hist = For_hist.sel(year=slice(1750, 2014)).fillna(0.)
-For_hist.to_netcdf(folder_out + 'For_hist_SSP.nc', encoding={var:{'zlib':True, 'dtype':np.float32} for var in For_hist})
+if __name__ == '__main__':
+    For_hist.to_netcdf(folder_out + 'For_hist_SSP.nc', encoding={var:{'zlib':True, 'dtype':np.float32} for var in For_hist})
 
 
 ##################################################
@@ -116,5 +117,6 @@ For_scen['E_Xhalo'] = 0*For_scen['D_Xhalo']
 ## format and save
 For_scen = For_scen.sel(year=slice(2015, 2300))
 For_scen = xr.concat([For_hist.sel(year=2014).drop('Aland_0'), For_scen], dim='year')
-For_scen.to_netcdf(folder_out + 'For_scen_SSP.nc', encoding={var:{'zlib':True, 'dtype':np.float32} for var in For_scen})
+if __name__ == '__main__':
+    For_scen.to_netcdf(folder_out + 'For_scen_SSP.nc', encoding={var:{'zlib':True, 'dtype':np.float32} for var in For_scen})
 
