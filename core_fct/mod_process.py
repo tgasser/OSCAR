@@ -63,6 +63,7 @@ B. SUB-MODELS
 ##################################################
 
 import numpy as np
+import xarray as xr
 
 from core_fct.cls_main import Model
 
@@ -100,27 +101,32 @@ A_Earth = 510072E9 # m2
 ## (Joos et al., 1996; doi:10.3402/tellusb.v48i3.15921)
 
 ## PARAMETER: preindustrial dissolved inorganic carbon in the surface layer
+## (Joos et al., 2001; doi:10.1029/2000GB001375)
 ## (Harmann et al. 2011; ISBN:978-0-643-10745-8)
 OSCAR.process('dic_0', (), 
     lambda Var, Par: Eq__dic_0(Var, Par), 
     units='umol kgSW-1')
 
 def Eq__dic_0(Var, Par):
+    ## polynomial fit
+    dic_0_Poly = 1970 + (1964 - 1970) / (18.4 - 17.7) * (Par.To_0 - 17.7)
     ## CO2Sys Pade approximant
-    a0_0 = 30015.6 * (1 - 0.0226536 * (Par.To_0 - 15 - 273.15) + 0.000167105 * (Par.To_0 - 15 - 273.15)**2)
-    a1_0 = 13.4574 * (1 - 0.019829 * (Par.To_0 - 15 - 273.15) + 0.000113872 * (Par.To_0 - 15 - 273.15)**2)
-    a2_0 = -0.243121 * (1 + 0.000443511 * (Par.To_0 - 15 - 273.15) - 0.000473227 * (Par.To_0 - 15 - 273.15)**2)
+    a0_0 = 30015.6 * (1 - 0.0226536 * (Par.To_0 - 15) + 0.000167105 * (Par.To_0 - 15)**2)
+    a1_0 = 13.4574 * (1 - 0.019829 * (Par.To_0 - 15) + 0.000113872 * (Par.To_0 - 15)**2)
+    a2_0 = -0.243121 * (1 + 0.000443511 * (Par.To_0 - 15) - 0.000473227 * (Par.To_0 - 15)**2)
     dic_0_Pade = a0_0 * (Par.CO2_0 / 380.) / (1 + a1_0 * (Par.CO2_0 / 380. ) + a2_0 * (Par.CO2_0 / 380.)**2)
     ## CO2Sys Power law
-    p0_0 = 2160.156 * (1 - 0.00347063 * (Par.To_0 - 15 - 273.15) - 0.0000250016 * (Par.To_0 - 15 - 273.15)**2)
-    p1_0 = 0.0595961 * (1 + 0.0200328 * (Par.To_0 - 15 - 273.15) + 0.000192084 * (Par.To_0 - 15 - 273.15)**2)
-    p2_0 = 0.318665 * (1 - 0.00151292 * (Par.To_0 - 15 - 273.15) - 0.000198978 * (Par.To_0 - 15 - 273.15)**2)
+    p0_0 = 2160.156 * (1 - 0.00347063 * (Par.To_0 - 15) - 0.0000250016 * (Par.To_0 - 15)**2)
+    p1_0 = 0.0595961 * (1 + 0.0200328 * (Par.To_0 - 15) + 0.000192084 * (Par.To_0 - 15)**2)
+    p2_0 = 0.318665 * (1 - 0.00151292 * (Par.To_0 - 15) - 0.000198978 * (Par.To_0 - 15)**2)
     dic_0_Power = p0_0 * ((Par.CO2_0 / 380.) - p2_0)**p1_0    
     ## choosing configuration
-    return Par.pCO2_is_Pade * dic_0_Pade + (1-Par.pCO2_is_Pade) * dic_0_Power
+    dic_0 = xr.concat([dic_0_Poly.assign_coords(fct_pco2='Poly'), dic_0_Pade.assign_coords(fct_pco2='Pade'), dic_0_Power.assign_coords(fct_pco2='Power')], dim='fct_pco2')
+    return (Par.pCO2_switch * dic_0).sum('fct_pco2', min_count=1)
 
 
 ## partial pressure of CO2 at sea surface
+## (Joos et al., 2001; doi:10.1029/2000GB001375)
 ## (Harmann et al. 2011; ISBN:978-0-643-10745-8)
 OSCAR.process('D_pCO2', ('dic_0', 'D_dic', 'D_To'), 
     lambda Var, Par: Eq__D_pCO2(Var, Par), 
@@ -130,18 +136,26 @@ def Eq__D_pCO2(Var, Par):
     ## common variables
     To = Par.To_0 + Var.D_To
     dic = Var.dic_0 + Var.D_dic
-    ## following CO2Sys Pade approximant
-    a0 = 30015.6 * (1 - 0.0226536 * (To - 15 - 273.15) + 0.000167105 * (To - 15 - 273.15)**2)
-    a1 = 13.4574 * (1 - 0.019829 * (To - 15 - 273.15) + 0.000113872 * (To - 15 - 273.15)**2)
-    a2 = -0.243121 * (1 + 0.000443511 * (To - 15 - 273.15) - 0.000473227 * (To - 15 - 273.15)**2)
+    ## polynomial fit
+    D_pCO2_Poly = ( (1.5568 - 1.3993E-2 * Par.To_0) * Var.D_dic
+                  + (7.4706 - 0.20207 * Par.To_0) * 1E-3 * Var.D_dic**2
+                  - (1.2748 - 0.12015 * Par.To_0) * 1E-5 * Var.D_dic**3
+                  + (2.4491 - 0.12639 * Par.To_0) * 1E-7 * Var.D_dic**4
+                  - (1.5468 - 0.15326 * Par.To_0) * 1E-10 * Var.D_dic**5 )
+    D_pCO2_Poly = (Par.CO2_0 + D_pCO2_Poly) * np.exp(0.0423 * Var.D_To / Par.w_clim_To) - Par.CO2_0
+    ## CO2Sys Pade approximant
+    a0 = 30015.6 * (1 - 0.0226536 * (To - 15) + 0.000167105 * (To - 15)**2)
+    a1 = 13.4574 * (1 - 0.019829 * (To - 15) + 0.000113872 * (To - 15)**2)
+    a2 = -0.243121 * (1 + 0.000443511 * (To - 15) - 0.000473227 * (To - 15)**2)
     D_pCO2_Pade = 380 * (a0 - a1*dic - np.sqrt((a0 - a1*dic)**2 - 4*a2*dic**2)) / (2*a2*dic) - Par.CO2_0
     ## CO2Sys Power law
-    p0 = 2160.156 * (1 - 0.00347063 * (To - 15 - 273.15) - 0.0000250016 * (To - 15 - 273.15)**2)
-    p1 = 0.0595961 * (1 + 0.0200328 * (To - 15 - 273.15) + 0.000192084 * (To - 15 - 273.15)**2)
-    p2 = 0.318665 * (1 - 0.00151292 * (To - 15 - 273.15) - 0.000198978 * (To - 15 - 273.15)**2)
+    p0 = 2160.156 * (1 - 0.00347063 * (To - 15) - 0.0000250016 * (To - 15)**2)
+    p1 = 0.0595961 * (1 + 0.0200328 * (To - 15) + 0.000192084 * (To - 15)**2)
+    p2 = 0.318665 * (1 - 0.00151292 * (To - 15) - 0.000198978 * (To - 15)**2)
     D_pCO2_Power = 380 * (p2 + (dic/p0)**(1/p1)) - Par.CO2_0
     ## choosing configuration
-    return Par.pCO2_is_Pade * D_pCO2_Pade + (1-Par.pCO2_is_Pade) * D_pCO2_Power
+    D_pCO2 = xr.concat([D_pCO2_Poly.assign_coords(fct_pco2='Poly'), D_pCO2_Pade.assign_coords(fct_pco2='Pade'), D_pCO2_Power.assign_coords(fct_pco2='Power')], dim='fct_pco2')
+    return (Par.pCO2_switch * D_pCO2).sum('fct_pco2', min_count=1)
 
 
 ## mixed-layer depth
@@ -159,7 +173,7 @@ OSCAR.process('D_dic', ('D_Cosurf', 'D_mld'),
     units='umol kgSW-1')
 
 def Eq__D_dic(Var, Par):
-    return Par.a_dic / Par.A_ocean / Par.a_CO2 / (Par.mld_0 + Var.D_mld) * Var.D_Cosurf.sum('box_osurf', min_count=1)
+    return Par.a_dic / Par.A_ocean / (Par.mld_0 + Var.D_mld) * Var.D_Cosurf.sum('box_osurf', min_count=1)
 
 
 ## ingoing flux to the surface ocean
@@ -180,7 +194,7 @@ def Eq__D_Fout(Var, Par):
     return Par.p_circ * Par.v_fg * Par.a_CO2 * Var.D_pCO2
 
 
-## partial pressure of CO2 at sea surface
+## circulation flux from surface to deep ocean
 OSCAR.process('D_Fcirc', ('D_Cosurf',), 
     lambda Var, Par: Eq__D_Fcirc(Var, Par), 
     units='PgC yr-1')

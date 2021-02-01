@@ -107,72 +107,61 @@ from core_fct.fct_calib import calib_land_TRENDYv7
 ##===========
 
 ## ocean structure and impulse response function
-## (Joos et al., 1996; doi:10.3402/tellusb.v48i3.15921) (Appendix)
+## ## (Strassmann & Joos, 2018; doi:10.5194/gmd-11-1887-2018) (Tables A2 & A3)
 def load_ocean_struct(**useless):
-    ## TODO v3.2: take latest GMD paper?
 
     ## initialization
     Par = xr.Dataset()
-    Par.coords['mod_Focean_struct'] = ['box-diffusion', 'HILDA', 'Princeton-2D', 'Princeton-3D']
-    Par.coords['box_osurf'] = np.arange(8)
+    Par.coords['mod_Focean_struct'] = ['HILDA', 'Bern-2.5D', 'Princeton-GCM']
+    Par.coords['box_osurf'] = np.arange(5)
 
     ## DIC conversion factor
-    Par['a_dic'] = xr.DataArray(1.722E17, attrs={'units':'umol m3 ppm-1 kgSW-1'})
+    Par['a_dic'] = xr.DataArray(1 / 1026.5 / 12.0107E-6 * 1E15, attrs={'units':'umol m3 GtC-1 kgSW-1'})
 
     ## preindustrial mixing layer depth
-    Par['mld_0'] = xr.DataArray([75., 75., 50.0, 50.9], dims='mod_Focean_struct', attrs={'units':'m'})
+    Par['mld_0'] = xr.DataArray([75., 50.0, 50.9], dims='mod_Focean_struct', attrs={'units':'m'})
 
     ## global ocean area
-    Par['A_ocean'] = xr.DataArray(1E14 * np.array([3.62, 3.62, 3.54, 3.55]), dims='mod_Focean_struct', attrs={'units':'m2'})
+    Par['A_ocean'] = xr.DataArray(1E14 * np.array([3.62, 3.5375, 3.55]), dims='mod_Focean_struct', attrs={'units':'m2'})
 
     ## preindustrial global ocean temperature
-    Par['To_0'] = xr.DataArray(273.15 + np.array([17.7, 18.2, 18.3, 17.7]), dims='mod_Focean_struct', attrs={'units':'K'})
+    Par['To_0'] = xr.DataArray(np.array([18.17, 18.30, 17.70]), dims='mod_Focean_struct', attrs={'units':'degC'})
 
     ## gaseous exchange speed at ocean surface
-    Par['v_fg'] = xr.DataArray(1 / np.array([7.80, 9.06, 7.46, 7.66]), dims='mod_Focean_struct', attrs={'units':'yr-1'})
-
-    ## fraction of ocean surface boxes
-    ## note: slightly altered from original to have continuous responses
-    Par['p_circ'] = xr.DataArray(
-        [[0.019737, 0.031528, 0.010469, 0.050469, 0.076817, 0.11803, 0.16851] + [0.52444], # last value as sum of all fast timescales
-        [np.nan] + [0.022936, 0.035549, 0.037820, 0.089318, 0.13963, 0.24278] + [0.431967], # last value as sum of all fast timescales
-        [np.nan] + [0.013691, 0.012456, 0.026933, 0.026994, 0.036608, 0.067380] + [0.815938], # last value as sum of all fast timescales
-        [np.nan, np.nan] + [0.014819, 0.019439, 0.038344, 0.066485, 0.24966] + [0.70367-0.092417]], # offset last value to sum to 1
-        dims=['mod_Focean_struct', 'box_osurf'], attrs={'units':'1'})
+    Par['v_fg'] = xr.DataArray(1 / np.array([9.06, 7.46, 7.66]), dims='mod_Focean_struct', attrs={'units':'yr-1'})
 
     ## time-scales of oceanic surface-to-deep transport
-    ## note: fastest time-scales also altered to have continuous responses
-    ##-------for v3.2------- (to keep)
-    Par['t_circ'] = xr.DataArray(
-        [[1.e18] + [215.71, 148.77, 43.506, 14.172, 4.8702, 1.6388] + [1.6388/5], # arbitrary fastest time-scale as 20% of previous one
-        [np.nan] + [1.e18] + [232.30, 68.736, 18.601, 5.2528, 1.2679] + [1.2679/5], # arbitrary fastest time-scale as 20% of previous one
-        [np.nan] + [1.e18] + [331.54, 107.57, 38.946, 11.677, 10.515] + [10.515/5], # arbitrary fastest time-scale as 20% of previous one
-        [np.nan, np.nan] + [1.e18] + [347.55, 65.359, 15.281, 2.3488, 0.70177]],
+    ## note: fastest pools aggregated together with an averaged (and weighted) time-scale
+    Par['t_circ'] = xr.DataArray([
+        [(0.27830 * 0.45254 + 0.24014 * 0.03855 + 0.23337 * 2.1990) / (0.27830 + 0.24014 + 0.23337)] + [12.038, 59.584, 237.31, 1E18], 
+        [(0.27022 * 0.07027 + 0.45937 * 0.57621 + 0.094671 * 2.6900) / (0.27022 + 0.45937 + 0.094671)] + [13.617, 86.797, 337.30, 1E18], 
+        [(2.2745 * 1.1976 - 2.7093 * 1.5521 + 1.2817 * 2.0090) / (2.2745 - 2.7093 + 1.2817)] + [16.676, 65.102, 347.58, 1E18]], 
         dims=['mod_Focean_struct', 'box_osurf'], attrs={'units':'yr'})
 
-    ##-------for v3.0------- (to be deleted)
-    Par['t_circ'] = xr.DataArray(
-        [[1.e18] + [215.71, 148.77, 43.506, 14.172, 4.8702, 1.6388] + [1/3.], # arbitrary fastest time-scale as 1/3 yr
-        [np.nan] + [1.e18] + [232.30, 68.736, 18.601, 5.2528, 1.2679] + [1/3.], # arbitrary fastest time-scale as 1/3 yr
-        [np.nan] + [1.e18] + [331.54, 107.57, 38.946, 11.677, 10.515] + [1/2.], # arbitrary fastest time-scale as 1/2 yr
-        [np.nan, np.nan] + [1.e18] + [347.55, 65.359, 15.281, 2.3488, 0.70177]],
-        dims=['mod_Focean_struct', 'box_osurf'], attrs={'units':'yr'})
+    ## fraction of ocean surface boxes
+    ## note: fastest pool fraction calculated as the remainder to sum to 1
+    Par['p_circ'] = xr.DataArray([
+        [1 - 0.13733 - 0.051541 - 0.035033 - 0.022936] + [0.13733, 0.051541, 0.035033, 0.022936], 
+        [1 - 0.10292 - 0.0392835 - 0.012986 - 0.013691] + [0.10292, 0.0392835, 0.012986, 0.013691], 
+        [1 - 0.061618 - 0.037265 - 0.019565 - 0.014818] + [0.061618, 0.037265, 0.019565, 0.014818]], 
+        dims=['mod_Focean_struct', 'box_osurf'], attrs={'units':'1'})
 
     ## return
     return Par
 
 
 ## carbonate chemistry emulation hard-coded as process, and based on:
+## (Joos et al., 2001; doi:10.1029/2000GB001375)
 ## (Harmann et al. 2011; ISBN: 978-0-643-10745-8)
 def load_ocean_chem(**useless):
-    ## TODO v3.2: add old function by joos 2001?
 
     ## initialization
     Par = xr.Dataset()
-    Par.coords['mod_Focean_chem'] = ['CO2Sys-Pade', 'CO2Sys-Power']
+    Par.coords['mod_Focean_chem'] = ['Joos_2001', 'CO2Sys-Pade', 'CO2Sys-Power']
+    Par.coords['fct_pco2'] = ['Poly', 'Pade', 'Power']
 
     ## option to choose emulation functional form
-    Par['pCO2_is_Pade'] = xr.DataArray([True, False], dims='mod_Focean_chem')
+    Par['pCO2_switch'] = xr.DataArray([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dims=['mod_Focean_chem', 'fct_pco2'])
 
     ## return
     return Par
@@ -190,8 +179,13 @@ def load_ocean_CMIP5(recalibrate=False, **useless):
         raise RuntimeError('embedded calibration not available yet')
         #Par = calib_ocean_CMIP5()
 
+    ## add option to turn off
+    Par2 = xr.Dataset()
+    Par2['p_mld'] = xr.DataArray([1.], coords={'mod_Focean_trans':['off_']}, dims=['mod_Focean_trans'], attrs={'units':'1'})
+    Par2['g_mld'] = xr.DataArray([0.], coords={'mod_Focean_trans':['off_']}, dims=['mod_Focean_trans'], attrs={'units':'1'})
+
     ## return
-    return Par
+    return xr.merge([Par, Par2])
 
 
 ##==========
@@ -200,7 +194,7 @@ def load_ocean_CMIP5(recalibrate=False, **useless):
 
 ## land carbon-cycle general parameters
 def load_land_misc(**useless):
-    ## TODO v3.2: reformulate log/hyp into one extended log formula || add t_shift from LUH2
+    ## TODO: reformulate log/hyp into one extended log formula; add t_shift from LUH2
 
     ## initialization
     Par = xr.Dataset()
@@ -250,7 +244,7 @@ def load_land_CMIP5(mod_region, recalibrate=False, **useless):
 
 ## wood-use parameters
 def load_land_wooduse(mod_region, recalibrate=False, **useless):
-    ## TODO v3.2: add old Houghton elemental C and partitioning; remove/change BB mod (in pre-processed data)
+    ## TODO: add old Houghton elemental C and partitioning; remove/change BB mod (in pre-processed data); look into exp approximation of linear/gamma
     
     ## initialization
     Par = xr.Dataset()
@@ -386,7 +380,7 @@ def load_permafrost_all(**useless):
 ## wetlands parameters
 ## calibrated on WETCHIMP
 def load_wetlands_WETCHIMP(mod_region, recalibrate=False, **useless):
-    ## TODO v3.2: properly uncouple from land cover data
+    ## TODO: properly uncouple from land cover data
 
     ## load from existing file
     if os.path.isfile('input_data/parameters/from_OSCARv2/wetlands_WETCHIMP__' + mod_region + '.nc') and not recalibrate:
@@ -410,7 +404,7 @@ def load_wetlands_WETCHIMP(mod_region, recalibrate=False, **useless):
 
 ## atmospheric conversion factors and preindustrial concentrations
 def load_atmosphere_misc(**useless):
-    ## TODO v3.2: move p_CH4geo to drivers
+    ## TODO: move p_CH4geo to drivers (or create optional drivers?)
 
     ## initialization
     Par = xr.Dataset()
@@ -497,7 +491,7 @@ def load_atmochem_adhoc(**useless):
 
 ## preindustrial lifetime of CH4
 def load_CH4_lifetime(**useless):
-    ## TODO v3.2: take ACCMIP as best guess? (and change ad hoc factor)
+    ## TODO: take ACCMIP as best guess? (and change ad hoc factor)
 
     ## initialization
     Par = xr.Dataset()

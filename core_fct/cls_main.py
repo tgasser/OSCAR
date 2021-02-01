@@ -218,7 +218,7 @@ class Model():
         return Ini
 
     ## running model
-    def __call__(self, Ini, Par, For, dtype=np.float32, var_keep=[], keep_prog=True, time_axis='year', scheme='imex', nt=2, adapt_nt=True, nt_max=16, no_warnings=True):
+    def __call__(self, Ini, Par, For, dtype=np.float32, var_keep=[], keep_prog=True, time_axis='year', scheme='imex', nt=2, adapt_nt=True, nt_max=24, no_warnings=True):
         '''
         Input:
         ------
@@ -245,10 +245,10 @@ class Model():
         nt (int)                number of substeps during the solving of the differential system;
                                 default = 2
         adapt_nt (bool)         whether the model should follow a heuristic rule based on D_CO2 to dynamically change nt;
-                                the rule is: min(nt + max(D_CO2) // 150, nt_max);
+                                the 'nt' argument is then used as a minimum number of substeps;
                                 default = True
         nt_max (int)            maximum number of substeps if following the heuristic law;
-                                default = 16
+                                default = 24
         no_warnings (bool)      whether warnings should be hidden during core calculations;
                                 default = True
         '''
@@ -278,14 +278,21 @@ class Model():
         list_var_prog = list(self.var_prog)
         list_var_node = list(self.var_node)
         list_var_diag = [var for lvl in np.sort(list(levels.keys()))[1:] for var in levels[lvl]]
+        list_var_keep = (list(self.var_prog) + list(self.var_node)) * keep_prog + var_keep
 
         ## speeds of the linear part of differential system
         vLin = xr.Dataset({var:self[var].vLin(Par) for var in list_var_prog})
 
         ## create quick function for solving scheme
-        if scheme =='ex': dX = lambda dX_dt, v, dt: dt * dX_dt
-        elif scheme == 'imex': dX = lambda dX_dt, v, dt: dt * dX_dt / (1 + v * dt)
-        elif scheme == 'ExpInt': dX = lambda dX_dt, v, dt: np.expm1(-v * dt) / -v * dX_dt
+        if scheme =='ex': 
+            dX = lambda dX_dt, v, dt: dt * dX_dt
+            CO2_nt = 100.
+        elif scheme == 'imex': 
+            dX = lambda dX_dt, v, dt: dt * dX_dt / (1 + v * dt)
+            CO2_nt = 110. # 150 if not using Joos_2001 for pCO2
+        elif scheme == 'ExpInt': 
+            dX = lambda dX_dt, v, dt: np.expm1(-v * dt) / -v * dX_dt
+            CO2_nt = 100.
 
         ## printing and time counter
         print(self.name + ' running')
@@ -302,7 +309,7 @@ class Model():
                 Var_old[var] = self[var](Var_old, Par, For.sel({time_axis:time[0]}, drop=True))
 
             ## initialization of kept variables
-            Var_out = Var_old.drop([var for var in Var_old if var not in (list(self.var_prog)) * keep_prog + var_keep])
+            Var_out = Var_old.drop([var for var in Var_old if var not in list_var_keep])
             Var_out = [Var_out.assign_coords(**{time_axis:time[0]}).expand_dims(time_axis, 0)]
 
             ## LOOP ON TIME-STEP
@@ -310,10 +317,10 @@ class Model():
                 print(time_axis + ' = ' + str(int(time[t])), end=' ')
 
                 ## adapt substep size
-                if adapt_nt and 'D_CO2' in self._processes:
-                    steps[t] = int(min(nt + Var_old.D_CO2.max() // 150, nt_max))
-                elif adapt_nt and 'D_CO2' in For:
-                    steps[t] = int(min(nt + For.D_CO2.max() // 150, nt_max))
+                if adapt_nt and 'D_CO2' in For:
+                    steps[t] = int(min(max(2 + For.isel(year=slice(t-1, t+1)).D_CO2.max() // CO2_nt, nt), nt_max))
+                elif adapt_nt and 'D_CO2' in self._processes:
+                    steps[t] = int(min(max(2 + Var_old.D_CO2.max() // CO2_nt, nt), nt_max))
                 elif adapt_nt and t==1:
                     print('WARNING: cannot adapt nt as D_CO2 is not a variable or driver')                
 
@@ -323,8 +330,8 @@ class Model():
 
                 ## LOOP ON SUBSTEPS
                 print('(nt = ' + str(int(steps[t])) +')', end='\n' if t+1==len(time) else '\r')
-                for yr in For_t[time_axis].values:
-                    For_ = For_t.sel({time_axis:yr}, drop=True)
+                for n_yr in range(len(For_t[time_axis])):
+                    For_ = For_t.isel({time_axis:n_yr}, drop=True)
 
                     ## solve for variables
                     Var_new = xr.Dataset()
@@ -339,7 +346,7 @@ class Model():
                     Var_old = Var_new.copy(deep=True)
 
                 ## drop unwanted variables and append to final output
-                Var_new = Var_new.drop([var for var in Var_new if var not in (list(self.var_prog)) * keep_prog + var_keep])
+                Var_new = Var_new.drop([var for var in Var_new if var not in list_var_keep])
                 Var_out.append(Var_new.assign_coords(**{time_axis:time[t]}).expand_dims(time_axis, 0))
 
             ## FINALIZATION
