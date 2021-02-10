@@ -46,7 +46,7 @@ ISO-Numeric,Country,ISO-Alpha3,GTAP7,SRES_4reg,SRES_11reg,RECCAP1,Raupach_2007,H
 158,Taiwan,TWN,8,3,6,4,4,9,11,2,1,8,7,2,3,6
 162,Christmas Island,CXR,19,3,8,5,9,8,11,2,1,10,3,3,2,1
 166,Cocos (Keeling) Islands,CCK,19,3,8,5,9,8,11,2,1,10,3,3,2,1
-170,Colombia,COL,33,4,10,10,8,2,12,2,2,5,1,5,6,15
+170,Colombia,COL,33,4,10,10,8,2,12,2,2,5,2,5,6,15
 174,Comoros,COM,110,4,11,1,9,5,10,2,3,6,1,1,1,5
 175,Mayotte,MYT,110,4,11,1,8,5,10,2,3,6,1,1,1,5
 178,Congo,COG,99,4,11,1,9,5,10,2,3,6,1,1,1,18
@@ -92,7 +92,7 @@ ISO-Numeric,Country,ISO-Alpha3,GTAP7,SRES_4reg,SRES_11reg,RECCAP1,Raupach_2007,H
 312,Guadeloupe,GLP,45,4,10,0,8,2,12,2,2,5,2,5,6,3
 316,Guam,GUM,3,3,8,3,8,9,11,2,4,1,10,2,9,4
 320,Guatemala,GTM,41,4,10,0,8,2,12,2,2,5,2,5,6,10
-324,Guinea,GIN,98,4,11,1,9,5,10,2,3,6,2,1,1,20
+324,Guinea,GIN,98,4,11,1,9,5,10,2,3,6,1,1,1,20
 328,Guyana,GUY,39,4,10,10,9,2,12,2,2,5,2,5,6,15
 332,Haiti,HTI,45,4,10,0,8,2,12,2,2,5,2,5,6,3
 334,Heard Island and McDonald Islands,HMD,0,0,0,0,0,0,0,2,0,10,0,3,2,1
