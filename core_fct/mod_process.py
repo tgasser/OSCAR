@@ -214,7 +214,7 @@ def Eq__D_Focean(Var, Par):
 
 ## PROGNOSTIC: surface ocean carbon stock
 OSCAR.process('D_Cosurf', ('D_Cosurf', 'D_Fcirc', 'D_Fout', 'D_Fin'), 
-    lambda Var, Par: DiffEq__D_Cosurf(Var, Par), lambda Par: vLin__D_Cosurf(Par), 
+    None, lambda Var, Par: DiffEq__D_Cosurf(Var, Par), lambda Par: vLin__D_Cosurf(Par), 
     units='PgC', core_dims=['box_osurf'])
     
 def DiffEq__D_Cosurf(Var, Par):
@@ -387,7 +387,7 @@ def Eq__D_nbp(Var, Par):
 
 ## PROGNOSTIC: vegetation carbon stock (areal)
 OSCAR.process('D_cveg', ('D_cveg', 'D_npp', 'D_efire', 'D_eharv', 'D_egraz', 'D_fmort1', 'D_fmort2'), 
-    lambda Var, Par: DiffEq__D_cveg(Var, Par), lambda Par: vLin__D_cveg(Par), 
+    None, lambda Var, Par: DiffEq__D_cveg(Var, Par), lambda Par: vLin__D_cveg(Par), 
     units='PgC Mha-1', core_dims=['reg_land', 'bio_land'])
 
 def DiffEq__D_cveg(Var, Par):
@@ -399,7 +399,7 @@ def vLin__D_cveg(Par):
 
 ## PROGNOSTIC: litter carbon stock (areal)
 OSCAR.process('D_csoil1', ('D_csoil1', 'D_fmort1', 'D_rh1', 'D_fmet'), 
-    lambda Var, Par: DiffEq__D_csoil1(Var, Par), lambda Par: vLin__D_csoil1(Par),
+    None, lambda Var, Par: DiffEq__D_csoil1(Var, Par), lambda Par: vLin__D_csoil1(Par),
     units='PgC Mha-1', core_dims=['reg_land', 'bio_land'])
 
 def DiffEq__D_csoil1(Var, Par):
@@ -411,7 +411,7 @@ def vLin__D_csoil1(Par):
 
 ## PROGNOSTIC: soil carbon stock (areal)
 OSCAR.process('D_csoil2', ('D_csoil2', 'D_fmort2', 'D_fmet', 'D_rh2'), 
-    lambda Var, Par: DiffEq__D_csoil2(Var, Par), lambda Par: vLin__D_csoil2(Par),
+    None, lambda Var, Par: DiffEq__D_csoil2(Var, Par), lambda Par: vLin__D_csoil2(Par),
     units='PgC Mha-1', core_dims=['reg_land', 'bio_land'])
 
 def DiffEq__D_csoil2(Var, Par):
@@ -646,7 +646,7 @@ def Eq__D_Flasc(Var, Par):
 
 ## PROGNOSTIC: biome area
 OSCAR.process('D_Aland', ('D_Aland', 'd_Acover'), 
-    lambda Var, Par: DiffEq__D_Aland(Var, Par), lambda Par: vLin__D_Aland(Par), 
+    None, lambda Var, Par: DiffEq__D_Aland(Var, Par), lambda Par: vLin__D_Aland(Par), 
     units='Mha', core_dims=['reg_land', 'bio_land'])
 
 def DiffEq__D_Aland(Var, Par):
@@ -658,7 +658,7 @@ def vLin__D_Aland(Par):
 
 ## PROGNOSTIC: vegetation carbon stock (under book-keeping)
 OSCAR.process('D_Cveg_bk', ('D_Cveg_bk', 'D_Fveg_bk', 'D_NPP_bk', 'D_Efire_bk', 'D_Eharv_bk', 'D_Egraz_bk', 'D_Fmort1_bk', 'D_Fmort2_bk'), 
-    lambda Var, Par: DiffEq__D_Cveg_bk(Var, Par), lambda Par: vLin__D_Cveg_bk(Par), 
+    None, lambda Var, Par: DiffEq__D_Cveg_bk(Var, Par), lambda Par: vLin__D_Cveg_bk(Par), 
     units='PgC', core_dims=['reg_land', 'bio_land'])
 
 def DiffEq__D_Cveg_bk(Var, Par):
@@ -670,7 +670,7 @@ def vLin__D_Cveg_bk(Par):
 
 ## PROGNOSTIC: litter carbon stock (under book-keeping)
 OSCAR.process('D_Csoil1_bk', ('D_Csoil1_bk', 'D_Fsoil1_bk', 'D_Fslash1', 'D_Fmort1_bk', 'D_Rh1_bk', 'D_Fmet_bk'), 
-    lambda Var, Par: DiffEq__D_Csoil1_bk(Var, Par), lambda Par: vLin__D_Csoil1_bk(Par), 
+    None, lambda Var, Par: DiffEq__D_Csoil1_bk(Var, Par), lambda Par: vLin__D_Csoil1_bk(Par), 
     units='PgC', core_dims=['reg_land', 'bio_land'])
     
 def DiffEq__D_Csoil1_bk(Var, Par):
@@ -682,7 +682,7 @@ def vLin__D_Csoil1_bk(Par):
 
 ## PROGNOSTIC: soil carbon stock (under book-keeping)
 OSCAR.process('D_Csoil2_bk', ('D_Csoil2_bk', 'D_Fsoil2_bk', 'D_Fslash2', 'D_Fmort2_bk', 'D_Fmet_bk', 'D_Rh2_bk'), 
-    lambda Var, Par: DiffEq__D_Csoil2_bk(Var, Par), lambda Par: vLin__D_Csoil2_bk(Par), 
+    None, lambda Var, Par: DiffEq__D_Csoil2_bk(Var, Par), lambda Par: vLin__D_Csoil2_bk(Par), 
     units='PgC', core_dims=['reg_land', 'bio_land'])
 
 def DiffEq__D_Csoil2_bk(Var, Par):
@@ -694,7 +694,7 @@ def vLin__D_Csoil2_bk(Par):
 
 ## PROGNOSTIC: harvested wood products stock
 OSCAR.process('D_Chwp', ('D_Chwp', 'D_Fhwp', 'D_Ehwp'), 
-    lambda Var, Par: DiffEq__D_Chwp(Var, Par), lambda Par: vLin__D_Chwp(Par), 
+    None, lambda Var, Par: DiffEq__D_Chwp(Var, Par), lambda Par: vLin__D_Chwp(Par), 
     units='PgC', core_dims=['reg_land', 'bio_land', 'box_hwp'])
 
 def DiffEq__D_Chwp(Var, Par):
@@ -742,7 +742,7 @@ def Eq__d_pthaw(Var, Par):
 
 ## PROGNOSTIC: actual thawed fraction
 OSCAR.process('D_pthaw', ('D_pthaw', 'd_pthaw'), 
-    lambda Var, Par: DiffEq__D_pthaw(Var, Par), lambda Par: vLin__D_pthaw(Par), 
+    None, lambda Var, Par: DiffEq__D_pthaw(Var, Par), lambda Par: vLin__D_pthaw(Par), 
     units='1', core_dims=['reg_pf'])
 
 def DiffEq__D_pthaw(Var, Par):
@@ -799,7 +799,7 @@ def Eq__D_Epf_CH4(Var, Par):
 
 ## PROGNOSTIC: frozen permafrost carbon
 OSCAR.process('D_Cfroz', ('D_Cfroz', 'D_Fthaw'), 
-    lambda Var, Par: DiffEq__D_Cfroz(Var, Par), lambda Par: vLin__D_Cfroz(Par), 
+    None, lambda Var, Par: DiffEq__D_Cfroz(Var, Par), lambda Par: vLin__D_Cfroz(Par), 
     units='PgC', core_dims=['reg_pf'])
 
 def DiffEq__D_Cfroz(Var, Par):
@@ -811,7 +811,7 @@ def vLin__D_Cfroz(Par):
 
 ## PROGNOSTIC: thawed permafrost carbon
 OSCAR.process('D_Cthaw', ('D_Cthaw', 'D_Fthaw', 'D_Ethaw'), 
-    lambda Var, Par: DiffEq__D_Cthaw(Var, Par), lambda Par: vLin__D_Cthaw(Par), 
+    None, lambda Var, Par: DiffEq__D_Cthaw(Var, Par), lambda Par: vLin__D_Cthaw(Par), 
     units='PgC', core_dims=['reg_pf', 'box_thaw'])
 
 def DiffEq__D_Cthaw(Var, Par):
@@ -827,7 +827,7 @@ def vLin__D_Cthaw(Par):
 
 ## PROGNOSTIC: atmospheric CO2
 OSCAR.process('D_CO2', ('D_CO2', 'Eff', 'D_Eluc', 'D_Epf_CO2', 'D_Fland', 'D_Focean', 'D_Foxi_CH4'), 
-    lambda Var, Par: DiffEq__D_CO2(Var, Par), lambda Par: vLin__D_CO2(Par), 
+    None, lambda Var, Par: DiffEq__D_CO2(Var, Par), lambda Par: vLin__D_CO2(Par), 
     units='ppm')
 
 def DiffEq__D_CO2(Var, Par):
@@ -924,7 +924,7 @@ def Eq__D_Ebb(Var, Par):
 
 ## PROGNOSTIC: lagged atmospheric CH4
 OSCAR.process('D_CH4_lag', ('D_CH4_lag', 'D_CH4'), 
-    lambda Var, Par: DiffEq__D_CH4_lag(Var, Par), lambda Par: vLin__D_CH4_lag(Par), 
+    None, lambda Var, Par: DiffEq__D_CH4_lag(Var, Par), lambda Par: vLin__D_CH4_lag(Par), 
     units='ppb')
 
 def DiffEq__D_CH4_lag(Var, Par):
@@ -936,7 +936,7 @@ def vLin__D_CH4_lag(Par):
 
 ## PROGNOSTIC: lagged atmospheric N2O
 OSCAR.process('D_N2O_lag', ('D_N2O_lag', 'D_N2O'), 
-    lambda Var, Par: DiffEq__D_N2O_lag(Var, Par), lambda Par: vLin__D_N2O_lag(Par), 
+    None, lambda Var, Par: DiffEq__D_N2O_lag(Var, Par), lambda Par: vLin__D_N2O_lag(Par), 
     units='ppb')
 
 def DiffEq__D_N2O_lag(Var, Par):
@@ -948,7 +948,7 @@ def vLin__D_N2O_lag(Par):
 
 ## PROGNOSTIC: lagged atmospheric halogenated compounds
 OSCAR.process('D_Xhalo_lag', ('D_Xhalo_lag', 'D_Xhalo'), 
-    lambda Var, Par: DiffEq__D_Xhalo_lag(Var, Par), lambda Par: vLin__D_Xhalo_lag(Par), 
+    None, lambda Var, Par: DiffEq__D_Xhalo_lag(Var, Par), lambda Par: vLin__D_Xhalo_lag(Par), 
     units='ppt', core_dims=['spc_halo'])
 
 def DiffEq__D_Xhalo_lag(Var, Par):
@@ -1101,7 +1101,7 @@ def Eq__D_Ewet(Var, Par):
 
 ## PROGNOSTIC: atmospheric CH4
 OSCAR.process('D_CH4', ('D_CH4', 'E_CH4', 'D_Ewet', 'D_Ebb', 'D_Epf_CH4', 'D_Fsink_CH4'), 
-    lambda Var, Par: DiffEq__D_CH4(Var, Par), lambda Par: vLin__D_CH4(Par), 
+    None, lambda Var, Par: DiffEq__D_CH4(Var, Par), lambda Par: vLin__D_CH4(Par), 
     units='ppb')
 
 def DiffEq__D_CH4(Var, Par):
@@ -1195,7 +1195,7 @@ def Eq__D_Fsink_N2O(Var, Par):
 
 ## PROGNOSTIC: atmospheric N2O
 OSCAR.process('D_N2O', ('D_N2O', 'E_N2O', 'D_Ebb', 'D_Fsink_N2O'), 
-    lambda Var, Par: DiffEq__D_N2O(Var, Par), lambda Par: vLin__D_N2O(Par), 
+    None, lambda Var, Par: DiffEq__D_N2O(Var, Par), lambda Par: vLin__D_N2O(Par), 
     units='ppb')
 
 def DiffEq__D_N2O(Var, Par):
@@ -1276,7 +1276,7 @@ def Eq__D_Fsink_Xhalo(Var, Par):
 
 ## PROGNOSTIC: atmospheric Xhalo
 OSCAR.process('D_Xhalo', ('D_Xhalo', 'E_Xhalo', 'D_Fsink_Xhalo'), 
-    lambda Var, Par: DiffEq__D_Xhalo(Var, Par), lambda Par: vLin__D_Xhalo(Par), 
+    None, lambda Var, Par: DiffEq__D_Xhalo(Var, Par), lambda Par: vLin__D_Xhalo(Par), 
     units='ppt', core_dims=['spc_halo'])
 
 def DiffEq__D_Xhalo(Var, Par):
@@ -1766,7 +1766,7 @@ def Eq__RF_atm(Var, Par):
 ## PROGNOSTIC: global mean surface temperature
 ## (Geoffroy et al., 2013; doi:10.1175/JCLI-D-12-00196.1)
 OSCAR.process('D_Tg', ('D_Tg', 'D_Td', 'RF_warm'), 
-    lambda Var, Par: DiffEq__D_Tg(Var, Par), lambda Par: vLin__D_Tg(Par), 
+    None, lambda Var, Par: DiffEq__D_Tg(Var, Par), lambda Par: vLin__D_Tg(Par), 
     units='K')
 
 def DiffEq__D_Tg(Var, Par):
@@ -1779,7 +1779,7 @@ def vLin__D_Tg(Par):
 ## PROGNOSTIC: deep ocean temperature
 ## (Geoffroy et al., 2013; doi:10.1175/JCLI-D-12-00196.1)
 OSCAR.process('D_Td', ('D_Td', 'D_Tg'), 
-    lambda Var, Par: DiffEq__D_Td(Var, Par), lambda Par: vLin__D_Td(Par), 
+    None, lambda Var, Par: DiffEq__D_Td(Var, Par), lambda Par: vLin__D_Td(Par), 
     units='K')
 
 def DiffEq__D_Td(Var, Par):
@@ -1831,9 +1831,9 @@ def Eq__D_To(Var, Par):
 
 ## NODE: global precipitation
 ## (Allan et al., 2013; doi:10.1007/s10712-012-9213-z)
-OSCAR.process('D_Pg', ('D_Tg', 'RF_atm'), 
+OSCAR.process('D_Pg', ('D_Pg', 'D_Tg', 'RF_atm'), 
     lambda Var, Par: Eq__D_Pg(Var, Par), 
-    units='mm yr-1', node=True)
+    units='mm yr-1')
 
 def Eq__D_Pg(Var, Par):
     return Par.a_prec * Var.D_Tg + Par.b_prec / Par.p_atm_CO2 * Var.RF_atm
@@ -1854,7 +1854,7 @@ def Eq__D_Pl(Var, Par):
 
 ## PROGNOSTIC: ocean heat content
 OSCAR.process('D_OHC', ('D_OHC', 'D_Tg', 'RF'), 
-    lambda Var, Par: DiffEq__D_OHC(Var, Par), lambda Par: vLin__D_OHC(Par), 
+    None, lambda Var, Par: DiffEq__D_OHC(Var, Par), lambda Par: vLin__D_OHC(Par), 
     units='ZJ')
 
 def DiffEq__D_OHC(Var, Par):

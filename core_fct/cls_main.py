@@ -118,7 +118,7 @@ class Model():
         ## copy processes
         for proc in self._processes.values():
             if only is None or proc.Out in only:
-                new_model.process(proc.Out, proc.In, proc.Eq, proc.vLin, units=proc.units, core_dims=proc.core_dims, node=proc.node)
+                new_model.process(proc.Out, proc.In, proc.Eq, proc.DiffEq, proc.vLin, units=proc.units, core_dims=proc.core_dims)
         ## return new model
         return new_model
     
@@ -132,7 +132,7 @@ class Model():
         ## add processes
         for proc in other._processes.values():
             if proc.Out not in new_model or priority_new:
-                new_model.process(proc.Out, proc.In, proc.Eq, proc.vLin, units=proc.units, core_dims=proc.core_dims, node=proc.node)
+                new_model.process(proc.Out, proc.In, proc.Eq, proc.DiffEq, proc.vLin, units=proc.units, core_dims=proc.core_dims)
         ## return new model
         return new_model
 
@@ -141,8 +141,8 @@ class Model():
     ## --------
 
     ## define process
-    def process(self, Out, In, Eq, *vLin, **kwargs):
-        self._processes[Out] = Process(Out, In, Eq, *vLin, model=self, **kwargs)
+    def process(self, Out, In, Eq, *args, **kwargs):
+        self._processes[Out] = Process(Out, In, Eq, *args, model=self, **kwargs)
         return self._processes[Out]
 
     ## get process
@@ -208,7 +208,7 @@ class Model():
     ## get zeroed initial conditions
     def _get_Ini(self, Par, For):
         Ini = xr.Dataset()
-        for var in list(self.var_prog):
+        for var in list(self.var_prog) + list(self.var_node):
             if len(self[var].core_dims) == 0: 
                 Ini[var] = xr.DataArray(0.)
             elif all([dim in set(Par.dims) | set(For.dims) for dim in self[var].core_dims]): 
@@ -285,13 +285,13 @@ class Model():
 
         ## create quick function for solving scheme
         if scheme =='ex': 
-            dX = lambda dX_dt, v, dt: dt * dX_dt
+            f_dX = lambda dX_dt, v, dt: dt * dX_dt
             CO2_nt = 100.
         elif scheme == 'imex': 
-            dX = lambda dX_dt, v, dt: dt * dX_dt / (1 + v * dt)
+            f_dX = lambda dX_dt, v, dt: dt * dX_dt / (1 + v * dt)
             CO2_nt = 110. # 150 if not using Joos_2001 for pCO2
         elif scheme == 'ExpInt': 
-            dX = lambda dX_dt, v, dt: np.expm1(-v * dt) / -v * dX_dt
+            f_dX = lambda dX_dt, v, dt: np.expm1(-v * dt) / -v * dX_dt
             CO2_nt = 100.
 
         ## printing and time counter
@@ -336,7 +336,7 @@ class Model():
                     ## solve for variables
                     Var_new = xr.Dataset()
                     for var in list_var_prog:
-                        Var_new[var] = Var_old[var] + dX(self[var](Var_old, Par, For_), vLin[var], dt)
+                        Var_new[var] = self[var](Var_old, Par, For_, f_dot=lambda dX_dt: f_dX(dX_dt, vLin[var], dt))
                     for var in list_var_node:
                         Var_new[var] = self[var](Var_old, Par, For_)
                     for var in list_var_diag:
@@ -384,24 +384,34 @@ class Process():
 
     Options:
     --------
-    vLin (callable)     equation of the speed of the linear part of the differential equation (for prognostic variables);
-                        default = lambda Par: 1E-18
+    vLin (callable)     equation of the speed of the linear part of the first order time differential equation;
+                        if provided, Out is prognostic variable, and Eq is assumed to be its differential equation;
+                        if not provided but Out is in In, Out is a node variable, and Eq will be called using In from the previous timestep;
+                        otherwise, Out is a diagnostic variable, and it is evaluated from prognostic variables at the same timestep;
+                        default = None
     model (Model)       model to which the process belongs;
                         default = Model()
     units (str)         units of Out;
                         default = '?'
     core_dims (list)    dims over which Out must be defined (relevant only for prognostic variables);
                         default = []
-    node (bool)         whether that diagnostic variable should be treated as prognostic for the solving;
-                        default = False
     '''
 
     ## initialization
-    def __init__(self, Out, In, Eq, vLin=lambda Par: None, model=Model(), units='?', core_dims=[], node=False):
-        assert (type(Out), type(In), type(model), type(units), type(core_dims), type(node)) == (str, tuple, Model, str, list, bool) and callable(Eq) and callable(vLin)
-        self.Out, self.In, self.Eq, self.vLin, self.model, self.units, self.core_dims, self.node = Out, In, Eq, vLin, model, units, core_dims, node
-        if Out in In: self.prog = True
-        else: self.prog = False
+    def __init__(self, Out, In, Eq, DiffEq=None, vLin=None, model=Model(), units='?', core_dims=[]):
+        ## check types
+        assert (type(Out), type(In), type(model), type(units), type(core_dims)) == (str, tuple, Model, str, list)
+        assert (callable(Eq) or Eq is None) and (callable(DiffEq) or DiffEq is None) and (callable(vLin) or vLin is None)
+        ## base attributes
+        self.Out, self.In, self.model, self.units, self.core_dims = Out, In, model, units, core_dims
+        self.Eq, self.DiffEq, self.vLin = Eq if Eq is not None else lambda Var, Par: Var[Out], DiffEq, vLin
+        self.node = self.prog = False
+        ## inform if prog or node variable
+        if Out in In:
+            if DiffEq is None and vLin is None:
+                self.node = True
+            elif DiffEq is not None and vLin is not None:
+                self.prog = True
 
     ## nice display
     def __repr__(self):
@@ -420,13 +430,17 @@ class Process():
         else: raise RuntimeError('endless recursive call of process: {0}'.format(var))
 
     ## solve process
-    def __call__(self, Var, Par, For=xr.Dataset(), recursive=False, time_axis='year'):
+    def __call__(self, Var, Par, For=xr.Dataset(), f_dot=None, recursive=False, time_axis='year'):
         ## if prescribed
         if self.Out in For.keys(): return For[self.Out]
         ## otherwise get drivers
-        if recursive: Var_in = xr.Dataset({var:self._get_var(var, Var, Par, For) for var in self.In})
+        elif recursive: Var_in = xr.Dataset({var:self._get_var(var, Var, Par, For) for var in self.In})
         else: Var_in = xr.Dataset(dict([(var, For[var]) if var in For else (var, Var[var]) for var in self.In]))
-        ## output (time axis first if requested and available)
-        if time_axis not in Var.coords: return self.Eq(Var_in, Par)
-        else: return 0.*Var[time_axis] + self.Eq(Var_in, Par)
+        ## and call equation
+        if f_dot is None: New = self.Eq(Var_in, Par)
+        else: New = Var_in[self.Out] + f_dot(self.DiffEq(Var_in, Par))
+        ## put time axis first if available
+        if time_axis in Var.coords: New = 0.*Var[time_axis] + New
+        ## output
+        return New
 
