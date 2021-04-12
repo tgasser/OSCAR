@@ -1,33 +1,33 @@
-ISO-Numeric,Country,ISO-Alpha3,GTAP7,SRES_4reg,SRES_11reg,RECCAP1,Raupach_2007,Houghton_2001,IMACLIM,Kyoto,RCP_5reg,RCP_10reg,Houghton_2017,AR6_5reg,AR6_10reg,AR6_22reg
-80,British Antarctic Territory,ATB,0,0,0,0,0,0,0,2,0,5,0,0,0,0
-128,Canton and Enderbury Islands,CTE,3,3,8,3,9,9,11,2,4,10,10,2,9,4
-200,Czechoslovakia,CSK,0,2,4,7,8,3,3,1,5,4,5,3,5,17
-216,Dronning Maud Land,ATM,0,0,0,0,0,0,0,2,0,5,0,0,0,0
-230,Ethiopia and Eritrea,XEE,0,4,11,1,9,5,10,2,3,6,1,1,1,5
-249,France Metropolitan,FXX,53,1,2,7,2,3,3,1,4,2,5,3,5,13
-274,Gaza Strip (Palestine),XGS,91,4,9,0,8,4,9,2,3,7,8,1,7,11
-278,Germany Democratic Republic,DDR,54,1,2,7,2,3,3,1,4,2,5,3,5,13
-280,"Germany, Federal Republic of",BRD,54,1,2,7,2,3,3,1,4,2,5,3,5,13
-282,"German Democratic Republic, Berlin",XEB,54,1,2,7,2,3,3,1,4,2,5,3,5,13
-284,Germany West Berlin,XWB,54,1,2,7,2,3,3,1,4,2,5,3,5,13
-396,Johnston Island,JTN,3,3,8,3,8,9,11,2,4,10,10,2,9,4
-488,Midway Islands,MID,3,3,8,3,8,9,11,2,4,10,10,2,9,4
-530,Netherlands Antilles without Aruba,ANT,45,4,10,0,8,2,12,2,2,5,2,5,6,3
-532,Netherlands Antilles with Aruba,XAO,45,4,10,0,8,2,12,2,2,5,2,5,6,3
-536,Neutral Zone,NTZ,91,4,9,0,8,4,9,2,3,7,8,1,7,11
-582,"Pacific Islands, Trust Territory of the",PCI,3,3,8,3,8,9,11,2,4,10,10,2,9,4
-590,Panama (before Panama Canal Zone),XPB,43,4,10,0,8,2,12,2,2,5,2,5,6,10
-594,Panama Canal Zone,PCZ,43,4,10,0,8,2,12,2,2,5,2,5,6,10
-650,Ruyuku Islands,XRI,0,1,3,4,3,9,4,1,4,3,0,3,2,1
-658,Saint Kitts-Nevis-Anguilla,XKA,45,4,10,0,8,2,12,2,2,5,2,5,6,3
-698,Sikkim,SKM,0,3,7,6,7,8,7,2,1,9,3,2,10,9
-714,"Viet-Nam, Republic of",VDR,18,3,8,5,8,8,11,2,1,10,3,2,9,16
-720,"Yemen, Democratic (South)",YMD,91,4,9,0,9,4,9,2,3,7,8,1,7,11
-736,Sudan region,XSU,110,4,11,1,8,5,10,2,3,7,1,1,1,5
-810,USSR,SUN,0,2,5,0,5,6,0,1,5,4,6,4,4,7
-830,Channel Islands,XCI,82,1,2,7,2,3,3,1,4,2,5,3,5,13
-849,US Miscellaneous Pacific Islands,PUS,3,3,8,3,8,9,11,2,4,10,10,2,9,4
-872,Wake Islands,WAK,3,3,8,3,8,9,11,2,4,10,10,2,9,4
-886,Yemen Arac Republic (North),XYN,91,4,9,0,9,4,9,2,3,7,8,1,7,11
-890,"Yugoslavia, Socialist Federal Republic of",YUG,0,2,4,7,8,3,3,2,5,4,5,3,5,17
-891,"Serbia and Montenegro (original Yugoslavia, Federal Republic of)",SCG,82,2,4,7,8,3,3,2,5,4,5,4,4,7
+ISO-Numeric,Country,ISO-Alpha3,GTAP7,SRES_4reg,SRES_11reg,RECCAP1,Raupach_2007,Houghton_2001,IMACLIM,Kyoto,RCP_5reg,RCP_10reg,Houghton_2017,AR6_5reg,AR6_10reg,AR6_22reg,Finest
+80,British Antarctic Territory,ATB,0,0,0,0,0,0,0,2,0,5,0,0,0,0,0
+128,Canton and Enderbury Islands,CTE,3,3,8,3,9,9,11,2,4,10,10,2,9,4,3
+200,Czechoslovakia,CSK,0,2,4,7,8,3,3,1,5,4,5,3,5,17,0
+216,Dronning Maud Land,ATM,0,0,0,0,0,0,0,2,0,5,0,0,0,0,0
+230,Ethiopia and Eritrea,XEE,0,4,11,1,9,5,10,2,3,6,1,1,1,5,0
+249,France Metropolitan,FXX,53,1,2,7,2,3,3,1,4,2,5,3,5,13,49
+274,Gaza Strip (Palestine),XGS,91,4,9,0,8,4,9,2,3,7,8,1,7,11,73
+278,Germany Democratic Republic,DDR,54,1,2,7,2,3,3,1,4,2,5,3,5,13,50
+280,"Germany, Federal Republic of",BRD,54,1,2,7,2,3,3,1,4,2,5,3,5,13,50
+282,"German Democratic Republic, Berlin",XEB,54,1,2,7,2,3,3,1,4,2,5,3,5,13,50
+284,Germany West Berlin,XWB,54,1,2,7,2,3,3,1,4,2,5,3,5,13,50
+396,Johnston Island,JTN,3,3,8,3,8,9,11,2,4,10,10,2,9,4,3
+488,Midway Islands,MID,3,3,8,3,8,9,11,2,4,10,10,2,9,4,3
+530,Netherlands Antilles without Aruba,ANT,45,4,10,0,8,2,12,2,2,5,2,5,6,3,43
+532,Netherlands Antilles with Aruba,XAO,45,4,10,0,8,2,12,2,2,5,2,5,6,3,43
+536,Neutral Zone,NTZ,91,4,9,0,8,4,9,2,3,7,8,1,7,11,73
+582,"Pacific Islands, Trust Territory of the",PCI,3,3,8,3,8,9,11,2,4,10,10,2,9,4,3
+590,Panama (before Panama Canal Zone),XPB,43,4,10,0,8,2,12,2,2,5,2,5,6,10,41
+594,Panama Canal Zone,PCZ,43,4,10,0,8,2,12,2,2,5,2,5,6,10,41
+650,Ruyuku Islands,XRI,0,1,3,4,3,9,4,1,4,3,0,3,2,1,0
+658,Saint Kitts-Nevis-Anguilla,XKA,45,4,10,0,8,2,12,2,2,5,2,5,6,3,43
+698,Sikkim,SKM,0,3,7,6,7,8,7,2,1,9,3,2,10,9,0
+714,"Viet-Nam, Republic of",VDR,18,3,8,5,8,8,11,2,1,10,3,2,9,16,16
+720,"Yemen, Democratic (South)",YMD,91,4,9,0,9,4,9,2,3,7,8,1,7,11,73
+736,Sudan region,XSU,110,4,11,1,8,5,10,2,3,7,1,1,1,5,92
+810,USSR,SUN,0,2,5,0,5,6,0,1,5,4,6,4,4,7,70
+830,Channel Islands,XCI,82,1,2,7,2,3,3,1,4,2,5,3,5,13,69
+849,US Miscellaneous Pacific Islands,PUS,3,3,8,3,8,9,11,2,4,10,10,2,9,4,3
+872,Wake Islands,WAK,3,3,8,3,8,9,11,2,4,10,10,2,9,4,3
+886,Yemen Arac Republic (North),XYN,91,4,9,0,9,4,9,2,3,7,8,1,7,11,73
+890,"Yugoslavia, Socialist Federal Republic of",YUG,0,2,4,7,8,3,3,2,5,4,5,3,5,17,69
+891,"Serbia and Montenegro (original Yugoslavia, Federal Republic of)",SCG,82,2,4,7,8,3,3,2,5,4,5,4,4,7,69
