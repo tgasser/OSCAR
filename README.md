@@ -6,12 +6,17 @@ A compact Earth system model.
 
 Download a release. *Read The Fine [Manual](./MANUAL.md).*
 
-OSCAR v3 is developed in Python 3.7 and run preferentially through IPython. It makes heavy use of the `xarray` package (v0.14.1), and `netCDF4` for saving data (v1.4.2). It also relies on other common scientific packages: `numpy` (v1.16.5) and `scipy` (v1.3.1). Although the latest versions of the packages used to run OSCAR v3 are given, older versions are likely to work.
+OSCAR v3 is developed in Python 3.7 and run preferentially through IPython. It makes heavy use of the `xarray` package (v0.16.0), and `netCDF4` for saving data (v1.5.3). It also relies on other common scientific packages: `numpy` (v1.19.2) and `scipy` (v1.5.2). Although the latest versions of the packages used to run OSCAR v3 are given, older versions are likely to work.
 
-The source code is provided firstly for transparency, and only secondly for dissemination. This means that it is provided as is, and no support of any kind is guaranteed (but feel free to ask). Feedbacks and contributions are always welcome.
+The source code is provided firstly for transparency, and only secondly for dissemination. This means that it is provided as is, and no support of any kind is guaranteed (but feel free to ask). Feedbacks and contributions are welcome.
 
 
 ## Changelog
+
+###### v3.1.2
+* Added: finest possible regional aggregation, given that the parameters are still calibrated following the v2 approach.
+* Added: an additional option for the structure of the bookkeping module, in which the effect of land cover change and management are separated. This is added in a temporary file that will be merged with `fct_process_alt` in the next version.
+* Fixed: the definition of `Houghton_2017` regions that had Colombia and Guinea swapped. This had minimal impact on the land C cycle.
 
 ###### v3.1.1
 This version is exactly the one used in the IPCC AR6. A number of functionalities were added, mostly for convenience.

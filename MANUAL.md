@@ -1,4 +1,4 @@
-# OSCAR v3.1.1
+# OSCAR v3.1.2
 _Manual_ 
 
 
@@ -264,7 +264,7 @@ Each of the model's variable is defined through a `Process` object; and a `Model
 | `d_OHC` | <img src="https://latex.codecogs.com/gif.latex?\textstyle{\frac{\mathrm{d}}{\mathrm{d}t}}\mathrm{OHC}" /> | ZJ yr<sup>-1</sup> | - ||
 ||||||
 | `D_pH` | - | 1 | - ||
-&#8224; Default; can be altered through the `fct_process_alt` functions.
+&#8224; default; can be altered through the `fct_process_alt` functions.
 
 ### Parameters
 
