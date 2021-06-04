@@ -19,7 +19,8 @@ from core_fct.fct_misc import load_data, aggreg_region
 from core_fct.mod_process import OSCAR_landC as OSCAR
 
 ## import functions for alternative LUC structures and apply
-from core_fct.fct_process_alt import full_LUC, lite_LUC, cut_LUC
+from core_fct.fct_process_alt import split_LUC, full_LUC, lite_LUC, cut_LUC
+OSCAR_split = split_LUC(OSCAR)
 OSCAR_full = full_LUC(OSCAR)
 OSCAR_lite = lite_LUC(OSCAR)
 OSCAR_cut = cut_LUC(OSCAR)
@@ -59,6 +60,7 @@ For_alt = For_alt.drop(['d_Acover', 'bio_from', 'bio_to'])
 
 ## run OSCAR land carbon cycle
 OUT = OSCAR(Ini=None, Par=Par, For=For, var_keep=['D_Fland', 'D_Eluc'])
+OUT_split = OSCAR_split(Ini=None, Par=Par, For=For, var_keep=['D_Fland', 'D_Eluc'])
 OUT_full = OSCAR_full(Ini=None, Par=Par, For=For, var_keep=['D_Fland', 'D_Eluc'])
 OUT_lite = OSCAR_lite(Ini=None, Par=Par, For=For_alt, var_keep=['D_Fland', 'D_Eluc'])
 
@@ -70,15 +72,17 @@ OUT_cut = OSCAR_cut(Ini=None, Par=Par, For=xr.merge([For, For_Eluc]), var_keep=[
 plt.figure()
 plt.subplot(1,2,1)
 plt.plot(OUT.year, OUT.D_Eluc.mean('config'), label='base', alpha=0.7)
+plt.plot(OUT_split.year, OUT_split.D_Eluc.mean('config'), label='split', alpha=0.7, lw=0.5, ls='-.',  marker='x', ms=5)
 plt.plot(OUT_full.year, OUT_full.D_Eluc.mean('config'), label='full', alpha=0.7, lw=0.5, marker='+', ms=5)
 plt.plot(OUT_lite.year, OUT_lite.D_Eluc.mean('config'), label='lite', alpha=0.7, ls='--')
 plt.plot(OUT_cut.year, OUT_cut.D_Eluc.mean('config'), label='cut', alpha=0.7, ls=':', marker='o', mfc='none', ms=3)
-plt.title(r'$\Delta F_\mathrm{land}$ (' + OSCAR['D_Fland'].units.replace('-1', '$^{-1}$') +')')
+plt.title(r'$\Delta E_\mathrm{luc}$ (' + OSCAR['D_Eluc'].units.replace('-1', '$^{-1}$') +')')
 plt.subplot(1,2,2)
 plt.plot(OUT.year, OUT.D_Fland.mean('config'), label='base', alpha=0.7)
+plt.plot(OUT_split.year, OUT_split.D_Fland.mean('config'), label='split', alpha=0.7, lw=0.5, ls='-.', marker='x', ms=5)
 plt.plot(OUT_full.year, OUT_full.D_Fland.mean('config'), label='full', alpha=0.7, lw=0.5, marker='+', ms=5)
 plt.plot(OUT_lite.year, OUT_lite.D_Fland.mean('config'), label='lite', alpha=0.7, ls='--')
 plt.plot(OUT_cut.year, OUT_cut.D_Fland.mean('config'), label='cut', alpha=0.7, lw=0.5, ls=':', marker='o', mfc='none', ms=3)
-plt.title(r'$\Delta E_\mathrm{luc}$ (' + OSCAR['D_Eluc'].units.replace('-1', '$^{-1}$') +')')
+plt.title(r'$\Delta F_\mathrm{land}$ (' + OSCAR['D_Fland'].units.replace('-1', '$^{-1}$') +')')
 plt.legend(loc=0)
 
