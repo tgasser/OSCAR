@@ -21,28 +21,144 @@ import csv
 import warnings
 import numpy as np
 import xarray as xr
+import scipy.odr as odr
+import matplotlib.pyplot as plt
 
 
 ##################################################
-##   A. SOLVING SCHEMES
+##   A. ODR FIT ROUTINES
 ##################################################
 
-## functions to solve differential equations
-## exponential integrator (default since OSCAR v3)
-def Int_ExpInt(X, v, dX, dt):
-    return X * np.exp(-v*dt) + np.expm1(-v*dt) / -v * (dX + v*X)
+## rolling mean function
+def rolling_mean(da, time_axis, time_len):
+    return da.rolling({time_axis: time_len}, center=True).mean().dropna(time_axis).values
 
 
-## explicit Eulerian (often unstable unless many substeps)
-def Int_ex(X, v, dX, dt):
-    return X * (1 - v*dt) + dt * (dX + v*X)
+## rolling std function
+def rolling_std(da, time_axis, time_len, min_cv):
+    min_std = min_cv * rolling_mean(da, time_axis=time_axis, time_len=time_len)
+    std = da.rolling({time_axis: time_len}, center=True).std().dropna(time_axis).values    
+    return np.maximum(std, min_std)
 
 
-## implicit-explicit (stable but may miss rapid variations)
-def Int_imex(X, v, dX, dt):
-    return (X + dt * (dX + v*X)) / (1 + v*dt)
+## wrapping function for ODR fit
+def fit_odr(data_x, data_y, par_fg, par_lb, par_ub, y_func, y_jacb=None, y_jacx=None, 
+    std_x=True, std_y=True, time_axis='year', time_len=5, min_cv=1E-6, scen_axis='scen', scen_skip=[]):
+    '''
+    Wrapper to execute an ODR fit on provided data. See scipy.odr for full documentation.
+    
+    Input:
+    ------
+    data_x (list)           input predictor variables as list of xr.DataArray
+    data_y (xr.DataArray)   input predicted variable as single data array (can be None for implicit fit)
+    par_fg (list)           list of first guess parameters values (len = p)
+    par_lb (list)           list of lower bound parameters values (len = p)
+    par_ub (list)           list of upper bound parameters values (len = p)
+    y_func (callable)       function of the type y = f(par, x)
+        
+    Output:
+    -------
+    par_out (list)          output parameters values
 
+    Options:
+    --------
+    y_jacb (callable)       function for the Jacobian of y_func on the par axis;
+                            default = None
+    y_jacx (callable)       function for the Jacobian of y_func on the x axis;
+                            default = None
+    std_x (bool)            whether uncertainty in data_x should be used as weight in the fit;
+                            default = True
+    std_y (bool)            whether uncertainty in data_y should be used as weight in the fit;
+                            default = True
+    time_axis (str)         name of time axis over which the rolling values are taken;
+                            default = 'year'
+    time_len (int)          length of the period over which rolling values are calculated;
+                            default = 5
+    min_cv (float)          value of minimum relative uncertainty when calculating rolling std;
+                            default = 1E-6
+    scen_axis (str)         name of scenario/experiment axis over which the data is flattened;
+                            default = 'scen'
+    scen_skip (list)        list of scenarios/experiments to be ignored by the fit;
+                            default = []
+    '''
+    assert len(par_fg) == len(par_lb) == len(par_ub)
 
+    ## conversions between beta and parameters
+    p_ = lambda b, pmin, pmax: pmin + (pmax - pmin) / (1 + np.exp(-b))
+    b_ = lambda p, pmin, pmax: np.log((p - pmin) / (pmax - p))
+    dp_db = lambda b, pmin, pmax: (pmax - pmin) * np.exp(-b) / (1 + np.exp(-b))**2
+
+    ## shortcut functions
+    F = lambda f_, alpha: [pmin if pmin==pmax else f_(a, pmin, pmax) for a, pmin, pmax in zip(alpha, par_lb, par_ub)]
+    mean = lambda da: rolling_mean(da, time_axis=time_axis, time_len=time_len)
+    std = lambda da: rolling_std(da, time_axis=time_axis, time_len=time_len, min_cv=min_cv)
+
+    ## format data
+    x = [np.hstack([mean(da.sel({scen_axis: scen}, drop=True)) for scen in da.scen if scen not in scen_skip]) for da in data_x]
+    y = np.hstack([mean(data_y.sel({scen_axis: scen}, drop=True)) for scen in data_y.scen if scen not in scen_skip]) if data_y is not None else True
+    sx = [np.hstack([std(da.sel({scen_axis: scen}, drop=True)) for scen in da.scen if scen not in scen_skip]) for da in data_x] if std_x else None
+    sy = np.hstack([std(data_y.sel({scen_axis: scen}, drop=True)) for scen in data_y.scen if scen not in scen_skip]) if std_x else None
+    data = odr.RealData(x=x, y=y, sx=sx, sy=sy)
+
+    ## define model
+    func = lambda beta, x: y_func(F(p_, beta), x)
+    jacb = (lambda beta, x: y_jacb(F(p_, beta), x) * np.array(F( dp_db, beta))[:, np.newaxis]) if y_jacb is not None else None
+    jacx = (lambda beta, x: y_jacx(F(p_, beta), x)) if y_jacx is not None else None
+    model = odr.Model(func, jacb, jacx, implicit=True if data_y is None else False)
+
+    ## ODR fit and return
+    odr_out = odr.ODR(data, model, beta0=F(b_, par_fg)).run()
+    return F(p_, odr_out.beta)
+    
+
+## checking and plotting fit
+def check_odr(data_x, data_y, par_bg, y_func,
+    time_axis='year', time_len=5, min_cv=1E-6, scen_axis='scen', scen_skip=[], plot_ax=None):
+
+    ## get data
+    x_ref = [da.rolling({time_axis: time_len}, center=True).mean() for da in data_x]
+    y_ref = data_y.rolling({time_axis: time_len}, center=True).mean() if data_y is not None else 0.
+    y_mod = y_func(par_bg, x_ref)
+
+    ## function for select in or out data
+    get_in = lambda da: da.sel({scen_axis: [scen for scen in data_x[0].scen.values if scen not in scen_skip]})
+    get_out = lambda da: da.sel({scen_axis: [scen for scen in data_x[0].scen.values if scen in scen_skip]})
+
+    ## calculate metrics
+    with warnings.catch_warnings():
+        warnings.filterwarnings('ignore')
+        MSE_in = ((get_in(y_ref) - get_in(y_mod))**2).mean().values
+        MSE_out = ((get_out(y_ref) - get_out(y_mod))**2).mean().values
+        R2_in = 1 - MSE_in / ((get_in(y_ref) - get_in(y_ref).mean().values)**2).mean().values
+        R2_out = 1 - MSE_out / ((get_out(y_ref) - get_out(y_ref).mean().values)**2).mean().values
+        NRMSE_in = np.sqrt(MSE_in) / get_in(y_ref).mean().values
+        NRMSE_out = np.sqrt(MSE_out) / get_out(y_ref).mean().values
+
+    ## optional plot (to be refined!)
+    if plot_ax is not None:
+        plt.style.use('seaborn-colorblind')
+        ## plot data
+        plt.plot(x_ref[0].year, y_ref, marker='+', ls='none', ms=4, alpha=0.8)
+        ## plot fit
+        for scen in x_ref[0][scen_axis]:
+            not_null = y_ref.sel({scen_axis: scen}).notnull().sum() if data_y is not None else x_ref[-1].sel({scen_axis: scen}).notnull().sum()
+            if not_null > 0:
+                plt.plot(x_ref[0].year, y_mod.sel({scen_axis: scen}), color='k', lw= 1.5 if scen in scen_skip else 1, ls=':' if scen in scen_skip else '-')
+        ## axis
+        plt.xticks(fontsize='x-small')
+        plt.yticks(fontsize='x-small')
+        ## legend
+        plt.xlabel(', '.join(['p{0} = {1:.3f}'.format(p, par) for p, par in enumerate(par_bg)]), fontsize='x-small')
+        plot_ax.xaxis.set_label_position('top')
+        ## legend (metrics)
+        for name, val in zip(['NRMSE(in)', 'NRMSE(out)', 'R2(in)', 'R2(out)'], [NRMSE_in, NRMSE_out, R2_in, R2_out]): 
+            plt.plot([np.nan], [np.nan], label='{0} = {1:.3f}'.format(name, val))
+        plt.legend(loc=0, ncol=1, handlelength=0, handletextpad=0, borderpad=0.2, labelspacing=0.2, frameon=False, fontsize='xx-small')
+
+    ## return metrics
+    return {name: val for name, val in zip(['NRMSE(in)', 'NRMSE(out)', 'R2(in)', 'R2(out)'], [NRMSE_in, NRMSE_out, R2_in, R2_out])}
+
+    
 ##################################################
 ##   B. PROBABILITY DISTRIBUTIONS
 ##################################################

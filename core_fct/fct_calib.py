@@ -22,7 +22,7 @@ CONTENT
 1. CARBON CYCLE
     1.1. Ocean
     1.2. Land
-        load_land_TRENDYv7
+        calib_land_TRENDYv7
     1.3. Permafrost
     1.4. Wetlands
 2. ATMO CHEMISTRY
@@ -37,8 +37,9 @@ CONTENT
 import warnings
 import numpy as np
 import xarray as xr
+import matplotlib.pyplot as plt
 
-from core_fct.fct_misc import aggreg_region
+from core_fct.fct_misc import aggreg_region, fit_odr, check_odr
 
 
 ##################################################
