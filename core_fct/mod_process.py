@@ -985,9 +985,10 @@ def Eq__RF_O3s(Var, Par):
 ##=======================
 
 ## PARAMETER: natural emissions of DMS
-D_Edms = OSCAR.process('D_Edms', (), lambda Var, Par: Eq__D_Edms(Var, Par), units='TgS yr-1')
+## (https://doi.org/10.5194/acp-21-1105-2021)
+D_Edms = OSCAR.process('D_Edms', ('D_Tg',), lambda Var, Par: Eq__D_Edms(Var, Par), units='TgS yr-1')
 def Eq__D_Edms(Var, Par):
-    return 0.
+    return Par.G_Edms * Var.D_Tg
 
 
 ## PARAMETER: natural emissions of biogenic VOC

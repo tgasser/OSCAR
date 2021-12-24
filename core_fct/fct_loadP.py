@@ -58,6 +58,11 @@ CONTENT
         load_AER_regional
         load_AER_atmoload
         load_AER_solub
+    2.8. Natural emissions
+        load_Edms
+        load_Ebvoc
+        load_Edust
+        load_Esalt
 3. RADIATIVE FORCING
     3.1. Greenhouse gases
         load_RFghg_all
@@ -1007,6 +1012,35 @@ def load_AER_solub(**useless):
     ## return
     return Par
 
+##==============
+## 2.8. Aerosols
+##==============
+
+## sensitivities of natural emissions of DMS to temperature
+
+def load_Edms(nature_aerosols, **useless):
+        
+    '''
+    nature_aerosols = True (consider natural emissions change with climate)
+    nature_aerosols = False (Don't consider natural emissions change with climate,default,same as orinal OSCAR)
+    '''
+    ## initialization
+    Par = xr.Dataset()
+    Par.coords['mod_Edms'] = ['mean_CMIP6', 'UKESM1','NorESM2','GISS-E2']
+
+    ## sensitivities to climate
+    ## (Table 8 in https://doi.org/10.5194/acp-21-1105-2021)
+    Par['G_Edms'] = xr.DataArray(np.array([-0.06,-0.04,-0.186,0.02]), # trend in surface T
+        dims='mod_Edms', attrs={'units':'TgS yr K-1'})
+
+    ## return
+    return Par
+
+
+## load_Ebvoc
+## load_Edust
+## load_Esalt
+
 
 ##################################################
 ##   3. RADIATIVE FORCING
@@ -1424,7 +1458,7 @@ def load_pH_all(**useless):
 ##################################################
 
 ## wrapping function
-def load_all_param(mod_region, recalibrate=False):
+def load_all_param(mod_region, recalibrate=False,nature_aerosols=False):
     '''
     Wrapper function to load all primary parameters.
     
@@ -1465,8 +1499,9 @@ def load_all_param(mod_region, recalibrate=False):
         load_temp_CMIP5,
         load_prec_CMIP5,
         load_OHC_all,
-        load_pH_all]
+        load_pH_all,
+        load_Edms]
     
     ## return all
-    return xr.merge([load(mod_region=mod_region, recalibrate=recalibrate) for load in load_list])
+    return xr.merge([load(mod_region=mod_region, recalibrate=recalibrate,nature_aerosols=nature_aerosols) for load in load_list])
 
