@@ -31,7 +31,7 @@ from core_fct.fct_genD import create_hist_drivers, create_scen_drivers
 ## 1. WRAPPER FUNCTION TO RUN SIMULATIONS
 ##################################################
 
-def run_model(model, inds, Par0=None, For0=None, Ini0=None, For1=None, Ini1=None, mod_region='', nMC=1, LCC='gross', save=None, output=False, **model_args):
+def run_model(model, inds, Par0=None, For0=None, Ini0=None, For1=None, Ini1=None, mod_region='', nMC=1, LCC='gross', save=None, output=False,nature_aerosols=False, **model_args):
     '''
     Wrapper function to run OSCAR. Note that specific cases it may be beneficial to write a dedicated script/function.
     
@@ -85,6 +85,8 @@ def run_model(model, inds, Par0=None, For0=None, Ini0=None, For1=None, Ini1=None
                         default = None
     output (bool)       if True, return outputs
                         default = False
+    nature_aerosols (bool) if True, nature aerosols iis affected by climate change
+                        default = False
     **model_args        all other arguments are passed on to model
     '''
 
@@ -95,7 +97,7 @@ def run_model(model, inds, Par0=None, For0=None, Ini0=None, For1=None, Ini1=None
     ## 0. PARAMETERS
     ## load primary
     if Par0 is None:
-        Par0 = load_all_param(mod_region)
+        Par0 = load_all_param(mod_region,nature_aerosols=nature_aerosols)
     ## and generate MC
     if type(Par0) == xr.Dataset:
         Par = generate_config(Par0, nMC=nMC)

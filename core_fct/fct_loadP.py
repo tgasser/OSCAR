@@ -1027,12 +1027,14 @@ def load_Edms(nature_aerosols, **useless):
     ## initialization
     Par = xr.Dataset()
     Par.coords['mod_Edms'] = ['mean_CMIP6', 'UKESM1','NorESM2','GISS-E2']
-
-    ## sensitivities to climate
-    ## (Table 8 in https://doi.org/10.5194/acp-21-1105-2021)
-    Par['G_Edms'] = xr.DataArray(np.array([-0.06,-0.04,-0.186,0.02]), # trend in surface T
-        dims='mod_Edms', attrs={'units':'TgS yr K-1'})
-
+    if nature_aerosols:
+        ## sensitivities to climate
+        ## (Table 8 in https://doi.org/10.5194/acp-21-1105-2021)
+        Par['G_Edms'] = xr.DataArray(np.array([-0.06,-0.04,-0.186,0.02]), # trend in surface T
+            dims='mod_Edms', attrs={'units':'TgS yr K-1'})
+    else:
+        Par['G_Edms'] = xr.DataArray(np.array([0,0,0,0]), # trend in surface T
+            dims='mod_Edms', attrs={'units':'TgS yr K-1'})    
     ## return
     return Par
 
