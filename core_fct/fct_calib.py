@@ -56,14 +56,14 @@ def calib_land_TRENDYv7(mod_region, biome_specific_process=True,
     
     ## load original data
     with xr.open_dataset(path_in + 'land_TRENDYv7.nc') as TMP:
-        ds = TMP.sel(sim=['S0', 'S4']).sel(weight='area3', drop=True).load()
+        ds = TMP.sel(dim=['S0', 'S4']).sel(weight='area3', drop=True).load()
 
     ## aggregate over regions
     ds = aggreg_region(ds, mod_region)
 
     ## separate natural and anthropogenic biomes
-    ds_nat = ds.sel(bio_land=['Forest', 'Non-Forest']).sel(sim='S0', drop=True).mean('year')
-    ds_ant = ds.sel(bio_land=['Cropland', 'Pasture', 'Urban']).sel(sim='S4', drop=True).sel(year=slice(1990, 2010)).mean('year')
+    ds_nat = ds.sel(bio_land=['Forest', 'Non-Forest']).sel(dim='S0', drop=True).mean('year')
+    ds_ant = ds.sel(bio_land=['Cropland', 'Pasture', 'Urban']).sel(dim='S4', drop=True).sel(year=slice(1990, 2010)).mean('year')
     ds2 = xr.merge([ds_nat, ds_ant]).sel(bio_land=['Forest', 'Non-Forest']+['Cropland', 'Pasture', 'Urban'])
 
     ## test existing variables per model
