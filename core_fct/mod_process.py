@@ -1907,7 +1907,7 @@ OSCAR_oceanC = OSCAR.copy(add_name='_oceanC', only=proc_oceanC)
 
 ## land carbon cycle only
 proc_landC = ['cveg_0', 'csoil1_0', 'csoil2_0', 'f_fert', 'D_npp', 'f_igni', 'D_efire', 'D_eharv', 'D_egraz', 'D_fmort1', 'D_fmort2', 'f_resp', 'D_rh1', 'D_fmet', 'D_rh2', 'D_nbp', 'D_cveg', 'D_csoil1', 'D_csoil2']
-proc_landC += ['D_Fveg_bk', 'D_Fsoil1_bk', 'D_Fsoil2_bk', 'D_Fslash1', 'D_Fslash2', 'D_Fhwp', 'D_NPP_bk', 'D_Efire_bk', 'D_Eharv_bk', 'D_Egraz_bk', 'D_Fmort1_bk', 'D_Fmort2_bk', 'D_Rh1_bk', 'D_Fmet_bk', 'D_Rh2_bk', 'D_Ehwp', 'D_NBP_bk', 'D_Eluc', 'D_Fland', 'D_Aland', 'D_Cveg_bk', 'D_Csoil1_bk', 'D_Csoil2_bk', 'D_Chwp']
+proc_landC += ['D_Fveg_bk', 'D_Fsoil1_bk', 'D_Fsoil2_bk', 'D_Fslash1', 'D_Fslash2', 'D_Fhwp', 'D_NPP_bk', 'D_Efire_bk', 'D_Eharv_bk', 'D_Egraz_bk', 'D_Fmort1_bk', 'D_Fmort2_bk', 'D_Rh1_bk', 'D_Fmet_bk', 'D_Rh2_bk', 'D_Ehwp', 'D_NBP_bk', 'D_Eluc', 'D_Fland', 'D_Flasc', 'D_Aland', 'D_Cveg_bk', 'D_Csoil1_bk', 'D_Csoil2_bk', 'D_Chwp']
 OSCAR_landC = OSCAR.copy(add_name='_landC', only=proc_landC)
 
 ## permafrost carbon only

@@ -50,7 +50,7 @@ def split_LUC(model_in):
 
     ## list LUC processes to be removed
     proc_LUC = ['D_Fveg_bk', 'D_Fsoil1_bk', 'D_Fsoil2_bk', 'D_Fslash1', 'D_Fslash2', 'D_Fhwp', 
-        'D_NPP_bk', 'D_Efire_bk', 'D_Eharv_bk', 'D_Egraz_bk', 'D_Fmort1_bk', 'D_Fmort2_bk', 'D_Rh1_bk', 'D_Fmet_bk', 'D_Rh2_bk', 'D_Ehwp', 'D_NBP_bk', 
+        'D_NPP_bk', 'D_Efire_bk', 'D_Eharv_bk', 'D_Egraz_bk', 'D_Fmort1_bk', 'D_Fmort2_bk', 'D_Rh1_bk', 'D_Fmet_bk', 'D_Rh2_bk', 'D_Ehwp',  
         'D_Cveg_bk', 'D_Csoil1_bk', 'D_Csoil2_bk', 'D_Chwp']
 
     ## remove listed processes
@@ -450,13 +450,22 @@ def split_LUC(model_in):
         return Var.D_NPP_lu - Var.D_Efire_lu - Var.D_Eharv_lu - Var.D_Egraz_lu - Var.D_Rh1_lu - Var.D_Rh2_lu - Var.D_Rh1S_lu - Var.D_Rh2S_lu - Var.D_Ehwp_lu.sum('box_hwp', min_count=1)
 
 
+    ## net biome productivity (LCC+LU)
+    model.process('D_NBP_bk', ('D_NBP_lcc', 'D_NBP_lu'), 
+        lambda Var, Par: Eq__D_NBP_bk(Var, Par), 
+        units='PgC yr-1')
+
+    def Eq__D_NBP_bk(Var, Par):
+        return Var.D_NBP_lcc + Var.D_NBP_lu
+
+
     ## land-use change emissions
-    model.process('D_Eluc', ('D_NBP_lcc', 'D_NBP_lu'), 
+    model.process('D_Eluc', ('D_NBP_bk',), 
         lambda Var, Par: Eq__D_Eluc(Var, Par), 
         units='PgC yr-1')
 
     def Eq__D_Eluc(Var, Par):
-        return -(Var.D_NBP_lcc + Var.D_NBP_lu).sum('bio_from', min_count=1).sum('bio_to', min_count=1).sum('reg_land', min_count=1)
+        return -Var.D_NBP_bk.sum('bio_from', min_count=1).sum('bio_to', min_count=1).sum('reg_land', min_count=1)
 
 
     ## PROGNOSTIC: vegetation carbon stock (LCC)

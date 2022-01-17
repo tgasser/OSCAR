@@ -179,6 +179,6 @@ def calib_land_TRENDYv7(mod_region, biome_specific_process=True,
 
     ## merge, save and return
     Par = Par.combine_first(mmm).combine_first(off)
-    Par.to_netcdf(path_out + 'land_TRENDYv7__' + mod_region + '.nc')
+    if path_out is not None: Par.to_netcdf(path_out + 'land_TRENDYv7__' + mod_region + '.nc', encoding={var:{'zlib':True, 'dtype':np.float32} for var in Par})
     return Par
 
