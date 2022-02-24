@@ -1,14 +1,14 @@
 index,GTAP7,SRES_4reg,SRES_11reg,RECCAP1,Raupach_2007,Houghton_2001,IMACLIM,Kyoto,RCP_5reg,RCP_10reg,Houghton_2017,AR6_5reg,AR6_10reg,AR6_22reg,Finest,MESSAGE
 0,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown,Unknown
 1,Australia,OECD90,North America,Africa,USA,North America,USA,Annex B,Asia region, North America,Sub-Saharan Africa,Africa and Middle East,Africa,Asia-Pacific Developed (others),Australia,Sub-Saharan Africa
-2,New Zealand,Reforming economies,Western Europe,Arctic,EU,South & Central America,Canada,non Annex B,Latin America, Western Europe,Latin America,Asia and Developing Pacific,Asia-Pacific Developed,Australia & New Zealand,New Zealand,Centrally planned Asia and China
+2,New Zealand,Reforming economies,Western Europe,Arctic,EU,South & Central America,Canada,non Annex B,Latin America, Western Europe,Latin America,Asia and Developing Pacific,"Australia, Japan, New Zealand",Australia & New Zealand,New Zealand,Centrally planned Asia and China
 3,Rest of Oceania,Asia region,Pacific OECD,Oceania,Japan,Europe,Europe,,Middle-East & Africa, Pacific OECD,South and Southeast Asia,Developed Countries,Eastern Asia,Caribbean,Rest of Oceania,Central and Eastern Europe
-4,China,Africa & Latin America & Middle-East,Central and Eastern Europe,East Asia,D1,North Africa & Middle East,OECD Pacific,,OECD countries in 1990, Economies in Transition,North America,Eastern Europe and West-Central Asia,Eurasia,Developing Pacific,China,Former Soviet Union
+4,China,Africa & Latin America & Middle-East,Central and Eastern Europe,East Asia,D1,North Africa & Middle East,OECD Pacific,,OECD countries in 1990, Economies in Transition,North America,Eastern Europe and West-Central Asia,Eastern Europe and West-Central Asia,Developing Pacific,China,Former Soviet Union
 5,"Hong Kong, Special Administrative Region of China",,Former Soviet Union,S.E. Asia,FSU,Tropical Africa,CEI,,Reforming countries, Latin America and Caribbean,Europe,Latin America and Caribbean,Europe,Eastern Africa,Japan,Latin America and the Caribbean
 6,Japan,,Centrally Planned Asia,S. Asia,China,Former Soviet Union,China,,, Sub Saharan Africa,Former Soviet Union,,Latin America and Caribbean,Eastern Asia,South Korea,Middle East and North Africa
 7,South Korea,,South Asia,Europe,India,China region,India,,, Middle East and North Africa,China,,Middle East,Eurasia,Taiwan,North America
 8,Taiwan,,Pacific Asia,N. America,D2,South & South-East Asia,Brazil,,, East Asia,North Africa and the Middle East,,North America,"Greenland, Bermuda + others",Rest of East Asia,Pacific OECD
-9,Rest of East Asia,,Middle East and North Africa,Russia,D3,Pacific Developed region,Middle East,,, South Asia,East Asia,,South-East Asia and Developing Pacific,India & Sri Lanka,Cambodia,Other Pacific Asia
+9,Rest of East Asia,,Middle East and North Africa,Russia,D3,Pacific Developed region,Middle East,,, South Asia,East Asia,,South-East Asia and Pacific,India & Sri Lanka,Cambodia,Other Pacific Asia
 10,Cambodia,,Latin America and the Caribbean,S. America,,,Africa,,, South-East Asia and Pacific,Oceania,,Southern Asia,Meso America,Indonesia,South Asia
 11,Indonesia,,Sub-Saharan Africa,,,,Rest of Asia,,,,,,,Middle East,Laos,Western Europe
 12,Laos,,,,,,Rest of LAM,,,,,,,North Africa,Myanmar,
