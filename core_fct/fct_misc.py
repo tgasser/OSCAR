@@ -95,8 +95,10 @@ def fit_odr(data_x, data_y, par_fg, par_lb, par_ub, y_func, y_jacb=None, y_jacx=
 
     ## format data
     x = [np.hstack([mean(da.sel({scen_axis: scen}, drop=True)) for scen in da.scen if scen not in scen_skip]) for da in data_x]
+    if len(x) == 1: x = [x[0], 0 * x[0]] # weird fix because of odr
     y = np.hstack([mean(data_y.sel({scen_axis: scen}, drop=True)) for scen in data_y.scen if scen not in scen_skip]) if data_y is not None else True
     sx = [np.hstack([std(da.sel({scen_axis: scen}, drop=True)) for scen in da.scen if scen not in scen_skip]) for da in data_x] if std_x else None
+    if len(sx) == 1: sx = [sx[0], min_cv * x[0]] # weird fix because of odr
     sy = np.hstack([std(data_y.sel({scen_axis: scen}, drop=True)) for scen in data_y.scen if scen not in scen_skip]) if std_x else None
     data = odr.RealData(x=x, y=y, sx=sx, sy=sy)
 
