@@ -74,7 +74,7 @@ def split_LUC(model_in):
 
     def Eq__D_Fveg_lu(Var, Par):
         ## ancillary
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fveg_bk_harv = -0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Ashift.bio_from == Var.d_Ashift.bio_to, 0.)
         D_Fveg_bk_shift = -((Var.cveg_0 + Var.D_cveg) * p_shift).rename({'bio_land':'bio_to'}) * Var.d_Ashift
@@ -140,7 +140,7 @@ def split_LUC(model_in):
     def Eq__D_Fslash1_lu(Var, Par):
         ## ancillary
         p_mu1 = Par.mu1_0 / (Par.mu1_0 + Par.mu2_0)
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fslash_harv = (p_mu1 * (1 - Par.p_hwp.sum('box_hwp', min_count=1))).rename({'bio_land':'bio_from'}) * 0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Ashift.bio_from == Var.d_Ashift.bio_to, 0.)
         D_Fslash_shift = (p_mu1 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb)) * p_shift).rename({'bio_land':'bio_from'}) * Var.d_Ashift
@@ -168,7 +168,7 @@ def split_LUC(model_in):
     def Eq__D_Fslash2_lu(Var, Par):
         ## ancillary
         p_mu2 = Par.mu2_0 / (Par.mu1_0 + Par.mu2_0)
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fslash_harv = (p_mu2 * (1 - Par.p_hwp.sum('box_hwp', min_count=1))).rename({'bio_land':'bio_from'}) * 0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Ashift.bio_from == Var.d_Ashift.bio_to, 0.)
         D_Fslash_shift = (p_mu2 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb)) * p_shift).rename({'bio_land':'bio_from'}) * Var.d_Ashift
@@ -192,7 +192,7 @@ def split_LUC(model_in):
 
     def Eq__D_Fhwp_lu(Var, Par):
         ## ancillary
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fhwp_harv = Par.p_hwp.rename({'bio_land':'bio_from'}) * 0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Ashift.bio_from == Var.d_Ashift.bio_to, 0.)
         D_Fhwp_shift = ((Var.cveg_0 + Var.D_cveg) * Par.p_agb * Par.p_hwp * p_shift).rename({'bio_land':'bio_from'}) * Var.d_Ashift
@@ -645,7 +645,7 @@ def full_LUC(model_in):
 
     def Eq__D_Fveg_bk(Var, Par):
         ## ancillary
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fveg_bk_lcc = -(Var.cveg_0 + Var.D_cveg).rename({'bio_land':'bio_to'}) * Var.d_Acover
         D_Fveg_bk_harv = -0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Acover.bio_from == Var.d_Acover.bio_to, 0.)
@@ -682,7 +682,7 @@ def full_LUC(model_in):
     def Eq__D_Fslash1(Var, Par):
         ## ancillary
         p_mu1 = Par.mu1_0 / (Par.mu1_0 + Par.mu2_0)
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fslash_lcc = (p_mu1 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb))).rename({'bio_land':'bio_from'}) * Var.d_Acover
         D_Fslash_harv = (p_mu1 * (1 - Par.p_hwp.sum('box_hwp', min_count=1))).rename({'bio_land':'bio_from'}) * 0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Acover.bio_from == Var.d_Acover.bio_to, 0.)
@@ -699,7 +699,7 @@ def full_LUC(model_in):
     def Eq__D_Fslash2(Var, Par):
         ## ancillary
         p_mu2 = Par.mu2_0 / (Par.mu1_0 + Par.mu2_0)
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fslash_lcc = (p_mu2 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb))).rename({'bio_land':'bio_from'}) * Var.d_Acover
         D_Fslash_harv = (p_mu2 * (1 - Par.p_hwp.sum('box_hwp', min_count=1))).rename({'bio_land':'bio_from'}) * 0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Acover.bio_from == Var.d_Acover.bio_to, 0.)
@@ -715,7 +715,7 @@ def full_LUC(model_in):
 
     def Eq__D_Fhwp(Var, Par):
         ## ancillary
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fhwp_lcc = ((Var.cveg_0 + Var.D_cveg) * Par.p_agb * Par.p_hwp).rename({'bio_land':'bio_from'}) * Var.d_Acover
         D_Fhwp_harv = Par.p_hwp.rename({'bio_land':'bio_from'}) * 0.5*(Var.d_Hwood.rename({'bio_land':'bio_from'}) + Var.d_Hwood.rename({'bio_land':'bio_to'})).where(Var.d_Acover.bio_from == Var.d_Acover.bio_to, 0.)
@@ -893,7 +893,7 @@ def lite_LUC(model_in):
 
     def Eq__D_Fveg_bk(Var, Par):
         ## ancillary
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fveg_bk_lcc = -(Var.cveg_0 + Var.D_cveg) * Var.d_Again
         D_Fveg_bk_harv = -Var.d_Hwood
@@ -936,7 +936,7 @@ def lite_LUC(model_in):
     def Eq__D_Fslash1(Var, Par):
         ## ancillary
         p_mu1 = Par.mu1_0 / (Par.mu1_0 + Par.mu2_0)
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         p_gain = (Var.d_Again / Var.d_Again.sum('bio_land', min_count=1)).where(Var.d_Again.sum('bio_land', min_count=1) != 0, 0)
         ## main values
         D_Fslash_lcc = (p_mu1 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb)) * Var.d_Aloss).sum('bio_land', min_count=1) * p_gain
@@ -954,7 +954,7 @@ def lite_LUC(model_in):
     def Eq__D_Fslash2(Var, Par):
         ## ancillary
         p_mu2 = Par.mu2_0 / (Par.mu1_0 + Par.mu2_0)
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         p_gain = (Var.d_Again / Var.d_Again.sum('bio_land', min_count=1)).where(Var.d_Again.sum('bio_land', min_count=1) != 0, 0)
         ## main values
         D_Fslash_lcc = (p_mu2 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb)) * Var.d_Aloss).sum('bio_land', min_count=1) * p_gain
@@ -971,7 +971,7 @@ def lite_LUC(model_in):
 
     def Eq__D_Fhwp(Var, Par):
         ## ancillary
-        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+        p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
         ## main values
         D_Fhwp_lcc = (Var.cveg_0 + Var.D_cveg) * Par.p_agb * Par.p_hwp * Var.d_Aloss
         D_Fhwp_harv = Par.p_hwp * Var.d_Hwood

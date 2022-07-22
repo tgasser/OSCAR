@@ -439,7 +439,7 @@ OSCAR.process('D_Fveg_bk', ('cveg_0', 'D_cveg', 'd_Acover', 'd_Hwood', 'd_Ashift
 
 def Eq__D_Fveg_bk(Var, Par):
     ## ancillary
-    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
     ## main values
     D_Fveg_bk_lcc = -(Var.cveg_0 + Var.D_cveg) * Var.d_Acover.sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
     D_Fveg_bk_harv = -Var.d_Hwood
@@ -476,7 +476,7 @@ OSCAR.process('D_Fslash1', ('cveg_0', 'D_cveg', 'd_Acover', 'd_Hwood', 'd_Ashift
 def Eq__D_Fslash1(Var, Par):
     ## ancillary
     p_mu1 = Par.mu1_0 / (Par.mu1_0 + Par.mu2_0)
-    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
     ## main values
     D_Fslash_lcc = ((p_mu1 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb))).rename({'bio_land':'bio_from'}) * Var.d_Acover).sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
     D_Fslash_harv = p_mu1 * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) * Var.d_Hwood
@@ -493,7 +493,7 @@ OSCAR.process('D_Fslash2', ('cveg_0', 'D_cveg', 'd_Acover', 'd_Hwood', 'd_Ashift
 def Eq__D_Fslash2(Var, Par):
     ## ancillary
     p_mu2 = Par.mu2_0 / (Par.mu1_0 + Par.mu2_0)
-    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
     ## main values
     D_Fslash_lcc = ((p_mu2 * (Var.cveg_0 + Var.D_cveg) * (Par.p_agb * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) + (1 - Par.p_agb))).rename({'bio_land':'bio_from'}) * Var.d_Acover).sum('bio_from', min_count=1).rename({'bio_to':'bio_land'})
     D_Fslash_harv = p_mu2 * (1 - Par.p_hwp.sum('box_hwp', min_count=1)) * Var.d_Hwood
@@ -509,7 +509,7 @@ OSCAR.process('D_Fhwp', ('cveg_0', 'D_cveg', 'd_Acover', 'd_Hwood', 'd_Ashift'),
 
 def Eq__D_Fhwp(Var, Par):
     ## ancillary
-    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift)
+    p_shift = 1 - np.exp(-Par.npp_0 / Var.cveg_0 * Par.t_shift).where(Var.cveg_0 != 0, 0)
     ## main values
     D_Fhwp_lcc = (((Var.cveg_0 + Var.D_cveg) * Par.p_agb * Par.p_hwp).rename({'bio_land':'bio_from'}) * Var.d_Acover).sum('bio_to', min_count=1).rename({'bio_from':'bio_land'})
     D_Fhwp_harv = Par.p_hwp * Var.d_Hwood
