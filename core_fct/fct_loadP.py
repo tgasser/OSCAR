@@ -532,9 +532,9 @@ def load_OH_response(**useless):
     Par['x_OH_O3s'] = xr.DataArray([-0.55, -0.66, -0.43, -0.61, 0.], dims='mod_Foh_trans', attrs={'units':'1'})
     Par['x_OH_CH4'] = xr.DataArray([-0.31, -0.363, -0.307, -0.274, -0.32], dims='mod_Foh_trans', attrs={'units':'1'})
     ## log formulation
-    Par['x_OH_NOX'] = xr.DataArray([-0.14, -0.15, -0.10, -0.16, -0.137], dims='mod_Foh_trans', attrs={'units':'1'})
-    Par['x_OH_CO'] = xr.DataArray([0.06, 0.066, 0.05, 0.065, 0.11], dims='mod_Foh_trans', attrs={'units':'1'})
-    Par['x_OH_VOC'] = xr.DataArray([0.04, 0.04, 0.04, 0.04, 0.047], dims='mod_Foh_trans', attrs={'units':'1'})
+    Par['x_OH_NOX'] = xr.DataArray([0.14, 0.15, 0.10, 0.16, 0.137], dims='mod_Foh_trans', attrs={'units':'1'})
+    Par['x_OH_CO'] = xr.DataArray([-0.06, -0.066, -0.05, -0.065, -0.11], dims='mod_Foh_trans', attrs={'units':'1'})
+    Par['x_OH_VOC'] = xr.DataArray([-0.04, -0.04, -0.04, -0.04, -0.047], dims='mod_Foh_trans', attrs={'units':'1'})
     ## linear formulation
     Par['x2_OH_NOX'] = xr.DataArray(0.0042/-0.137 * np.array([-0.14, -0.15, -0.10, -0.16, -0.137]), dims='mod_Foh_trans', attrs={'units':'yr TgN-1'})
     Par['x2_OH_CO'] = xr.DataArray(-1.05E-4/0.11 * 28/12. * np.array([0.06, 0.066, 0.05, 0.065, 0.11]), dims='mod_Foh_trans', attrs={'units':'yr TgC-1'})
