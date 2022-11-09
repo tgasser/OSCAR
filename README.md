@@ -13,6 +13,16 @@ The source code is provided firstly for transparency, and only secondly for diss
 
 ## Changelog
 
+##### v3.2
+* Added: regional aggregation options following the [MESSAGE](https://docs.messageix.org/projects/global/en/latest/overview/spatial.html) integrated assessment model's 11 regions.
+* Added: ODR calibration functions (based on `scipy.odr`), to be used for future module calibrations.
+* Improved: ocean carbon cycle, with a reworked formulation and structural parameters based on [Bern-SCM](https://doi.org/10.5194/gmd-11-1887-2018), and a new option for the `pCO2` functional form.
+* Improved: time-stepping and solving. This includes an auto-initialization of the state variables, and a semi-automatic adjustment of the number of substeps based on the value of `D_CO2`. The latter can be turned off using `adapt_nt=False` when calling the model.
+* Removed: the wrapper function (that was mostly confusing and had limited functionality).
+* Fixed: the values of `x_OH_NOX`, `x_OH_CO` and `x_OH_VOC` when `mod_Foh_fct == log`. The sensitivity of the OH sink to ozone precursors would be of the opposite sign in half the parameterizations.
+* Fixed: an error in the formulation of `p_shift` in the bookkeeping module. It would previously overwrite some minor transitions with `NaN`, leading to a slight underestimation of land-use change emissions.
+* Fixed: math display in MANUAL.
+
 ###### v3.1.2
 * Added: finest possible regional aggregation, given that the parameters are still calibrated following the v2 approach.
 * Added: an additional option for the structure of the bookkeping module, in which the effect of land cover change and management are separated. This is added in a temporary file that will be merged with `fct_process_alt` in the next version.
