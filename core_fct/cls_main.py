@@ -183,9 +183,9 @@ class Model():
         plt.title(self.name, fontsize='small')
         plt.show()
 
-    ## -------
-    ## Running
-    ## -------
+    ## -----------
+    ## Pre-Running
+    ## -----------
 
     ## check solvability by iteration (i.e. no loops in diagnostic variables)
     def _check_solvable(self, var_node=[]):
@@ -217,8 +217,16 @@ class Model():
                 raise RuntimeError("cannot auto-create initial conditions")
         return Ini
 
+    ## get linear speeds of differential system
+    def _get_vLin(self, Par):
+        return xr.Dataset({var: self[var].vLin(Par) for var in self.var_prog})
+
+    ## -------
+    ## Running
+    ## -------
+
     ## running model
-    def __call__(self, Ini, Par, For, dtype=np.float32, var_keep=[], keep_prog=True, time_axis='year', scheme='imex', nt=2, adapt_nt=True, nt_max=24, no_warnings=True):
+    def __call__(self, Ini, Par, For, dtype=np.float32, var_keep=[], keep_prog=True, get_final=False, time_axis='year', scheme='imex', nt=2, nt_max=24, adapt_nt=True, no_warnings=True):
         '''
         Input:
         ------
@@ -229,6 +237,7 @@ class Model():
         Output:
         ------
         Var_out (xr.Dataset)    model outputs
+        Var_fin (xr.Dataset)    final end-year values of state variables (if get_final is True)
 
         Options:
         --------
@@ -238,20 +247,27 @@ class Model():
                                 default = []
         keep_prog (bool)        whether prognostic and node variables should be kept as output;
                                 default = True
+        get_final (bool)        whether final end-year values of state variables should be kept;
+                                this is necessary to initiate subsequent runs;
+                                default = False
         time_axis (str)         name of the time dimension;
                                 default = 'year'
         scheme (str)            solving scheme for the differential system (between 'imex' and 'ExpInt');
                                 default = 'imex'
         nt (int)                number of substeps during the solving of the differential system;
                                 default = 2
+        nt_max (int)            maximum number of substeps if following the heuristic law;
+                                default = 24
         adapt_nt (bool)         whether the model should follow a heuristic rule based on D_CO2 to dynamically change nt;
                                 the 'nt' argument is then used as a minimum number of substeps;
                                 default = True
-        nt_max (int)            maximum number of substeps if following the heuristic law;
-                                default = 24
         no_warnings (bool)      whether warnings should be hidden during core calculations;
                                 default = True
         '''
+        ## load data in memory
+        if Ini is not None: Ini = Ini.load()
+        Par = Par.load()
+        For = For.load()
 
         ## various checks
         self._check_solvable()
@@ -271,28 +287,25 @@ class Model():
 
         ## get levels in causality tree (excl. non-kept metrics)
         levels = self.proc_levels()
-        levels = {lvl:list(set(levels[lvl]) - (self.var_out - set(var_keep))) for lvl in levels}
-        levels = {lvl:levels[lvl] for lvl in levels if len(levels[lvl]) > 0}
+        levels = {lvl: list(set(levels[lvl]) - (self.var_out - set(var_keep))) for lvl in levels}
+        levels = {lvl: levels[lvl] for lvl in levels if len(levels[lvl]) > 0}
 
         ## lists of variables to calculate (ordered)
         list_var_prog = list(self.var_prog)
         list_var_node = list(self.var_node)
         list_var_diag = [var for lvl in np.sort(list(levels.keys()))[1:] for var in levels[lvl]]
-        list_var_keep = (list(self.var_prog) + list(self.var_node)) * keep_prog + var_keep
+        list_var_keep = (list_var_prog + list_var_node) * keep_prog + var_keep
 
-        ## speeds of the linear part of differential system
-        vLin = xr.Dataset({var:self[var].vLin(Par) for var in list_var_prog})
+        ## get linear speeds for solving
+        vLin = self._get_vLin(Par)
 
         ## create quick function for solving scheme
         if scheme =='ex': 
             f_dX = lambda dX_dt, v, dt: dt * dX_dt
-            CO2_nt = 100.
         elif scheme == 'imex': 
             f_dX = lambda dX_dt, v, dt: dt * dX_dt / (1 + v * dt)
-            CO2_nt = 110. # 150 if not using Joos_2001 for pCO2
         elif scheme == 'ExpInt': 
             f_dX = lambda dX_dt, v, dt: np.expm1(-v * dt) / -v * dX_dt
-            CO2_nt = 100.
 
         ## printing and time counter
         print(self.name + ' running')
@@ -306,17 +319,18 @@ class Model():
             ## initialization of all variables
             Var_old = Ini.copy(deep=True)
             for var in list_var_diag:
-                Var_old[var] = self[var](Var_old, Par, For.sel({time_axis:time[0]}, drop=True))
+                Var_old[var] = self[var](Var_old, Par, For.sel({time_axis: time[0]}, drop=True))
 
             ## initialization of kept variables
             Var_out = Var_old.drop([var for var in Var_old if var not in list_var_keep])
-            Var_out = [Var_out.assign_coords(**{time_axis:time[0]}).expand_dims(time_axis, 0)]
+            Var_out = [Var_out.assign_coords(**{time_axis: time[0]}).expand_dims(time_axis, 0)]
 
             ## LOOP ON TIME-STEP
             for t in range(1, len(time)):
                 print(time_axis + ' = ' + str(int(time[t])), end=' ')
 
                 ## adapt substep size
+                CO2_nt = 100. # heuristic
                 if adapt_nt and 'D_CO2' in For:
                     steps[t] = int(min(max(2 + For.isel(year=slice(t-1, t+1)).D_CO2.max() // CO2_nt, nt), nt_max))
                 elif adapt_nt and 'D_CO2' in self._processes:
@@ -324,48 +338,62 @@ class Model():
                 elif adapt_nt and t==1:
                     print('WARNING: cannot adapt nt as D_CO2 is not a variable or driver')                
 
-                ## get time step and interpolate drivers
+                ## get time step and drivers
                 dt = float(time[t] - time[t-1]) / float(steps[t])
-                For_t = For.interp({time_axis: float(1/steps[t]) + np.arange(time[t-1], time[t], 1/steps[t])})
+                For_t = For.sel({time_axis: time[t]}, drop=True)
+
+                ## anticipate new output (initialized to zero)
+                Var_out.append(0 * Var_out[-1].isel({time_axis: 0}, drop=True))
 
                 ## LOOP ON SUBSTEPS
                 print('(nt = ' + str(int(steps[t])) +')', end='\n' if t+1==len(time) else '\r')
-                for n_yr in range(len(For_t[time_axis])):
-                    For_ = For_t.isel({time_axis:n_yr}, drop=True)
+                for tt in range(int(steps[t])):
 
                     ## solve for variables
                     Var_new = xr.Dataset()
                     for var in list_var_prog:
-                        Var_new[var] = self[var](Var_old, Par, For_, f_dot=lambda dX_dt: f_dX(dX_dt, vLin[var], dt))
+                        Var_new[var] = self[var](Var_old, Par, For_t, f_dot=lambda dX_dt: f_dX(dX_dt, vLin[var], dt))
                     for var in list_var_node:
-                        Var_new[var] = self[var](Var_old, Par, For_)
+                        Var_new[var] = self[var](Var_old, Par, For_t)
                     for var in list_var_diag:
-                        Var_new[var] = self[var](Var_new, Par, For_)
+                        Var_new[var] = self[var](Var_new, Par, For_t)
 
-                    ## finalize (iterate variables)
+                    ## iterate variables
                     Var_old = Var_new.copy(deep=True)
 
-                ## drop unwanted variables and append to final output
-                Var_new = Var_new.drop([var for var in Var_new if var not in list_var_keep])
-                Var_out.append(Var_new.assign_coords(**{time_axis:time[t]}).expand_dims(time_axis, 0))
+                    ## get final state variables
+                    if get_final:
+                        if t+1 == len(time) and tt+1 == int(steps[t]):
+                            Var_fin = Var_new.drop([var for var in Var_new if var not in list_var_prog + list_var_node])
+
+                    ## drop unwanted variables and add to new output
+                    Var_new = Var_new.drop([var for var in Var_new if var not in list_var_keep])
+                    Var_out[-1] += float(1/steps[t]) * Var_new # this gives mid-year values
+                    #Var_out[-1] = Var_new # this would give end-year values
+
+                ## assign time coordinate
+                Var_out[-1] = Var_out[-1].assign_coords(**{time_axis: time[t]}).expand_dims(time_axis, 0)
 
             ## FINALIZATION
-            ## concatenate final output on time axis
+            ## concatenate/assign time axis of final output
             Var_out = xr.concat(Var_out, dim=time_axis)
-            Var_out = Var_out.assign_coords({time_axis:time})
+            if get_final: Var_fin = Var_fin.assign_coords(**{time_axis: time[-1]})
 
             ## add model info
             Var_out.attrs['model'] = self.name
+            if get_final: Var_fin.attrs['model'] = self.name
 
             ## add units to output
-            for var in Var_out: 
-                Var_out[var].attrs['units'] = self[var].units
+            for var in Var_out: Var_out[var].attrs['units'] = self[var].units
+            if get_final: 
+                for var in Var_fin: Var_fin[var].attrs['units'] = self[var].units
 
         ## printing time counter
         print('total running time: {:.1f} minutes'.format((perf_counter() - t0) / 60))
 
         ## return
-        return Var_out
+        if get_final: return Var_out, Var_fin
+        else: return Var_out
 
 
 ##################################################
