@@ -865,13 +865,24 @@ def Eq__kS(Var, Par):
 
 
 ## CO2 radiative forcing
-## (Myhre et al., 1998; doi:10.1029/98GL01908)
-OSCAR.process('RF_CO2', ('D_CO2',), 
+## (Meinshausen et al., 2020; doi:10.5194/gmd-13-3571-2020)
+OSCAR.process('RF_CO2', ('D_CO2','D_N2O'), 
     lambda Var, Par: Eq__RF_CO2(Var, Par), 
     units='W m-2')
 
 def Eq__RF_CO2(Var, Par):
-    return Par.rf_CO2 * np.log1p(Var.D_CO2 / Par.CO2_0)
+    C0, C, N = Par.CO2_0, Var.D_CO2 + Par.CO2_0, Var.D_N2O + Par.N2O_0
+    a1 = -2.4785E-7
+    b1 = 0.00075906
+    c1 = -0.0021492
+    d1 = 5.2488
+    Ca = C0 - 0.5 * b1 / a1
+    aa = (d1 - 0.25 * b1**2 / a1) * (C >= Ca)
+    aa += (d1 + a1 * (C - C0)**2 + b1 * (C - C0)) * (C0 < C) * (C < Ca)
+    aa += d1 * (C <= C0)
+    aN = c1 * np.sqrt(N)
+    adj = 1 + 0.05
+    return Par.k_rf_CO2 * adj * (aa + aN) * np.log(C / C0)
 
 
 ##################################################
@@ -1122,24 +1133,28 @@ def Eq__tau_CH4(Var, Par):
 
 
 ## CH4 radiative forcing
-## (Myhre et al., 1998; doi:10.1029/98GL01908)
+## (Meinshausen et al., 2020; doi:10.5194/gmd-13-3571-2020)
 OSCAR.process('RF_CH4', ('D_CH4', 'D_N2O'), 
     lambda Var, Par: Eq__RF_CH4(Var, Par), 
     units='W m-2')
 
 def Eq__RF_CH4(Var, Par):
-    RF_overlap = 0.47 * np.log1p(2.01E-5 * ((Par.CH4_0 + Var.D_CH4) * Par.N2O_0)**0.75 + 5.31E-15 * (Par.CH4_0 + Var.D_CH4) * ((Par.CH4_0 + Var.D_CH4) * (Par.N2O_0))**1.52)
-    RF_overlap -= 0.47 * np.log1p(2.01E-5 * (Par.CH4_0  * Par.N2O_0)**0.75 + 5.31E-15 * Par.CH4_0 * (Par.CH4_0 * Par.N2O_0)**1.52)
-    return Par.rf_CH4 * (np.sqrt(Par.CH4_0 + Var.D_CH4) - np.sqrt(Par.CH4_0)) - RF_overlap
+    M0, M, N = Par.CH4_0, Var.D_CH4 + Par.CH4_0, Var.D_N2O + Par.N2O_0
+    a3 = -8.9603E-5
+    b3 = -0.00012462
+    d3 = 0.045194
+    adj = 1 - 0.14
+    return Par.k_rf_CH4 * adj * (a3 * np.sqrt(M) + b3 * np.sqrt(N) + d3) * (np.sqrt(M) - np.sqrt(M0))
 
 
 ## stratospheric H2O radiative forcing
-OSCAR.process('RF_H2Os', ('D_CH4_lag',), 
+## (Forster et al., 2021; doi:10.1017/9781009157896.009) (Tables 7.5 & 7.8)
+OSCAR.process('RF_H2Os', ('RF_CH4',), 
     lambda Var, Par: Eq__RF_H2Os(Var, Par), 
     units='W m-2')
 
 def Eq__RF_H2Os(Var, Par):
-    return Par.k_rf_H2Os * Par.rf_CH4 * (np.sqrt(Par.CH4_0 + Var.D_CH4_lag) - np.sqrt(Par.CH4_0))
+    return Par.k_rf_H2Os * 0.050/0.544 * Var.RF_CH4
 
 
 ##################################################
@@ -1215,15 +1230,20 @@ def Eq__tau_N2O(Var, Par):
 
 
 ## N2O radiative forcing
-## (Myhre et al., 1998; doi:10.1029/98GL01908)
-OSCAR.process('RF_N2O', ('D_CH4', 'D_N2O'), 
+## (Meinshausen et al., 2020; doi:10.5194/gmd-13-3571-2020)
+OSCAR.process('RF_N2O', ('D_CO2', 'D_CH4', 'D_N2O'), 
     lambda Var, Par: Eq__RF_N2O(Var, Par), 
     units='W m-2')
 
 def Eq__RF_N2O(Var, Par):
-    RF_overlap = 0.47 * np.log1p(2.01E-5 * (Par.CH4_0 * (Par.N2O_0 + Var.D_N2O))**0.75 + 5.31E-15 * Par.CH4_0 * (Par.CH4_0 * (Par.N2O_0 + Var.D_N2O))**1.52)
-    RF_overlap -= 0.47 * np.log1p(2.01E-5 * (Par.CH4_0 * Par.N2O_0)**0.75 + 5.31E-15 * Par.CH4_0 * (Par.CH4_0 * Par.N2O_0)**1.52)
-    return Par.rf_N2O * (np.sqrt(Par.N2O_0 + Var.D_N2O) - np.sqrt(Par.N2O_0)) - RF_overlap
+    N0, C, M, N = Par.N2O_0, Var.D_CO2 + Par.CO2_0, Var.D_CH4 + Par.CH4_0, Var.D_N2O + Par.N2O_0
+    a2 = -0.00034197
+    b2 = 0.00025455
+    c2 = -0.00024357
+    d2 = 0.12173
+    adj = 1 + 0.07
+    return Par.k_rf_N2O * adj * (a2 * np.sqrt(C) + b2 * np.sqrt(N) + c2 * np.sqrt(M) + d2) * (np.sqrt(N) - np.sqrt(N0))
+
 
 
 ##################################################

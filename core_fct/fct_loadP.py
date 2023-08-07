@@ -435,16 +435,14 @@ def load_atmosphere_misc(**useless):
     Par['a_NO3'] = xr.DataArray(62/14., attrs={'units':'Tg TgN-1'})
     
     ## preindustrial concentrations
-    ## (Ciais et al., 2013; doi:10.1017/CBO9781107415324.015) (text)
-    ## (Prather et al., 2013; doi:10.1017/CBO9781107415324.030) (Table AII.1.1a)
-    Par['CO2_0'] = xr.DataArray(278., attrs={'units':'ppm', 'unc (90%)':5})
-    Par['CH4_0'] = xr.DataArray(722., attrs={'units':'ppb', 'unc (90%)':25})
-    Par['N2O_0'] = xr.DataArray(270., attrs={'units':'ppb', 'unc (90%)':7})
+    ## (Dentener et al., 2021; doi:10.1017/9781009157896.017) (Tables AIII.1)
+    Par['CO2_0'] = xr.DataArray(278.3, attrs={'units':'ppm'})
+    Par['CH4_0'] = xr.DataArray(729.2, attrs={'units':'ppb'})
+    Par['N2O_0'] = xr.DataArray(270.1, attrs={'units':'ppb'})
     Par['Xhalo_0'] = xr.DataArray(np.zeros(len(Par.coords['spc_halo'])), dims='spc_halo', attrs={'units':'ppt'})
-    Par.Xhalo_0.loc['CF4'] = 35.
-    ## (Meinshausen et al., 2011; doi:10.1007/s10584-011-0156-z) (Table 1)
-    Par.Xhalo_0.loc['CH3Br'] = 5.8
-    Par.Xhalo_0.loc['CH3Cl'] = 480.
+    Par.Xhalo_0.loc['CF4'] = 34.05
+    Par.Xhalo_0.loc['CH3Br'] = 5.30
+    Par.Xhalo_0.loc['CH3Cl'] = 457.
 
     ## fraction of geological CH4 emitted by anthropogenic activities
     ## note: place-holder
@@ -517,7 +515,6 @@ def load_CH4_lifetime(**useless):
 
 ## OH lifetime sensitivities
 def load_OH_response(**useless):
-    ## TODO v3.2: switch to only one formulation, and add old OxComp models
 
     ## initialization
     Par = xr.Dataset()
@@ -590,7 +587,6 @@ def load_N2O_lifetime(**useless):
 
 ## hv lifetime sensitivities
 def load_hv_response(**useless):
-    ## TODO v3.2: check/add old MAGICC model? set old Prather_2012
 
     ## initialization
     Par = xr.Dataset()
@@ -623,7 +619,6 @@ def load_hv_response(**useless):
 ## preindustrial lifetime of halo comp.
 # (WMO, 2011; ISBN: 9966-7319-6-2) (Table 1-3)
 def load_halo_lifetime(**useless):
-    ## TODO v3.2: change loading and update to WMO 2014 and 2018
 
     ## initialization
     Par = xr.Dataset()
@@ -662,7 +657,6 @@ def load_halo_lifetime(**useless):
 
 ## HTAP regions split fractions
 def load_regions_HTAP(mod_region, recalibrate=False, **useless):
-    ## TODO v3.2: maybe? correct fractions to account only for land...
     
     ## load from existing file
     if os.path.isfile('input_data/parameters/from_OSCARv2/regions_HTAP__' + mod_region + '.nc') and not recalibrate:
@@ -764,7 +758,6 @@ def load_O3t_regional(**useless):
 ## tropospheric ozone sensitivities
 ## partly calibrated on ACCMIP
 def load_O3t_response(recalibrate=False, **useless):
-    ## TODO v3.2: add old OxComp
     
     ## load from existing file
     if os.path.isfile('input_data/parameters/from_OSCARv2/ozochem_ACCMIP.nc') and not recalibrate:
@@ -792,7 +785,6 @@ def load_O3t_response(recalibrate=False, **useless):
 
 ## ozone depleting substances parameters
 def load_ODS_all(**useless):
-    ## TODO v3.2: update fracrel on e.g. WMO, and replace Daniel 2010 with saturating formula
     
     ## initialization
     Par = xr.Dataset()
@@ -824,15 +816,6 @@ def load_ODS_all(**useless):
     ## sensitivity factors for N2O
     ## (Daniel et al., 2010; doi:10.5194/acp-10-7697-2010)
     ## note: taken from values in text, and based on ODP estimated for N2O
-    ##-------for v3.2------- (to keep)
-    ## saturating factor
-    Par['EESC_x'] = xr.DataArray((240 * 1.53 - 1640 * 1) / (1 - 1.53), attrs={'units':'ppt'})
-    ## conversion factor
-    Par['k_EESC_N2O'] = xr.DataArray(np.array([0, 6.4]) * (1 + 1640 / Par['EESC_x'].values), coords={'mod_O3s_nitrous':['off_', 'Daniel_2010']}, dims='mod_O3s_nitrous')
-    Par['k_EESC_N2O'] = Par['k_EESC_N2O'] * Par['p_fracrel'].sel({'spc_halo':'CFC-11'}, drop=True)
-    Par['k_EESC_N2O'].attrs['units'] = 'ppt ppb-1'
-
-    ##-------for v3.0------- (to be deleted)
     ## saturating factor
     Par['EESC_x'] = xr.DataArray((240 * 1 - 1640 * 1.53) / (1 - 1.53), attrs={'units':'ppt'})
     ## conversion factor
@@ -936,7 +919,6 @@ def load_AER_regional(**useless):
 ## aerosols tropospheric load
 ## calibrated on ACCMIP and CMIP5
 def load_AER_atmoload(recalibrate=False, **useless):
-    ## TODO v3.2: add dust and salt
     
     ## load from existing file
     if os.path.isfile('input_data/parameters/from_OSCARv2/aerchem_ACCMIP.nc') and not recalibrate:
@@ -954,23 +936,6 @@ def load_AER_atmoload(recalibrate=False, **useless):
         Par2['t_'+var] = xr.DataArray([0.], coords={'mod_M'+var+'_load':['zero']}, dims='mod_M'+var+'_load', attrs={'units':'yr'})
         Par2['G_'+var] = xr.DataArray([0.], coords={'mod_M'+var+'_load':['zero']}, dims='mod_M'+var+'_load', attrs={'units':'Tg K-1'})
 
-    ## note: parameters for nitrate calibrated on data extracted from papers
-    """
-    ## (Bellouin et al., 2011; doi:10.1029/2011JD016074) (and additional CMIP5 and RCP data)
-    ENOX = np.array([5.7, 37.4, 18.4, 16.3, 16.6, 23.8, 18.4, 16.3, 16.6, 23.8])
-    ENH3 = np.array([16.6, 41.4, 67.2, 49.2, 63.0, 70.0, 67.2, 49.2, 63.0, 70.0])
-    tas = np.array([13.55, 14.07, 15.39, 16.46, 17.07, 18.66, 13.55, 13.55, 13.55, 13.55])
-    NO3 = np.array([0.05, 0.34, 0.56, 0.29, 0.41, 0.52, 0.63, 0.36, 0.50, 0.68])
-
-    ## (Hauglustaine et al., 2014; doi:10.5194/acp-14-11031-2014) (Tables 1 & 5)
-    ENOX = np.array([10., 36., 29., 26., 14., 32., 26., 14., 30., 27., 13., 38., 30., 21., 21., 14.])
-    ENH3 = np.array([21., 29., 41., 46., 58., 35., 36., 33., 36., 43., 51., 42., 48., 57., 33., 57.])
-    tas = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
-    #NO3 = np.array([0.23, 0.48, 0.46, 0.47, 0.37, 0.48, 0.46, 0.42, 0.47, 0.48, 0.40, 0.54, 0.52, 0.52, 0.47, 0.43]) # HNO3 and NO3-
-    NO3 = np.array([0.09, 0.18, 0.21, 0.23, 0.21, 0.20, 0.20, 0.18, 0.19, 0.21, 0.21, 0.23, 0.24, 0.25, 0.20, 0.22]) # NO3- only
-    """
-
-    ##-------for v3.0------- (to be deleted)
     ## remove other dust and salt options
     Par = Par.drop(['t_dust', 'G_dust', 't_salt', 'G_salt', 'mod_Mdust_load', 'mod_Msalt_load'])
 
@@ -980,7 +945,6 @@ def load_AER_atmoload(recalibrate=False, **useless):
 
 ## soluble aerosols fraction
 def load_AER_solub(**useless):
-    ## TODO v3.2: check p_sol_salt in Lamarque_2011! WARNING: this whould change Phi_0 as well!
 
     ## initialization
     Par = xr.Dataset()
@@ -1013,7 +977,6 @@ def load_AER_solub(**useless):
 ## radiative forcing factors of WMGHGs
 ## based on IPCC AR5
 def load_RFghg_all(**useless):
-    ## TODO v3.2: extend to Etminan formulas
 
     ## initialization
     Par = xr.Dataset()
@@ -1022,19 +985,17 @@ def load_RFghg_all(**useless):
         'CFC-11', 'CFC-12', 'CFC-113', 'CFC-114', 'CFC-115', 'CCl4', 'CH3CCl3', 'HCFC-22', 'HCFC-141b', 'HCFC-142b', 'Halon-1211', 'Halon-1202', 'Halon-1301', 'Halon-2402', 'CH3Br', 'CH3Cl']
 
     ## radiative forcing factors
-    ## (Myrhe et al., 2013; doi:10.1017/CBO9781107415324.018) (Table 8.SM.1)
-    Par['rf_CO2'] = xr.DataArray(5.35, attrs={'units':'W m-2'})
-    Par['rf_CH4'] = xr.DataArray(0.036, attrs={'units':'W m-2 ppb-0.5'})
-    Par['rf_N2O'] = xr.DataArray(0.12, attrs={'units':'W m-2 ppb-0.5'})
-    ## (Myrhe et al., 2013; doi:10.1017/CBO9781107415324.018) (text)
-    Par['k_rf_H2Os'] = xr.DataArray(0.15, attrs={'units':'1'})
+    Par['k_rf_CO2'] = xr.DataArray(1., attrs={'units':'1'})
+    Par['k_rf_CH4'] = xr.DataArray(1., attrs={'units':'1'})
+    Par['k_rf_N2O'] = xr.DataArray(1., attrs={'units':'1'})
+    Par['k_rf_H2Os'] = xr.DataArray(1., attrs={'units':'1'})
 
     ## radiative efficiency of halogenated compounds
-    ## (Myrhe et al., 2013; doi:10.1017/CBO9781107415324.018) (Table 8.A.1)
+    ## (Forster et al., 2021; doi:10.1017/9781009157896.009) (Table 7.SM.7)
     Par['rf_Xhalo'] = xr.DataArray(1E-3 * np.array(
-        [0.18, 0.11, 0.23, 0.16, 0.16, 0.10, 0.26, 0.24, 0.24, 0.22, 0.42,
-        0.57, 0.20, 0.09, 0.25, 0.28, 0.32, 0.36, 0.41, 0.44, 0.50,
-        0.26, 0.32, 0.30, 0.31, 0.20, 0.17, 0.07, 0.21, 0.16, 0.19, 0.29, 0.27, 0.30, 0.31, 0.004, 0.01]),
+        [0.191, 0.111, 0.234, 0.167, 0.168, 0.102, 0.273, 0.251, 0.245, 0.228, 0.357,
+        0.204, 0.567, 0.099, 0.261, 0.270, 0.314, 0.369, 0.408, 0.449, 0.503, 
+        0.291, 0.358, 0.301, 0.314, 0.246, 0.166, 0.065, 0.214, 0.161, 0.193, 0.300, 0.272, 0.299, 0.312, 0.004, 0.005]),
         dims=['spc_halo'], attrs={'units':'W m-2 ppt-1'})
 
     ## return
@@ -1199,7 +1160,6 @@ def load_RFaer_indirect(**useless):
 
 ## Reddy_2007 regions split fractions
 def load_regions_Reddy_2007(mod_region, recalibrate=False, **useless):
-    ## TODO v3.2: maybe? correct fractions to account only for land...
     
     ## load from existing file
     if os.path.isfile('input_data/parameters/from_OSCARv2/regions_Reddy_2007__' + mod_region + '.nc') and not recalibrate:
@@ -1248,7 +1208,6 @@ def load_RFbcsnow_all(**useless):
 
 ## land-cover change albedo parameters
 def load_RFlcc_all(mod_region, recalibrate=False, **useless):
-    ## TODO v3.2: redo? remove LUH1 pixels limitation
     
     ## initialization
     Par = xr.Dataset()
@@ -1333,7 +1292,8 @@ def load_RF_atmfrac(**useless):
 
 ## temperature response
 ## calibrated on CMIP5 models
-def load_temp_CMIP5(mod_region, recalibrate=False, **useless):
+## global response taken from CMIP6 models
+def load_temp_CMIP5(mod_region, use_CMIP6_global=True, recalibrate=False, **useless):
 
     ## load from existing file
     if os.path.isfile('input_data/parameters/from_OSCARv2/temp_CMIP5__' + mod_region + '.nc') and not recalibrate:
@@ -1346,6 +1306,27 @@ def load_temp_CMIP5(mod_region, recalibrate=False, **useless):
     ## deep-ocean heat uptake efficacy
     ## note: taken equal to one for now
     Par['e_ohu'] = xr.DataArray(1., attrs={'units':'1'})
+
+    ## use CMIP6 global response if requested
+    if use_CMIP6_global:
+        
+        ## initialization
+        Par = Par.drop(['lambda_0', 'Th_g', 'Th_d', 'th_0', 'e_ohu'])
+        Par.coords['mod_Tg_global'] = ['CESM2-WACCM-FV2', 'E3SM-1-0', 'NorESM2-LM', 'CESM2-WACCM', 'GISS-E2-2-G', 'FGOALS-g3', 'CESM2', 'CESM2-FV2', 'AWI-CM-1-1-MR', 'CNRM-ESM2-1', 'ACCESS-CM2', 'GFDL-CM4', 'INM-CM5-0', 'CNRM-CM6-1-HR', 'UKESM1-0-LL', 'GISS-E2-1-H', 'GFDL-ESM4', 'NorESM2-MM', 'BCC-CSM2-MR', 'ACCESS-ESM1-5', 'CNRM-CM6-1', 'MIROC-ES2L', 'IITM-ESM', 'SAM0-UNICON', 'BCC-ESM1', 'FGOALS-f3-L', 'MPI-ESM1-2-HR', 'HadGEM3-GC31-LL', 'GISS-E2-1-G', 'MIROC6', 'CAMS-CSM1-0', 'CanESM5', 'MRI-ESM2-0', 'HadGEM3-GC31-MM', 'IPSL-CM6A-LR', 'mean_CMIP6']
+
+        ## climate sensitivity
+        ## from AR6 calibration
+        ## (Forster et al., 2021; doi:10.1017/9781009157896.009) (Sect 7.SM.2)
+        ## (https://github.com/chrisroadmap/ar6/blob/main/data_output/cmip6_twolayer_tuning_params.csv)
+        Par['lambda_0'] = xr.DataArray(np.array([11.65356847, 11.75276491, 10.28886437, 11.13179124, 4.379238581, 6.210068696, 12.86771984, 13.25456857, 6.754506803, 9.147915763, 11.05530582, 9.310950449, 3.952539391, 7.99863221, 11.27183464, 6.399798451, 5.102264568, 5.768227721, 6.308957575, 9.46477432, 9.724564186, 5.242903778, 4.857175609, 7.785042378, 7.272227794, 6.553848165, 6.436999525, 11.8049768, 5.528452289, 5.537287481, 4.733224858, 11.55715788, 6.912800242, 10.88092195, 11.30491236, 8.291622505]) / 
+                                       np.array([7.011729005, 7.396111591, 9.532071507, 7.856972301, 7.19266907, 7.972358832, 8.478362302, 7.707721014, 8.168461329, 5.797400178, 7.733056855, 7.658725737, 6.377652803, 7.523271851, 7.476424076, 7.300776792, 7.450284032, 8.902344738, 7.217010585, 6.745165698, 7.305305051, 8.167849172, 9.436748564 ,8.046759001, 6.488240732, 9.840465121, 8.183147084, 7.370973411, 8.292051901, 7.884621879, 9.076223123, 7.467505629, 8.295756725, 7.103401565, 7.812109563, 7.779135109]), dims='mod_Tg_global', attrs={'units':'K m2 W-1'})
+
+        ## dynamic parameters
+        ## id.
+        Par['Th_g'] = xr.DataArray([8.170170809, 8.393028871, 5.604629223, 8.293803941, 8.893609583, 8.132895614, 8.412395239, 7.417002999, 8.200244184, 7.468408564, 8.705751045, 7.533980889, 8.638405943, 8.409643636, 7.740971907, 8.636252456, 8.374525586, 6.153316481, 5.936500317, 8.381012067, 7.58628428, 10.58828399, 9.335789172, 6.576330609, 8.695825524, 8.988944332, 8.413201456, 7.962855233, 7.536209375, 9.166116772, 9.752138357, 8.232829677, 8.478459388, 8.242753153, 7.995290872, 8.144224616], dims='mod_Tg_global', attrs={'units':'K yr m2 W-1'})
+        Par['Th_d'] = xr.DataArray([112.0972698, 43.90358254, 145.0524151, 89.66997071, 411.847639, 98.48689642, 75.90982253, 92.72710252, 56.49395628, 97.01979098, 93.23003992, 94.13658551, 47.65112685, 96.37019687, 76.55368258, 84.2529674, 148.0652466, 121.2949067, 64.57353599, 95.36197556, 145.2251447, 177.4337383, 174.1064073, 100.4856362, 97.66258453, 79.34939994, 92.63374599, 76.42304288, 140.8853034, 205.6793081, 56.97238042, 80.72320438, 98.19686124, 71.4228513, 94.98929756, 109.6253605], dims='mod_Tg_global', attrs={'units':'K yr m2 W-1'})
+        Par['th_0'] = xr.DataArray([0.704934951, 0.363434023, 0.819696037, 0.70015503, 0.530129004, 0.642433856, 0.668308839, 0.710719533, 0.475052003, 0.604435859, 0.542905294, 0.582458856, 0.480378236, 0.548070136, 0.531698336, 0.621910544, 0.54685098, 0.768512125, 0.872355089, 0.619427072, 0.508941042, 0.68205713, 0.699192486, 0.807363219, 0.529932514, 0.591267211, 0.637576885, 0.516206496, 0.838450499, 0.619823967, 0.478658743, 0.525195298, 0.855909492, 0.593974365, 0.391789744, 0.617434426], dims='mod_Tg_global', attrs={'units':'W m-2 K-1'})
+        Par['e_ohu'] = xr.DataArray([1.501193714, 1.455884915, 3.074718558, 1.52530406, 0.651704942, 1.373040595, 1.771465164, 1.7682607, 1.448387694, 0.903108534, 1.496767884, 1.643780645, 1.30226181, 0.749500131, 1.134761169, 1.121011424, 0.858651817, 1.691270143, 1.303707841, 1.604318746, 0.989931689, 0.9487913, 1.148351283, 1.136208167, 1.368488577, 1.623960691, 1.396003858, 1.186947954, 1.105270621, 1.262313201, 1.283455642, 1.064778506, 1.476625551, 0.997913974, 1.575636984, 1.341250814], dims='mod_Tg_global', attrs={'units':'1'})
 
     ## return
     return Par
@@ -1377,7 +1358,6 @@ def load_prec_CMIP5(mod_region, recalibrate=False, **useless):
 
 ## OHC parameters
 def load_OHC_all(**useless):
-    ## TODO v3.2: use alternative formula
 
     ## initialization
     Par = xr.Dataset()
@@ -1400,7 +1380,6 @@ def load_OHC_all(**useless):
 
 ## surface acidification parameters
 def load_pH_all(**useless):
-    ## TODO v3.2: remove log formula?
 
     ## initialization
     Par = xr.Dataset()
