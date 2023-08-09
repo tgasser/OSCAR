@@ -1009,13 +1009,13 @@ def Eq__f_kOH(Var, Par):
     f_kOH_O3s = Par.x_OH_O3s * np.log1p(Var.D_O3s / Par.O3s_0)
     f_kOH_Tg = Par.x_OH_Ta * np.log1p(Var.D_Ta / Par.Ta_0) + Par.x_OH_Qa * np.log1p(Var.D_f_Qa)
     ## logarithmic anthropogenic factors
-    f_kOH_NOX_log = Par.x_OH_NOX * np.log1p((Var.E_NOX + Var.D_Ebb.sel({'spc_bb':'NOX'}, drop=True).sum( 'bio_land', min_count=1)).sum('reg_land', min_count=1) / Par.Enat_NOX)
-    f_kOH_CO_log = Par.x_OH_CO * np.log1p((Var.E_CO + Var.D_Ebb.sel({'spc_bb':'CO'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1) / Par.Enat_CO)
-    f_kOH_VOC_log = Par.x_OH_VOC * np.log1p((Var.E_VOC + Var.D_Ebb.sel({'spc_bb':'VOC'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1) / Par.Enat_VOC)
+    f_kOH_NOX_log = Par.x_OH_NOX * np.log1p((Var.E_NOX.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'NOX'}, drop=True).sum( 'bio_land', min_count=1).sum('reg_land', min_count=1)) / Par.Enat_NOX)
+    f_kOH_CO_log = Par.x_OH_CO * np.log1p((Var.E_CO.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'CO'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1)) / Par.Enat_CO)
+    f_kOH_VOC_log = Par.x_OH_VOC * np.log1p((Var.E_VOC.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'VOC'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1)) / Par.Enat_VOC)
     # linear anthropogenic factors
-    f_kOH_NOX_lin = Par.x2_OH_NOX * (Var.E_NOX + Var.D_Ebb.sel({'spc_bb':'NOX'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1)
-    f_kOH_CO_lin = Par.x2_OH_CO * (Var.E_CO + Var.D_Ebb.sel({'spc_bb':'CO'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1)
-    f_kOH_VOC_lin = Par.x2_OH_VOC * (Var.E_VOC + Var.D_Ebb.sel({'spc_bb':'VOC'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1)
+    f_kOH_NOX_lin = Par.x2_OH_NOX * (Var.E_NOX.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'NOX'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1))
+    f_kOH_CO_lin = Par.x2_OH_CO * (Var.E_CO.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'CO'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1))
+    f_kOH_VOC_lin = Par.x2_OH_VOC * (Var.E_VOC.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'VOC'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1))
     ## choosing configuration
     return np.exp(f_kOH_CH4 + f_kOH_O3s + f_kOH_Tg + Par.kOH_is_Log * (f_kOH_NOX_log + f_kOH_CO_log + f_kOH_VOC_log) + (1-Par.kOH_is_Log) * (f_kOH_NOX_lin + f_kOH_CO_lin + f_kOH_VOC_lin))
 
@@ -1071,7 +1071,7 @@ OSCAR.process('D_Foxi_CH4', ('E_CH4', 'D_Ewet', 'D_Ebb', 'D_Fsink_CH4'),
     units='TgC yr-1')
 
 def Eq__D_Foxi_CH4(Var, Par):
-    E_CH4_nongeo = (1 - Par.p_CH4geo) * (Var.E_CH4 + Var.D_Ewet + Var.D_Ebb.sel({'spc_bb':'CH4'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1)
+    E_CH4_nongeo = (1 - Par.p_CH4geo) * Var.E_CH4.sum('reg_land', min_count=1) + Var.D_Ewet.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'CH4'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1)
     return 1/PgC_to_TgC * (Var.D_Fsink_CH4 - E_CH4_nongeo)
 
 
@@ -1116,7 +1116,7 @@ OSCAR.process('D_CH4', ('D_CH4', 'E_CH4', 'D_Ewet', 'D_Ebb', 'D_Epf_CH4', 'D_Fsi
     units='ppb')
 
 def DiffEq__D_CH4(Var, Par):
-    return 1 / Par.a_CH4 * ((Var.E_CH4 + Var.D_Ewet + Var.D_Ebb.sel({'spc_bb':'CH4'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1) + Var.D_Epf_CH4.sum('reg_pf', min_count=1) - Var.D_Fsink_CH4)
+    return 1 / Par.a_CH4 * (Var.E_CH4.sum('reg_land', min_count=1) + Var.D_Ewet.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'CH4'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1) + Var.D_Epf_CH4.sum('reg_pf', min_count=1) - Var.D_Fsink_CH4)
 
 def vLin__D_CH4(Par):
     return 1 / Par.w_t_OH / Par.t_OH_CH4 + 1 / Par.w_t_hv / Par.t_hv_CH4 + 1 / Par.t_soil_CH4 + 1 / Par.t_ocean_CH4
@@ -1214,7 +1214,7 @@ OSCAR.process('D_N2O', ('D_N2O', 'E_N2O', 'D_Ebb', 'D_Fsink_N2O'),
     units='ppb')
 
 def DiffEq__D_N2O(Var, Par):
-    return 1 / Par.a_N2O * ((Var.E_N2O + Var.D_Ebb.sel({'spc_bb':'N2O'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1) - Var.D_Fsink_N2O)
+    return 1 / Par.a_N2O * (Var.E_N2O.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'N2O'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1) - Var.D_Fsink_N2O)
 
 def vLin__D_N2O(Par):
     return 1 / Par.w_t_hv / Par.t_hv_N2O
@@ -1493,8 +1493,8 @@ OSCAR.process('D_NO3', ('E_NOX', 'E_NH3', 'D_Ebb', 'D_Tg'),
     units='Tg')
 
 def Eq__D_NO3(Var, Par):
-    D_NO3_NOX = Par.a_NO3 * Par.t_NOX * (Var.E_NOX + Var.D_Ebb.sel({'spc_bb':'NOX'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1)
-    D_NO3_NH3 = Par.a_NO3 * Par.t_NH3 * (Var.E_NH3 + Var.D_Ebb.sel({'spc_bb':'NH3'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1)
+    D_NO3_NOX = Par.a_NO3 * Par.t_NOX * (Var.E_NOX.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'NOX'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1))
+    D_NO3_NH3 = Par.a_NO3 * Par.t_NH3 * (Var.E_NH3.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'NH3'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1))
     D_NO3_Tg = Par.G_NO3 * Var.D_Tg
     return D_NO3_NOX + D_NO3_NH3 + D_NO3_Tg
 
@@ -1505,7 +1505,7 @@ OSCAR.process('D_SOA', ('E_VOC', 'D_Ebvoc', 'D_Ebb', 'D_Tg'),
     units='Tg')
 
 def Eq__D_SOA(Var, Par):
-    D_SOA_VOC = Par.t_VOC * (Var.E_VOC + Var.D_Ebb.sel({'spc_bb':'VOC'}, drop=True).sum('bio_land', min_count=1)).sum('reg_land', min_count=1)
+    D_SOA_VOC = Par.t_VOC * (Var.E_VOC.sum('reg_land', min_count=1) + Var.D_Ebb.sel({'spc_bb':'VOC'}, drop=True).sum('bio_land', min_count=1).sum('reg_land', min_count=1))
     D_SOA_BVOC = Par.t_BVOC * Var.D_Ebvoc
     D_SOA_Tg = Par.G_SOA * Var.D_Tg
     return D_SOA_VOC + D_SOA_BVOC + D_SOA_Tg
