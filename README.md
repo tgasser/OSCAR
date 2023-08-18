@@ -6,12 +6,18 @@ A compact Earth system model.
 
 Download a release. *Read The Fine [Manual](./MANUAL.md).*
 
-OSCAR v3 is developed in Python 3.7 and run preferentially through IPython. It makes heavy use of the `xarray` package (v0.16.0), and `netCDF4` for saving data (v1.5.3). It also relies on other common scientific packages: `numpy` (v1.19.2) and `scipy` (v1.5.2). Although the latest versions of the packages used to run OSCAR v3 are given, older versions are likely to work.
+OSCAR v3 is developed in Python 3.9 and run preferentially through IPython. It makes heavy use of the `xarray` package (v0.20.1), and `netCDF4` for saving data (v1.5.7). It also relies on other common scientific packages: `numpy` (v1.23.3) and `scipy` (v1.9.3). Although the latest versions of the packages used to run OSCAR v3 are given, older versions are likely to work.
 
 The source code is provided firstly for transparency, and only secondly for dissemination. This means that it is provided as is, and no support of any kind is guaranteed (but feel free to ask). Feedbacks and contributions are welcome.
 
 
 ## Changelog
+
+##### v3.3
+* Updated: global temperature response parameters to those used in the IPCC AR6 WG1 [Chapter 7](https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-7), based on 35 CMIP6 Earth system models. Note that older parameters remain available.
+* Updated: effective radiative forcing functions and parameters for long-lived greenhouse gases, also following the IPCC AR6 WG1 [Chapter 7](https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-7). This also implies update of the preindustrial atmospheric concentrations of these gases.
+* Changed: internal solving and saving algorithm to output mid-year average values (instead of end-of-year). Now, to be able to start-up a simulation from an initial state that is the end of another's, one must set the call argument `get_final=True` to request a second output that is the final state of the called simulation.
+* Fixed: internal summation of anthropogenic and biomass-burning emissions in `mod_process` that could lead to `NaN` values under some uncommon combination of regional aggregations and land carbon cycle parameterizations.
 
 ##### v3.2
 * Added: regional aggregation options following the [MESSAGE](https://docs.messageix.org/projects/global/en/latest/overview/spatial.html) integrated assessment model's 11 regions.
